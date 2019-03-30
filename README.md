@@ -1,6 +1,6 @@
 # some helpful enigma2 scripts
 
-**softcam.py**
+**softcam.sh**
 > OSCam startup script '/etc/init.d/softcam' for Enigma2 based set-top-box
 
 **make_ipk_by_s3n0_for_ProjectXYZ.py**
