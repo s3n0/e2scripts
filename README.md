@@ -1,4 +1,4 @@
-# some helpful enigma2 scripts
+
 
 + **softcam.sh**
   > OSCam startup script '/etc/init.d/softcam' for Enigma2 based set-top-box
