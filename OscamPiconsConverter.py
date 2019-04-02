@@ -13,7 +13,7 @@
 #############################################################################
 # USER CONFIGURATION:
 #############################################################################
-OSCAM_SRVID  = '/etc/tuxbox/config/oscam/oscam.srvid2'
+OSCAM_SRVID  = '/etc/tuxbox/config/oscam/oscam.srvid'    # .srvid or .srvid2 - both files are supported
 DIR_TPL      = '/etc/tuxbox/config/oscam/piconTPL'
 DIR_PNG      = '/usr/share/enigma2/picon'
 CAIDS_FILTER = ['0D96', '0624']
