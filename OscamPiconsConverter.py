@@ -58,42 +58,46 @@ def png2tpl(sid_table):
     print('...done.')
 
 
-def table_from_srvid(caidfilter = []):
+def table_from_srvid(caidsFilter = []):
     print('Making a table from .srvid file...')
     with open(OSCAM_SRVID, 'r') as f:
         data = re.findall(r'([0-9a-fA-F\,\:]+)\|.*', f.read()  )         # [ '0D02,1815,0D97,0653:760d' , '0D02,1815,0D97,0653:7669' , '0D02,1815,0D97,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ...... ]
     d = {}
     for line in data:
         caids, sid = line.upper().split(':')                             # split the whole part via ":" character
-        caidsAdd = list( set(caids.split(','))  &  set(caidfilter)  )    # checking CAIDs by user defined CAIDS_FILTER
-        if caidsAdd:
-            #d.setdefault(sid, []).append(caidsAdd)
+        caidsToAdd = list(set(caids.split(',')))
+        if caidsFilter:
+            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )   # checking CAIDs by user defined CAIDS_FILTER
+        if caidsToAdd:
+            #d.setdefault(sid, []).append(caidsToAdd)
             if sid in d.keys():
-                d[sid] = d[sid] + caidsAdd
+                d[sid] = d[sid] + caidsToAdd
             else:
-                d[sid] = caidsAdd
+                d[sid] = caidsToAdd
     for key, values in d.iteritems():
         d[key] = list(set(values))                      # remove duplicated caids in dictionary variables (browsing through all dict.values for each one dict.key)
     print('...done.')
     return d             # { '1807': ['0D03', '0D70', '0D96', '0624'], '00CD': ['0B00', '09AF'], '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'], '00CB': ['0B00', '09AF'], ..... }
 
-def table_from_srvid2(caidfilter = []):
+def table_from_srvid2(caidsFilter = []):
     print('Making a table from .srvid2 file...')
-    d = {}
     with open(OSCAM_SRVID, 'r') as f:
         data = f.read().splitlines()
+    d = {}
     for line in data:
         if line.startswith('#') or line == '':
             continue
         sid, caids = line.upper().split('|')[0].split(':')               # remove all chars from "|" to the end of line, and split the whole part via ":" character
-        ctemp = re.sub('@[0-9a-fA-F]+', '', caids)                       # remove all strings such as "@0000A1CF" from the line
-        caidsAdd = list( set(ctemp.split(','))  &  set(caidfilter)  )    # checking CAIDs by user defined CAIDS_FILTER
-        if caidsAdd:
-            #d.setdefault(sid, []).append(caidsAdd)
+        caids = re.sub('@[0-9a-fA-F]+', '', caids)                       # remove all strings such as "@0000A1CF" from the line
+        caidsToAdd = list(set(caids.split(',')))
+        if caidsFilter:    
+            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )   # checking CAIDs by user defined CAIDS_FILTER
+        if caidsToAdd:
+            #d.setdefault(sid, []).append(caidsToAdd)
             if sid in d.keys():
-                d[sid] = d[sid] + caidsAdd
+                d[sid] = d[sid] + caidsToAdd
             else:
-                d[sid] = caidsAdd
+                d[sid] = caidsToAdd
     for key, values in d.iteritems():
         d[key] = list(set(values))                      # remove duplicated caids in dictionary variables (browsing through all dict.values for each one dict.key)
     print('...done.')
