@@ -146,6 +146,7 @@ if __name__ == "__main__" and check_folders():
     if table:
         dict_length = sum( [ len(x) for x in table.values() ] )
         print('Total picons and CAIDs found: %s' % dict_length)
+        
         if dict_length > 1000:
             while True:
                 answer = raw_input('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\nDo you really want to continue ?\n(y/n)\n>')
@@ -154,6 +155,8 @@ if __name__ == "__main__" and check_folders():
                     break
                 elif answer == 'n':
                     break
+        else:
+            png2tpl(table)
     
     print('Good bye')
 
