@@ -105,10 +105,10 @@ def table_from_srvid2(caidsFilter = []):
 
 
 def table_from_png_and_lamedb(caidsFilter):
-"""
-This function is experimental for now
-It's for a testing purpose only
-"""
+    """
+    This function is experimental for now
+    It's for a testing purpose only
+    """
     with open('/etc/enigma2/lamedb', 'r') as f:
         lamedb = f.read().upper().splitlines()
     d = {}
