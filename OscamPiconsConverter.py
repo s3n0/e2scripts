@@ -9,7 +9,12 @@
 #############################################################################
 # simple script to finding and converting PNG to TPL picons (for Oscam Webif)
 #############################################################################
-# EXAMPLE OF USE:   python /tmp/OscamPiconsConverter.py
+# EXAMPLE OF USE:
+# - upload the script into the set-top-box, for example into the '/tmp' folder
+# - then start the script via command-line Shell:
+# python /tmp/OscamPiconsConverter.py
+#############################################################################
+
 #############################################################################
 # USER CONFIGURATION:
 #############################################################################
