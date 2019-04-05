@@ -155,10 +155,10 @@ if __name__ == "__main__" and check_folders():
         if dict_length > 1000:
             while True:
                 answer = raw_input('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\nDo you really want to continue ?\n(y/n)\n>')
-                if answer == 'y':
+                if answer.lower() == 'y':
                     png2tpl(table)
                     break
-                elif answer == 'n':
+                elif answer.lower() == 'n':
                     break
         else:
             png2tpl(table)
