@@ -14,8 +14,10 @@
 #   ...or use the tools :
 #      update-rc.d softcam defaults 90
 
-# 2019/03/24
-# - s3n0 edit - remake the logging concept (logging output via function)
+# 2019/04/10
+# - s3n0 edit
+# - remake the logging concept (logging output via function)
+# - some cosmetic improvements
 
 # ####################  USER SETUP  ########################
 # ----------------------------------------------------------
@@ -40,20 +42,19 @@ helptext="USAGE:    bash /etc/init.d/softcam <ARGUMENT>
 ARGUMENT: start|restart|reload......start the process (if the process is still running then will stopped or killed... then it will start again)
           stop......................stop and unload the $softcam_exec service from memory"
 # ----------------------------------------------------------
-# ###############  END OF THE USER SETUP  ##################
-
-
-
-
-# FUNCTIONS ************************************************
-
 fLog() {
     #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" > /dev/null                          ### null device   <---  log will disabled (do nothing)
     #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" >> $softcam_logfile                  ### file
     #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" >> $softcam_logfile 2>&1             ### file + stderr
     #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" | tee -a $softcam_logfile            ### file + stdout(display)
     echo `date '+%Y-%m-%d %H:%M:%S'`" $1" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
-}
+   }
+# ###############  END OF THE USER SETUP  ##################
+
+
+
+
+# FUNCTIONS ************************************************
 
 fStop() {
     if ! pidof $1 > /dev/null; then
