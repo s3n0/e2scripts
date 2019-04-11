@@ -215,12 +215,12 @@ def prepare_arguments():
 if __name__ == "__main__" and prepare_arguments():
         global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
         
-        if '-1' in sys_argv:
+        if '-1' in sys_argv and '-i' not in sys_argv:
             table = table_from_srvid(CAIDS_FILTER)
             if table_size_checking(table):
                 png2tpl(table)
         
-        if '-2' in sys_argv:
+        if '-2' in sys_argv and '-i' not in sys_argv:
             table = table_from_srvid2(CAIDS_FILTER)
             if table_size_checking(table):
                 png2tpl(table)
@@ -231,4 +231,5 @@ if __name__ == "__main__" and prepare_arguments():
                 png2tpl(table)
         
         print('Good bye')
+
 
