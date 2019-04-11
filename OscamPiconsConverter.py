@@ -24,8 +24,6 @@ from os import path as os_path
 import glob
 import re
 
-global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
-
 #############################################################################
 
 def table_from_srvid(caidsFilter = []):
@@ -213,24 +211,24 @@ def prepare_arguments():
 #############################################################################
 
 if __name__ == "__main__" and prepare_arguments():
-        global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
-        
-        if '-1' in sys_argv and '-i' not in sys_argv:
-            table = table_from_srvid(CAIDS_FILTER)
-            if table_size_checking(table):
-                png2tpl(table)
-        
-        if '-2' in sys_argv and '-i' not in sys_argv:
-            table = table_from_srvid2(CAIDS_FILTER)
-            if table_size_checking(table):
-                png2tpl(table)
-        
-        if '-i' in sys_argv:
-            table = table_from_png_only(CAIDS_FILTER)
-            if table_size_checking(table):
-                png2tpl(table)
-        
-        print('Good bye')
-
+    
+    global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG    
+    
+    if '-1' in sys_argv and '-i' not in sys_argv:
+        table = table_from_srvid(CAIDS_FILTER)
+        if table_size_checking(table):
+            png2tpl(table)
+    
+    if '-2' in sys_argv and '-i' not in sys_argv:
+        table = table_from_srvid2(CAIDS_FILTER)
+        if table_size_checking(table):
+            png2tpl(table)
+    
+    if '-i' in sys_argv:
+        table = table_from_png_only(CAIDS_FILTER)
+        if table_size_checking(table):
+            png2tpl(table)
+    
+    print('Good bye')
 
 
