@@ -7,7 +7,7 @@
 #################################
 
 #############################################################################
-# simple script to finding and converting PNG to TPL picons (for Oscam Webif)
+# simple script for converting PNG to TPL picons (for Oscam-Webif)
 #############################################################################
 # EXAMPLE OF USE:
 # - upload the script into the set-top-box, for example into the '/tmp' folder
