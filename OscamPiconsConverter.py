@@ -167,7 +167,7 @@ OPTIONS:
        \t\t\t the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE, which could also be included as TPL picons
     -c CAID[,CAID,...] \t user-selected CAIDs (which are the only ones to be considered)
        \t\t\t if you do not specify the argument '-c' then all found CAIDs will be used! beware of the large number of CAIDs (TPL files)!
-    -o PATH \t\t path to 'oscam.srvid' file, if the script did not find the Oscam configuration folder automaticaly
+    -o PATH \t\t path to 'oscam.srvid' file, if the script did not find the Oscam configuration folder automatically
     -q \t\t\t higher quality image processing with antialiasing filter (higher quality means a larger file size)
     -d \t\t\t delete the whole target TPL-directory before processing
 
