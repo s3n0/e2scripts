@@ -160,8 +160,8 @@ USAGE:
 
 OPTIONS:
     -a \t\t\t make TPL picons from all PNG files, created just for user-selected CAIDs only
-       \t\t\t WARNING: the '-c CAIDs' argument must be specified if you use the '-a' argument!
-       \t\t\t          the '-1' and '-2' arguments will also ignored here!
+       \t\t\t WARNING: the argument '-a' must also be specified with the argument '-c CAIDs'!
+       \t\t\t          the arguments '-1' and '-2' will also be ignored here!
     -1 \t\t\t make TPL picons from 'oscam.srvid' file, filtered by user-selected CAIDs (if they are specified)
     -2 \t\t\t make TPL picons from 'oscam.srvid2' file, filtered by user-selected CAIDs (if they are specified)
        \t\t\t the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE, which could also be included as TPL picons
