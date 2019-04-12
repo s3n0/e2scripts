@@ -70,7 +70,7 @@ def table_from_srvid2(caidsFilter = []):
                 d[sid] = caidsToAdd
     for key, values in d.iteritems():
         d[key] = list(set(values))                      # remove duplicated caids in dictionary variables (browsing through all dict.values for each one dict.key)
-    print('...done.')
+    print('...done.\n')
     return d             # { '1807': ['0D03', '0D70', '0D96', '0624'], '00CD': ['0B00', '09AF'], '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'], '00CB': ['0B00', '09AF'], ..... }
 
 def table_from_png_only(caidsFilter = []):
