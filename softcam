@@ -5,6 +5,8 @@
 
 # 2018/07/16:
 # - s3n0 edit (OpenATV target file:  /etc/init.d/softcam)
+# - this softcam script file may be downloaded also directly from my github profile:
+#      wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam
 # - in many Enigmas, the /etc/init.d/softcam startup script is directly supported through the embedded source code
 #   (for example, the OpenATV source code: /lib/python/Plugins/Extensions/Infopanel/plugin.py)
 # - so just copy the bash-script into the /etc/init.d folder and nothing else is needed (symbolic links to /etc/rc3.d and /etc/rc4.d are not necessary)
