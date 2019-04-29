@@ -41,7 +41,7 @@ softcam_logfile='/tmp/oscam_handling.log'
 # PRIVATE VARIABLES:
 hrline='------------------------------------------------------------'
 helptext="USAGE:    bash /etc/init.d/softcam <ARGUMENT>
-ARGUMENT: start|restart|reload......start the process (if the process is still running then will stopped or killed... then it will start again)
+ARGUMENT: start|restart|reload......start the process (the process will be stopped or killed if it is running, then it will start again)
           stop......................stop and unload the $softcam_exec service from memory"
 # ----------------------------------------------------------
 fLog() {
