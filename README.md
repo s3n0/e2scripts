@@ -6,6 +6,7 @@
    ``` 
        sed -i 's/oscam/cccam/I' /etc/init.d/softcam
        sed -i 's/OSCam/CCCam/I' /etc/init.d/softcam
+       sed -i 's/-c \//-C \//I' /etc/init.d/softcam
    ```
 
 + **make_ipk_by_s3n0_for_ProjectXYZ.py**
