@@ -56,20 +56,18 @@ fi
 
 
 
-DISTRONAME=$(grep 'getImageDistro' /tmp/boxbranding.cfg | grep -oE "[^=]+$")
-if [[ $DISTRONAME == "openatv" ]] ; then
-    ### Fixed script that gets the correct string "6.2" instead of "6" cut (that is a problem in OpenATV)
-    DISTROVERSION=$(grep 'getImageVersion' /tmp/boxbranding.cfg | grep -oE "[^=]+$")
-else
-    ### Gets the string "6" from the file (only an integer part without real), but the string inside the file is "6.2" for example (used for all others images than OpenATV)
-    DISTROVERSION=$(grep 'getImageVersion' /tmp/boxbranding.cfg | grep -oE "[^=]+$" | cut -c 1-1)
-fi
+### Gets the whole string "6.2" instead of "6" cut-off string
+# DISTROVERSION=$(grep 'getImageVersion' /tmp/boxbranding.cfg | grep -oE "[^=]+$")
+
+### Gets the string "6" from the file (only an integer part without real), but the string inside the file is "6.2" for example (used for all others images than OpenATV)
+DISTROVERSION=$(grep 'getImageVersion' /tmp/boxbranding.cfg | grep -oE "[^=]+$" | cut -c 1-1)
+
 
 
 
 ARCH=$(grep 'getImageArch' /tmp/boxbranding.cfg | grep -oE "[^=]+$")
 #if [ $ARCH == "armv7ahf-neon" ] || [ $ARCH == "cortexa15hf-neon-vfpv4" ] ; then ARCH=armv7ahf ; fi       # original line
-if [[ $ARCH == *"armv7"* ]] || [[ $ARCH == *"cortexa15"* ]] ; then ARCH=cortexa15hf-neon-vfpv4 ; fi       # updated line
+if [[ $ARCH == *"armv7"* ]] || [[ $ARCH == *"cortexa15"* ]] ; then ARCH=armv7ahf ; fi                     # updated line
 
 ### - a note for arm_v8 chipset:
 ### the old binary files compiled for the Cortex-A15/arm_v7 chipset can to be executed on the Cortex-A53/arm_v8 - due to backward compatibility with the new arm_v8 chipsets
