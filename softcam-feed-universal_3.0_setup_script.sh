@@ -95,6 +95,8 @@ fi
 #wget -O /tmp/Packages.gz "http://nonpublic.space/$IMAGEBASE/$DISTROVERSION/$ARCH/Packages.gz"
 
 
+### Older BUG in OpenATV, for feed server URLs:
+###
 ### - working URL example - as a direct link:
 ### http://nonpublic.space/oea/6.2/mips32el/Packages.gz
 ###
