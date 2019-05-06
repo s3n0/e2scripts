@@ -77,7 +77,8 @@ then
     echo "src/gz secret-feed $url" > /etc/opkg/secret-feed.conf
     echo "***********************************************"
     echo "The new feed source was successfully installed!"
-    echo "You can try updating your offline package list:"
+    echo "You can try to sync the list of available"
+    echo "installation packages in the set top box:"
     echo "  opkg update"
     echo "***********************************************"
 else
