@@ -84,7 +84,7 @@ then
 else
     echo "***********************************************"
     echo "Failure! The feed source does not exists!"
-    echo " '$url'"
+    echo " '$url/Packages.gz'"
     echo "Aborted!"
     echo "***********************************************"
     exit 1
