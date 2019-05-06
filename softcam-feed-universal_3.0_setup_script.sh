@@ -71,7 +71,7 @@ if [[ $ARCH == *"armv7"* ]] || [[ $ARCH == *"cortexa15"* ]] ; then ARCH=armv7ahf
 
 
 url="http://nonpublic.space/$IMAGEBASE/$DISTROVERSION/$ARCH"
-if [[ `wget -S --spider "$url/Packages.gz"  2>&1 | grep '200 OK'` ]]
+if [[ `wget -S --spider "$url/Packages.gz" 2>&1 | grep '200 OK'` ]]
 then
     rm -f /etc/opkg/secret-feed.conf
     echo "src/gz secret-feed $url" > /etc/opkg/secret-feed.conf
