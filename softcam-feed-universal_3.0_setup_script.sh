@@ -4,16 +4,12 @@
 ###################
 ## This script was pulled from IPK package "softcam-feed-universal_3.0_all.ipk"
 ## Improved by s3n0 / 2019-06-05
-###################
-## I found a minor bug in detecting OpenATV versions. Version "6" no longer exists, but there is version "6.2" and "6.3". 
+################### 
 ## This is a modified script. Beware... not an IPK-package which is useless I think, but the bash script only.
-##
 ## This bash script updates/adds a softcam feed. Just copy the script to '/tmp' folder and run it via the Shell, for example:
 ##      sh /tmp/softcam-feed-universal_3.0_setup_script.sh
-##
 ## If bash script doesn't want to execute, try to set the execution attribute:
-##      chmod + x /tmp/softcam-feed-universal_3.0_setup_script.sh
-##
+##      chmod +x /tmp/softcam-feed-universal_3.0_setup_script.sh
 ## To uninstall a feed feed source, just delete the feed source file:
 ##      rm -f /etc/opkg/secret-feed.conf
 ###################
