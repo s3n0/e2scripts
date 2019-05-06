@@ -55,7 +55,7 @@ fi
 ### Gets the whole string "6.2" instead of "6" cut-off string
 # DISTROVERSION=$(grep 'getImageVersion' /tmp/boxbranding.cfg | grep -oE "[^=]+$")
 
-### Gets the string "6" from the file (only an integer part without real), but the string inside the file is "6.2" for example (used for all others images than OpenATV)
+### Gets the string "6" from the file (only an integer part without real) when the string inside the file is "6.2" (for example)
 DISTROVERSION=$(grep 'getImageVersion' /tmp/boxbranding.cfg | grep -oE "[^=]+$" | cut -c 1-1)
 
 
