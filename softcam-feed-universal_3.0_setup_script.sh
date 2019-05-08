@@ -10,7 +10,7 @@
 ##      sh /tmp/softcam-feed-universal_3.0_setup_script.sh
 ## If bash script doesn't want to execute, try to set the execution attribute:
 ##      chmod +x /tmp/softcam-feed-universal_3.0_setup_script.sh
-## To uninstall a feed feed source, just delete the feed source file:
+## To uninstall a feed source, just delete the feed source file:
 ##      rm -f /etc/opkg/secret-feed.conf
 ###################
 
