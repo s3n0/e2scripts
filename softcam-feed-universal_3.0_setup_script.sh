@@ -3,7 +3,7 @@
 
 ###################
 ## This script was pulled from IPK package "softcam-feed-universal_3.0_all.ipk"
-## Improved by s3n0 / 2019-06-05
+## Improved by s3n0 / 2019-05-17
 ###################
 ##
 ## This is a modified script. Beware... not an IPK-package which is useless I think, but the bash script only.
