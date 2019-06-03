@@ -11,6 +11,8 @@
 #############################################################################
 # USAGE:
 # - upload the script into the set-top-box, for example into the '/tmp' folder
+#   or download the script directly via the Shell:
+# wget -O /tmp/OscamPiconsConverter.py --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/OscamPiconsConverter.py
 # - then start the script via command-line Shell:
 # python /tmp/OscamPiconsConverter.py OPTIONS PNG-directory TPL-directory
 # - start the script without arguments for show the man-page:
