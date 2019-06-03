@@ -12,7 +12,9 @@
 # USAGE:
 # - upload the script into the set-top-box, for example into the '/tmp' folder
 # - then start the script via command-line Shell:
-# python /tmp/OscamPiconsConverter.py OPTIONS PNG_directory TPL_directory
+# python /tmp/OscamPiconsConverter.py OPTIONS PNG-directory TPL-directory
+# - start the script without arguments for show the man-page:
+# python /tmp/OscamPiconsConverter.py
 #############################################################################
 
 from PIL import Image
