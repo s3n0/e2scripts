@@ -7,7 +7,7 @@
 #################################
 
 #############################################################################
-# simple script for converting PNG to TPL picons (for Oscam-Webif)
+# simple python script for converting PNG to TPL picons (for Oscam-Webif)
 #############################################################################
 # USAGE:
 # - upload the script into the set-top-box, for example into the '/tmp' folder
