@@ -13,8 +13,10 @@
 # - please do not forget to set the execution rights for bash script:  chmod +x /etc/init.d/softcam
 # - if the softcam autostart script is not supported directly in your Enigma2, then you must additionally create a symbolic link:
 #      ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam 
-#   ...or use the tools :
+#   ...or use the automated tool for add the startup sym-links to all run-levels:
 #      update-rc.d softcam defaults 90
+#   ...for remove (uninstall) startup sym-links from all run-levels use the following command:
+#      update-rc.d -f softcam remove
 
 # 2019/04/10
 # - s3n0 edit
