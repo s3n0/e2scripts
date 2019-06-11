@@ -48,7 +48,7 @@ installation packages in the set top box:
 
 
 try_append_feed_source() {
-    if [[ `wget -S --spider "$1/Packages.gz" 2>&1 | grep '200 OK'` ]]
+    if [[ `wget --server-response --timeout=2 --tries=1 --spider "$1/Packages.gz" 2>&1 | grep '200 OK'` ]]
     then        
         rm -f /etc/opkg/secret-feed.conf
         echo "src/gz secret-feed $1" > /etc/opkg/secret-feed.conf
