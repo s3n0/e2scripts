@@ -17,6 +17,9 @@
 ## To uninstall a feed source, just delete the feed source file:
 ##      rm -f /etc/opkg/secret-feed.conf
 ##
+## You can also start this script immediately after downloading from the web:
+##      wget --no-check-certificate -O - https://github.com/s3n0/e2scripts/raw/master/softcam-feed-universal_3.0_setup_script.sh | /bin/bash
+##
 ###################
 
 
