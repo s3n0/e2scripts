@@ -18,7 +18,7 @@
 #   ...for remove (uninstall) startup sym-links from all run-levels use the following command:
 #      update-rc.d -f softcam remove
 
-# 2019/04/10
+# 2019/06/15
 # - s3n0 edit
 # - remake the logging concept (logging output via function)
 # - some cosmetic improvements
@@ -39,6 +39,7 @@ softcam_kill_waiting=5
 # ----------------------------------------------------------
 # SOFTCAM LOG DIR & FILE NAME:
 softcam_logfile='/tmp/oscam_handling.log'
+softcam_logfile_sizemax=45000       # max. file size [Bytes]
 # ----------------------------------------------------------
 # PRIVATE VARIABLES:
 hrline='------------------------------------------------------------'
@@ -52,6 +53,9 @@ fLog() {
     #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" >> $softcam_logfile 2>&1             ### file + stderr
     #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" | tee -a $softcam_logfile            ### file + stdout(display)
     echo `date '+%Y-%m-%d %H:%M:%S'`" $1" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
+    
+    #### reduction the log filesize, if neccessary (delete first 20 lines):
+    if [ -f "$softcam_logfile" ] && [ $(stat -c%s "$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
    }
 # ###############  END OF THE USER SETUP  ##################
 
