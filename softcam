@@ -73,7 +73,7 @@ fStop() {
         fLog "Stopping $1..."
         fLog "...sending a default SIGTERM signal to PID $(pidof $1)"
         kill -15 $(pidof $1) > /dev/null
-        sleep 0.8s     # changed from 1s to 0.8s, as the 'Infopanel.py' restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3s-0.6s
+        sleep 0.8s     # changed from 1s to 0.8s, as the '/lib/python/Screens/SoftcamSetup.py' restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3s-0.6s
         if pidof $1 > /dev/null; then
             i=$softcam_kill_waiting
             while expr $i != 0 > /dev/null
