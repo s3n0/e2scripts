@@ -25,6 +25,15 @@
 # - remake the logging concept (logging output via function)
 # - some cosmetic improvements
 
+# 2019/06/23
+# - s3n0 edit
+# - some changes in start/stop/restart functions
+
+
+
+
+
+
 # ####################  USER SETUP  ########################
 # ----------------------------------------------------------
 # SOFTCAM BINARY DIRECTORY:
@@ -37,64 +46,75 @@ softcam_exec='oscam'
 softcam_args='-b -r 2 -c /etc/tuxbox/config/oscam'
 # ----------------------------------------------------------
 # Waiting time to kill the softcam process by standard SIGTERM (-15). Then softcam process will be killed with force SIGKILL (-9).
-softcam_kill_waiting=5
+softcam_kill_waiting=3
 # ----------------------------------------------------------
-# SOFTCAM LOG DIR & FILE NAME:
+# LOG FILE FOR THE SOFTCAM HANDLING:
 softcam_logfile='/tmp/oscam_handling.log'
 softcam_logfile_sizemax=45000       # max. file size [Bytes]
 # ----------------------------------------------------------
 # PRIVATE VARIABLES:
 hrline='------------------------------------------------------------'
-helptext="USAGE:    bash /etc/init.d/softcam <ARGUMENT>
-ARGUMENT: start|restart|reload......start the process (the process will be stopped or killed if it is running, then it will start again)
-          stop......................stop and unload the $softcam_exec service from memory"
+helptext="USAGE:     bash /etc/init.d/softcam <ARGUMENT>
+ARGUMENT:  start......the process will be started only if it's not running
+           restart....the process will be stopped only if it's running & then will be started
+           stop.......stop and unload the $softcam_exec service from memory"
 # ----------------------------------------------------------
-fLog() {
-    #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" > /dev/null                          ### null device   <---  log will disabled (do nothing)
-    #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" >> $softcam_logfile                  ### file
-    #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" >> $softcam_logfile 2>&1             ### file + stderr
-    #echo `date '+%Y-%m-%d %H:%M:%S'`" $1" | tee -a $softcam_logfile            ### file + stdout(display)
-    echo `date '+%Y-%m-%d %H:%M:%S'`" $1" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
-    
-    #### reduction the log filesize, if neccessary (delete first 20 lines):
-    if [ -f "$softcam_logfile" ] && [ $(stat -c%s "$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
-   }
 # ###############  END OF THE USER SETUP  ##################
+
+
+
 
 
 
 
 # FUNCTIONS ************************************************
 
+fLog() {
+    if [[ $1 != *"-----"* ]]; then
+        logline=`date '+%Y-%m-%d %H:%M:%S'`" $1"
+    else
+        logline="$1"
+    fi
+    
+    #echo "$logline" > /dev/null                          ### null device   <---  log will disabled (do nothing)
+    #echo "$logline" >> $softcam_logfile                  ### file
+    #echo "$logline" >> $softcam_logfile 2>&1             ### file + stderr
+    #echo "$logline" | tee -a $softcam_logfile            ### file + stdout(display)
+    echo "$logline" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
+    
+    #### reduction the log filesize, if neccessary (delete first 20 lines):
+    if [ -f "$softcam_logfile" ] && [ $(stat -c%s "$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
+}
+
 fStop() {
     if ! pidof $1 > /dev/null; then
-        fLog "No $1 process is running!"
+        fLog "No $1 process is running."
     else
         fLog "Stopping $1..."
         fLog "...sending a default SIGTERM signal to PID $(pidof $1)"
         kill -15 $(pidof $1) > /dev/null
-        sleep 0.8s     # changed from 1s to 0.8s, as the '/lib/python/Screens/SoftcamSetup.py' restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3s-0.6s
+        sleep 0.8s       # changed from 1s to 0.8s, as the '/lib/python/Screens/SoftcamSetup.py' restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3s-0.6s
         if pidof $1 > /dev/null; then
-            i=$softcam_kill_waiting
-            while expr $i != 0 > /dev/null
+            i=1
+            while expr $i != $softcam_kill_waiting > /dev/null
             do
                 if pidof $1 > /dev/null; then
-                    fLog "...waiting for termination: $i seconds"
+                    fLog "...waiting for termination: $i of max. $softcam_kill_waiting seconds"
                     sleep 1
                 else
-                    fLog "...$1 was terminated using the default SIGTERM signal."
+                    fLog "...$1 was successfully terminated using the default SIGTERM signal."
                     break
                 fi
-                i=`expr $i - 1`
+                i=`expr $i + 1`
             done
         else
-            fLog "...$1 was terminated using the default SIGTERM signal."
+            fLog "...$1 was successfully terminated using the default SIGTERM signal."
         fi
         if pidof $1 > /dev/null; then
             fLog "...sending a forced SIGKILL signal to $1 process"
             killall -9 $1 > /dev/null
             if pidof $1 > /dev/null; then
-                fLog "...$1 was not killed by a forced SIGKILL signal! This is probably a system error!"
+                fLog "...$1 was not killed by a forced SIGKILL signal! Probably a system error?!"
             else
                 fLog "...$1 was killed using the forced SIGKILL signal."
             fi
@@ -102,17 +122,25 @@ fStop() {
     fi
 }
 
-fStopAndStart() {
-    if pidof $1 > /dev/null; then fStop $1; fi
+fStart() {
     fLog "Starting $1..."
-    fLog "CMD-line:  $softcam_dir/$1 $softcam_args"
-    $softcam_dir/$1 $softcam_args > /dev/null
-    sleep 1
     if pidof $1 > /dev/null; then
-        fLog "...$1 was successfully started."
+        fLog "...$1 process has already started and is still running."
     else
-        fLog "ERROR! $1 start failed!"
+        fLog "CMD-line:  $softcam_dir/$1 $softcam_args"
+        $softcam_dir/$1 $softcam_args > /dev/null
+        sleep 0.8s
+        if pidof $1 > /dev/null; then
+            fLog "...$1 was successfully started."
+        else
+            fLog "ERROR! $1 start failed!"
+        fi
     fi
+}
+
+fRestart() {
+    if pidof $1 > /dev/null; then fStop $1; fi       # start the process - the process will be stopped/killed only if it's running
+    fStart $1
 }
 
 
@@ -125,30 +153,33 @@ fStopAndStart() {
 
 if [ ! -f "$softcam_dir/$softcam_exec" ]; then
     fLog "ERROR! Executable binary file '$softcam_dir/$softcam_exec' does not exist!"
+    fLog "$hrline"
     exit 1
 fi
-
 
 
 # CALLING A FUNCTION BY INPUT ARGUMENTS ************************************
 
 case "$1" in
-    stop)
+    start)
+        fStart "$softcam_exec"
         fLog "$hrline"
-        fStop "$softcam_exec"
         ;;
-    start|restart|reload|force-reload)
+    stop)
+        fStop "$softcam_exec"
         fLog "$hrline"
-        fStopAndStart "$softcam_exec"
+        ;;
+    restart|reload|force-reload)
+        fRestart "$softcam_exec"
+        fLog "$hrline"
         ;;
     *)
-        fLog "$hrline"
         fLog "UNKNOWN OR MISSING PARAMETER !"
         echo "$helptext" >$(tty)
+        fLog "$hrline"
         exit 1
         ;;
 esac
-
 
 
 exit 0
