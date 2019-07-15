@@ -11,8 +11,3 @@
 
 + **OscamPiconsConverter.py**
    > - PNG to TPL picons converter (TPL picons for Oscam Webif in Enigma2)
-
-+ **softcam-feed-universal_3.0_setup_script.sh**
-   > - script to add another feed source with softcam packages
-   > - the script was pulled from IPK package "softcam-feed-universal_3.0_all.ipk"
-   > - beware, this is not an IPK-package which is useless I think, but it's a bash script only
