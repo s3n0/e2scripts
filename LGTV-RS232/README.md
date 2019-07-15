@@ -7,12 +7,11 @@ RS-232 Basics
 - command for listing of available serial ports and especially access rights to them:
   - `ls -l /dev/ttyS*`
 
-- if you cannot turn off the LG-TV with the echo command, it is quite possible that you do not have write access rights to the serial port
-- so try setting up serial port access rights if necessary:
+- if you cannot turn off the LG-TV with the echo command, it is quite possible that you do not have write access rights to the serial port, so try setting up serial port access rights if necessary:
   - `chmod o+rw /dev/ttyS0`
 
 - use the following commands to test the functionality of the RS-232 communication, after connecting the null-modem cable between the set-top-box and the LG-TV
-- these are echo commands, for direct sending of codes (ASCII characters) to LG-TV serial interface or serial port in system:
+  - here are the echo commands, for direct sending of codes (ASCII characters) to LG-TV serial interface in system:
   - turning off LG-TV:    `echo "ka 01 00" > /dev/ttyS0`
   - turning on LG-TV:     `echo "ka 01 01" > /dev/ttyS0`
 
