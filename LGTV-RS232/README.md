@@ -1,5 +1,5 @@
-Switching on and off the LG TV via RS-232 interface
-===================================================
+Switching on and off the LG TV via RS-232 serial interface
+==========================================================
 
 - command to display available serial interfaces under LINUX systems:
   - `setserial -g /dev/ttyS[0123]`
