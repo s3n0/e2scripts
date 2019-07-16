@@ -28,6 +28,6 @@ RS-232 Basics
 - another example of reading a serial port input and displaying results on stdout (in hexadecimal, i.e. byte - one by one):
   - `od -x < /dev/ttyS0`
 
-Note:
-=====
-After restarting the set-top box, the Standby.py script starts to work only after it is activated (except for the second shutdown + TV on). I haven't found out yet why it is. So don't worry if the TV doesn't turn off after the set-top box is restarted. Try it again and then it will still work.
+A note
+======
+After restarting the set-top box, the bash script will be run via the code in "Standby.py" only after the second activation of standby mode. I haven't found out yet why it is. So don't worry if the TV doesn't turn off after the set-top box is restarted. Try it again and then it will still work.
