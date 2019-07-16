@@ -10,7 +10,7 @@ RS-232 Basics
 - if you cannot turn off the LG-TV with the echo command, it is quite possible that you do not have write access rights to the serial port, so try setting up serial port access rights if necessary:
   - `chmod o+rw /dev/ttyS0`
 
-- use the following commands to test the functionality of the RS-232 communication, after connecting the null-modem cable between the set-top-box and the LG-TV ... so, here are two echo commands for direct sending of codes (ASCII characters) to LG-TV serial interface in the system:
+- use the following commands to test the functionality of the RS-232 communication, after connecting the null-modem cable between the set-top-box and the LG-TV (https://www.opena.tv/english-section/32512-solution-standby-mode-lg-tv-hdmi-cec-simplink.html) ... so, here are two echo commands for direct sending of codes (ASCII characters) to LG-TV serial interface in the system:
   - turning off LG-TV:    `echo "ka 01 00" > /dev/ttyS0`
   - turning on LG-TV:     `echo "ka 01 01" > /dev/ttyS0`
 
