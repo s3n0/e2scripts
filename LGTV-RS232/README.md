@@ -7,7 +7,7 @@ Switching on and off the LG TV via RS-232 serial interface
 - command for listing of all available serial interfaces and especially access rights to them:
   - `ls -l /dev/ttyS*`
 
-- there are two echo commands for direct sending of codes (ASCII characters) to LG-TV serial interface, so, as first use the following commands to test the functionality of the RS-232 communication, after connecting the null-modem cable between the set-top-box and the LG-TV (https://www.opena.tv/english-section/32512-solution-standby-mode-lg-tv-hdmi-cec-simplink.html):
+- there are two echo commands for direct sending of codes (ASCII characters) to LG-TV serial interface, so, as first use the following commands to test the functionality of the RS-232 communication, after connecting the [null modem cable without "hardware handshaking"](https://www.opena.tv/attachment.php?attachmentid=45306&d=1487790168) between the set-top-box and the LG-TV (https://www.opena.tv/english-section/32512-solution-standby-mode-lg-tv-hdmi-cec-simplink.html):
   - turning off LG-TV:     `echo "ka 01 00" > /dev/ttyS0`
   - turning on LG-TV:      `echo "ka 01 01" > /dev/ttyS0`
 
