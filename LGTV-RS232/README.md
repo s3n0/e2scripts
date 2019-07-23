@@ -16,8 +16,8 @@ Switching on and off the LG TV via RS-232 serial interface
 
 - if the TV is still not communicating (TV turn off and on), it would have to try to configure the interface
   RS-232 to a slower speed, e.g. 9600 (for older LG TV)
-  - display current configuration of the "S0" interface: `stty -F /dev/ttyS0 -a`
-  - set speed of the "S0" interface to 9600bps: `stty -F /dev/ttyS0 9600`
+  - display thr current configuration of the "S0" interface: `stty -F /dev/ttyS0 -a`
+  - set the speed of the "S0" interface to 9600 bps: `stty -F /dev/ttyS0 9600`
   
 - for some linux distributions it seems to have a separate setup for output and input, as follows:
   - `stty -F /dev/ttyS0 ispeed 9600 ospeed 9600`
