@@ -1,10 +1,10 @@
 Switching on and off the LG TV via RS-232 serial interface
 ==========================================================
 
-- command to display primary serial interfaces under LINUX systems:
+- command to display basic serial interfaces under LINUX systems:
   - `setserial -g -a /dev/ttyS[0123]`
 
-- command for listing of available serial ports and especially access rights to them:
+- command for listing of all available serial ports and especially access rights to them:
   - `ls -l /dev/ttyS*`
 
 - if you cannot turn off the LG-TV with the echo command, it is quite possible that you do not have write access rights to the serial port, so try setting up serial port access rights if necessary:
