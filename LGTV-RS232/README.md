@@ -16,13 +16,13 @@ Switching on and off the LG TV via RS-232 serial interface
 
 - if the TV is still not communicating (TV turn off and on), it would have to try to configure the interface
   RS-232 to a slower speed, e.g. 9600 (for older LG TV)
-  - display thr current configuration of the "S0" interface:  `stty -F /dev/ttyS0 -a`
+  - display the current configuration of the "S0" interface:  `stty -F /dev/ttyS0 -a`
   - set the speed of the "S0" interface to 9600 bps:  `stty -F /dev/ttyS0 9600`
   
 - for some linux distributions it seems to have a separate setup for output and input, as follows:
   - `stty -F /dev/ttyS0 ispeed 9600 ospeed 9600`
 
-- the CAT command is normally used to display the contents of a file to standard output `stdout` but we can also display the serial interface input ... here's how to use it to extract content from input on the set-top-box:
+- the `cat` command is normally used to display the contents of a file to standard output `stdout` but we can also display the serial interface input ... here's how to use it to extract content from input on the set-top-box:
   - `cat < /dev/ttyS0`
 - another example of reading a serial port input and displaying results on stdout (in hexadecimal, i.e. byte - one by one):
   - `od -x < /dev/ttyS0`
