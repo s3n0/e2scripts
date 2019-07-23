@@ -7,7 +7,7 @@ Switching on and off the LG TV via RS-232 serial interface
 - command for listing of all available serial interfaces and especially access rights to them:
   - `ls -l /dev/ttyS*`
 
-- use the following commands to test the functionality of the RS-232 communication, after connecting the null-modem cable between the set-top-box and the LG-TV (https://www.opena.tv/english-section/32512-solution-standby-mode-lg-tv-hdmi-cec-simplink.html) ... so, there are two echo commands for direct sending of codes (ASCII characters) to LG-TV serial interface:
+- there are two echo commands for direct sending of codes (ASCII characters) to LG-TV serial interface, so, as first use the following commands to test the functionality of the RS-232 communication, after connecting the null-modem cable between the set-top-box and the LG-TV (https://www.opena.tv/english-section/32512-solution-standby-mode-lg-tv-hdmi-cec-simplink.html):
   - turning off LG-TV:     `echo "ka 01 00" > /dev/ttyS0`
   - turning on LG-TV:      `echo "ka 01 01" > /dev/ttyS0`
 
@@ -16,8 +16,8 @@ Switching on and off the LG TV via RS-232 serial interface
 
 - if the TV is still not communicating (TV turn off and on), it would have to try to configure the interface
   RS-232 to a slower speed, e.g. 9600 (for older LG TV)
-  - display thr current configuration of the "S0" interface: `stty -F /dev/ttyS0 -a`
-  - set the speed of the "S0" interface to 9600 bps: `stty -F /dev/ttyS0 9600`
+  - display thr current configuration of the "S0" interface:  `stty -F /dev/ttyS0 -a`
+  - set the speed of the "S0" interface to 9600 bps:  `stty -F /dev/ttyS0 9600`
   
 - for some linux distributions it seems to have a separate setup for output and input, as follows:
   - `stty -F /dev/ttyS0 ispeed 9600 ospeed 9600`
