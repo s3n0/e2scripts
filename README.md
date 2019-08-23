@@ -14,3 +14,8 @@
 
 + **LGTV-RS232 directory**
    > - Switching on and off the LG TV via RS-232 interface
+
++ **epg_refresh.py**
+   > - simple python-script for Enigma2 based set-top-box, for refresh EPG info
+   > - the script will find all the necessary transponders one-by-one,
+   >   what you need to zap - by the selected userbouquet file
