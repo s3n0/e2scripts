@@ -17,5 +17,5 @@
 
 + **epg_refresh.py**
    > - simple python-script for Enigma2 based set-top-box, for refresh EPG info
-   > - the script will find all the necessary transponders one-by-one,
-   >   what you need to zap - by the selected userbouquet file
+   > - the script will find all the necessary transponders you need to zap
+   > - transponders are selected from the userbouquet and zap only once 
