@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 BOUQUET_FILE  = '/etc/enigma2/userbouquet.sat-skylink.tv'
+# change the path to your own userbouquet file containing the satellite channels for which you want to refresh EPG data
+
 BLACKLIST_FILE = '/etc/enigma2/blacklist'
 
 ###############################################
