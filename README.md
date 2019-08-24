@@ -21,7 +21,7 @@
    > - transponders are selected from the userbouquet and zap only once
    > - the best way how to use the refresh is add the python-script into the CRON scheduler:
    ```
-       # to run the python-script every 5th day at 03:00 pm
+       # to run the python-script every 5th day at 03:00 pm, add this new line into the CRON config file:
        0 3 */5 * *      python /usr/script/epg_refresh.py > /dev/null 2>&1
    ```
        
