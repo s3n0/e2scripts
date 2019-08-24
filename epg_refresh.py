@@ -14,7 +14,8 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-only.tv']
 ###############################################
 
 import time, urllib2
-from __future__ import print_function
+
+###############################################
 
 def zapChannel(channel = '""'):               # zap channel using the OpenWebif
     if channel == ' ' or channel == '':
