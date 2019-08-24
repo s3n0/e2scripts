@@ -30,7 +30,7 @@ if __name__ == "__main__":
     
     bouquet_src = []
     for fname in BOUQUET_FILES:
-        with open(fname, 'r') as f:
+        with open('/etc/enigma2/' + fname, 'r') as f:
             bouquet_data = f.read().upper().split('\n')
             # remove all lines startswith '#NAME', '#SERVICE 1:64', '#DESCRIPTION'
             # and return the values from index 9 to right i.e. without the prefix '#SERVICE ' and also without the URL link (http: ..... string) if does it exist
