@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 #### change the path to your own userbouquet file(s) containing the satellite channels for which you want to refresh EPG data :
-BOUQUET_FILES  = ['userbouquet.sat-skylink-only.tv']
+BOUQUET_FILES = ['userbouquet.sat-skylink-only.tv']
 #### if you need more than one userbouquet, use the following syntax :
-#BOUQUET_FILES  = ['userbouquet.skylink.tv', 'userbouquet.free-sat.tv', 'userbouquet.orange.tv']
+#BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.free-sat.tv', 'userbouquet.orange.tv']
 
 ###############################################
 # EPG Refresh
