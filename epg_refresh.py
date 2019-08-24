@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-BOUQUET_FILE  = '/etc/enigma2/userbouquet.sat-skylink.tv'
-# change the path to your own userbouquet file containing the satellite channels for which you want to refresh EPG data
-
-BLACKLIST_FILE = '/etc/enigma2/blacklist'
+#### change the path to your own userbouquet file(s) containing the satellite channels for which you want to refresh EPG data :
+BOUQUET_FILES  = ['userbouquet.sat-skylink-only.tv']
+#### if you need more than one userbouquet, use the following syntax :
+#BOUQUET_FILES  = ['userbouquet.skylink.tv', 'userbouquet.free-sat.tv', 'userbouquet.orange.tv']
 
 ###############################################
 # EPG Refresh
@@ -27,14 +27,16 @@ def zapChannel(channel = '""'):               # zap channel using the OpenWebif
 
 if __name__ == "__main__":
     
-    with open(BOUQUET_FILE, 'r') as f:
-        bouquet_data = f.read().upper().split('\n')
-        # remove all lines startswith '#NAME', '#SERVICE 1:64', '#DESCRIPTION'
-        # and return the values from index 9 to right i.e. without the prefix '#SERVICE ' and also without the URL link (http: ..... string) if does it exist
-        bouquet_src = [ ':'.join(s[9:].split(':')[0:10]) + ':' for s in bouquet_data if not (s.startswith('#NAME') or s.startswith('#SERVICE 1:64') or s.startswith('#DESCR'))  ]
-        bouquet_src = bouquet_src[:-1]        # ':' as the last entry in list must to be removed (created in the loop before)
+    bouquet_src = []
+    for fname in BOUQUET_FILES:
+        with open(fname, 'r') as f:
+            bouquet_data = f.read().upper().split('\n')
+            # remove all lines startswith '#NAME', '#SERVICE 1:64', '#DESCRIPTION'
+            # and return the values from index 9 to right i.e. without the prefix '#SERVICE ' and also without the URL link (http: ..... string) if does it exist
+            refs = [ ':'.join(s[9:].split(':')[0:10]) + ':' for s in bouquet_data if not (s.startswith('#NAME') or s.startswith('#SERVICE 1:64') or s.startswith('#DESCR'))  ]
+            bouquet_src += refs[:-1]            # ':' as the last entry in list must to be removed (created in the loop before)
     
-    with open(BLACKLIST_FILE, 'r') as f:
+    with open('/etc/enigma2/blacklist', 'r') as f:
         blacklist_data = f.read().upper().split('\n')    
         blacklist_src = [ ':'.join(k.split(':')[0:10]) + ':' for k in blacklist_data ][0]        # remove all http:// and other unwanted text from the end of lines
     
