@@ -51,8 +51,8 @@ if __name__ == "__main__":
             if not src in blacklist_src:
                 to_tune.append(src)
     
-    print('Number of channels to tune: %s' % len(to_tune))
-    print('Zapping the neccessary channels...')
+    print('Number of channels/transponders to tune: %s' % len(to_tune))
+    print('Zapping the neccessary channels/transponders...')
     
     for i, srefcode in enumerate(to_tune):
         zapChannel(srefcode)
