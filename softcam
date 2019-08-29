@@ -158,7 +158,8 @@ if [ ! -f "$softcam_dir/$softcam_exec" ]; then
 fi
 
 
-# CALLING A FUNCTION BY INPUT ARGUMENTS ************************************
+
+# CALL FUNCTIONS ACCORDING TO INPUT ARGUMENTS OF BASH SCRIPT **************************
 
 case "$1" in
     start)
@@ -180,6 +181,7 @@ case "$1" in
         exit 1
         ;;
 esac
+
 
 
 exit 0
