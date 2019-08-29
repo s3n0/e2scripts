@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # 2011/01/26:
-# - OSCam Start/Stop/Restart example script - http://www.streamboard.tv/wiki/OSCam/en/ShellCommands#Starting_and_stopping_OSCam
+# - OSCam start/stop/restart example script - http://www.streamboard.tv/wiki/OSCam/en/ShellCommands#Starting_and_stopping_OSCam
 
 # 2018/07/16:
 # - s3n0 edit (OpenATV target file:  /etc/init.d/softcam)
-# - this softcam script file may be downloaded also directly from my github profile:
+# - this softcam script file can also be downloaded directly from my github profile:
 #      wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam
 # - in many Enigmas, the /etc/init.d/softcam startup script is directly supported through the embedded source code
 #   (for example, the OpenATV source code: /lib/python/Plugins/Extensions/Infopanel/plugin.py)
