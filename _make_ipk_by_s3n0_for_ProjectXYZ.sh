@@ -85,20 +85,20 @@ EOF
 
 
 
-#### remove all source files (Python language)
+#### remove all source files (Python source code):
 rm -rf $plugin_dir/*.py
 
 #### as the first, it's a neccessary to set the execution rights to all files (mainly in the '/CONTROL' directory):
 chmod -R 755 $plugin_dir
 
-#### create the CONTROL archive (without a relative path to the directory):
+#### create archive file 'control.tar.gz' (without a relative path to the directory):
 cd $plugin_dir/CONTROL
 tar zcpv -f $plugin_dir/control.tar.gz *
 
-#### create the DATA archive (with a relative path to the directory)::
+#### create archive file 'data.tar.gz' (with a relative path to the directory):
 tar zcpv -f $plugin_dir/data.tar.gz $plugin_dir/images/* $plugin_dir/plugin.pyo $plugin_dir/__init__.pyo $plugin_dir/version.txt
 
-#### create the 'debian-binary' file:
+#### create version file 'debian-binary':
 echo -e "2.0\n" > $plugin_dir/debian-binary
 
 #### combining all three files together (into IPK package):
@@ -106,7 +106,7 @@ echo -e "2.0\n" > $plugin_dir/debian-binary
 rm -f $ipk_target
 ar -r $ipk_target $plugin_dir/debian-binary $plugin_dir/control.tar.gz $plugin_dir/data.tar.gz
 
-#### cleaning all three temporary files + the CONTROL directory:
+#### cleaning all three temporary files + 'CONTROL' directory:
 rm -f $plugin_dir/control.tar.gz $plugin_dir/data.tar.gz $plugin_dir/debian-binary
 rm -rf $plugin_dir/CONTROL
 
