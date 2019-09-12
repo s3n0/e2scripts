@@ -13,20 +13,29 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-only.tv']
 # by s3n0, 2019-08-24
 ###############################################
 
-import time, urllib2
+from time import sleep
+from urllib2 import urlopen
 
 ###############################################
 
 def zapChannel(channel = '""'):               # zap channel using the OpenWebif
     if channel == ' ' or channel == '':
         channel = '""'
-    response = urllib2.urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
+    response = urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
     web_content = response.read()
 
+def enigmaInStandby():
+    response = urlopen('http://127.0.0.1/web/powerstate')
+    web_content = response.read()
+    if 'true' in web_content.lower():
+        return True
+    else:
+        return False
+
 ###############################################
 ###############################################
 
-if __name__ == "__main__":
+if __name__ == "__main__" and enigmaInStandby():
     
     bouquet_src = []
     for fname in BOUQUET_FILES:
@@ -57,7 +66,7 @@ if __name__ == "__main__":
     for i, srefcode in enumerate(to_tune):
         zapChannel(srefcode)
         print('{:03d} / {:03d} - {}'.format(i, len(to_tune), srefcode))
-        time.sleep(20)
+        sleep(20)
     
     print('...done.')
     zapChannel('')
