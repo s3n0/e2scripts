@@ -71,7 +71,7 @@ ARGUMENT:  start......the process will be started only if it's not running
 
 fLog() {
     if [[ $1 != *"-----"* ]]; then
-        logline=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # only if it is not a separating line (minus characters), then I insert a timeline at the beginning
+        logline=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # only if it is not a separating line (minus characters), then I insert a timestamp at the beginning
     else
         logline="$1"
     fi
