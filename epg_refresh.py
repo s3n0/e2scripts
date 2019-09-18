@@ -71,7 +71,7 @@ if __name__ == "__main__" and enigmaInStandby():
     for i, srefcode in enumerate(to_tune):
         zapChannel(srefcode)
         print('{:03d} / {:03d} - {}'.format(i, len(to_tune), srefcode))
-        sleep(20)
+        sleep(20)       # waiting 20 sec. for receiving and retrieving all EPG data from the stream on the currently tuned transponder
     
     print('...done.')
     zapChannel('')
