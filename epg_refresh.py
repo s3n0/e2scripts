@@ -49,7 +49,7 @@ if __name__ == "__main__" and enigmaInStandby():
             # remove all lines startswith '#NAME', '#SERVICE 1:64', '#DESCRIPTION'
             # and return the values from index 9 to right i.e. without the prefix '#SERVICE ' and also without the URL link (http: ..... string) if does it exist
             refs = [ ':'.join(s[9:].split(':')[0:10]) + ':' for s in bouquet_data if not (s.startswith('#NAME') or s.startswith('#SERVICE 1:64') or s.startswith('#DESCR'))  ]
-            bouquet_src += refs[:-1]            # ':' as the last entry in list must to be removed (created in the loop before)
+            bouquet_src += refs[:-1]       # the last entry ':' in the list variable must to be removed (created in the for-loop before)
     
     with open('/etc/enigma2/blacklist', 'r') as f:
         blacklist_data = f.read().upper().split('\n')    
