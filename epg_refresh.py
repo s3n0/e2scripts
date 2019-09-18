@@ -12,6 +12,11 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-only.tv']
 # developed for linux set-top-box / Enigma2
 # by s3n0, 2019-08-24
 ###############################################
+# - the best way to use EPG refresh is to add a new task to the CRON - scheduler
+# - be sure to set the file attributes (chmod 755 /usr/script/epg_refresh.py)
+# - for example, to run the python script every 5th day at 03:00, use the following crontab line:
+#   0 3 */5 * *        python /usr/script/epg_refresh.py > /dev/null 2>&1
+###############################################
 
 from time import sleep
 from urllib2 import urlopen
