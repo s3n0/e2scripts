@@ -8,14 +8,16 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-only.tv']
 
 ###############################################
 # EPG Refresh
-# Python script
-# developed for linux set-top-box / Enigma2
 # by s3n0, 2019-08-24
 ###############################################
-# - the best way to use EPG refresh is to add a new task to the CRON - scheduler
+# - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all channels
+# - the script will find all the necessary transponders what you need to zapping
+# - transponders are selected from the userbouquet and zap only once
+###############################################
 # - be sure to set the file attributes (chmod 755 /usr/script/epg_refresh.py)
+# - the best way to use EPG refresh is to add a new task to the CRON scheduler
 # - for example, to run the python script every 5th day at 03:00, use the following crontab line:
-#   0 3 */5 * *        python /usr/script/epg_refresh.py > /dev/null 2>&1
+#   0 3 */5 * *     python /usr/script/epg_refresh.py > /dev/null 2>&1
 ###############################################
 
 from time import sleep
