@@ -14,7 +14,7 @@ ARCHIVE_FILENAME="backup-enigma"       # Note: The timestamp is automatically ad
 
 LIST="
 /etc/enigma2/
-/etc/*.xml
+/etc/tuxbox/*.xml
 
 /etc/cron/crontabs/root
 
@@ -89,8 +89,8 @@ case "$1" in
         ;; 
     *)
         echo "USAGE:"
-        echo "- to backup all user defined files & folders:     $0 -b|--backup"
-        echo "- to restore all user defined files & folders:    $0 -r|--restore"
+        echo "- to backup all user defined files & folders:     $0 b|backup|-b|--backup"
+        echo "- to restore all user defined files & folders:    $0 r|restore|-r|--restore"
         ;;
 esac
 
