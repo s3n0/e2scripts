@@ -11,6 +11,7 @@
 
 + **OscamPiconsConverter.py**
    > - PNG to TPL picons converter (TPL picons for Oscam Webif in Enigma2)
+   > - simple python script for converting PNG to TPL picons (for Oscam-Webif)
 
 + **LGTV-RS232 directory**
    > - Switching on and off the LG TV via RS-232 interface
