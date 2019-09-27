@@ -1,0 +1,101 @@
+#!/bin/sh
+
+#############################
+# Backup & Restore bash-script
+# by s3n0, 2019-09-27
+#############################
+# simple bash script for backing up and restoring
+# user-defined settings, files or folders in Enigma2
+#############################
+
+BACKUP_DIR="/media/hdd/backup_folder"
+
+ARCHIVE_FILENAME="backup-enigma"       # Note: The timestamp is automatically added at the end of the file name and the file extension is ".tar.gz"
+
+LIST="
+/etc/enigma2/
+/etc/*.xml
+
+/etc/cron/crontabs/root
+
+/usr/script/
+
+/usr/bin/oscam
+/etc/tuxbox/config/oscam/
+/etc/init.d/softcam
+/etc/rc3.d/*softcam
+
+/usr/bin/udpxy
+/etc/init.d/udpxy
+/etc/rc3.d/*udpxy
+
+/usr/lib/enigma2/python/Plugins/Extensions/EpgDownloadReplace/
+/usr/lib/enigma2/python/Plugins/Extensions/ChocholousekPicons/
+/usr/lib/enigma2/python/Plugins/Extensions/Remoover/
+/usr/lib/enigma2/python/Plugins/Extensions/YouTube/
+
+/usr/share/enigma2/MetrixHD/skinparts/infobar-mod_by_s3n0/
+
+/usr/share/enigma2/picon/
+"
+
+#############################
+#############################
+
+LIST=$(echo $LIST | tr "\n" " ")
+
+
+
+
+
+do_backup() {
+    echo "-----------------------"
+    echo "Creating the archive file:"
+    echo "   $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
+    echo "Files and folders to compress:"
+    echo "   $LIST "
+    echo "-----------------------"
+    mkdir -p $BACKUP_DIR
+    tar --ignore-failed-read -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
+    ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
+    echo "-----------------------"
+}
+
+do_restore() {
+    if [ -f $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz ]; then
+        LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
+        echo "-----------------------"
+        echo "Extracting the latest archive file:"
+        echo "   $LATEST_FILE "
+        echo "-----------------------"
+        tar --overwrite -xzphf $LATEST_FILE
+        echo "-----------------------"
+    else
+        echo "ERROR! No archive files $ARCHIVE_FILENAME*.tar.gz found in the $BACKUP_DIR directory!"
+        exit 1
+    fi
+}
+
+
+
+
+
+case "$1" in
+    -b|--backup|b|backup)
+        do_backup
+        ;;
+    -r|--restore|r|restore)
+        do_restore
+        ;; 
+    *)
+        echo "USAGE:"
+        echo "- to backup all user defined files & folders:     $0 -b|--backup"
+        echo "- to restore all user defined files & folders:    $0 -r|--restore"
+        ;;
+esac
+
+
+
+
+
+exit 0
