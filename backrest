@@ -56,7 +56,7 @@ do_backup() {
     echo "   $LIST "
     echo "-----------------------"
     mkdir -p $BACKUP_DIR
-    tar --ignore-failed-read -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
+    tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
     ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
     echo "-----------------------"
 }
