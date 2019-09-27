@@ -24,3 +24,7 @@
    ```
        0 3 */5 * *        python /usr/script/epg_refresh.py > /dev/null 2>&1
    ```
+
++ **backrest**
+   > - Backup & Restore bash-script
+   > - a simple script for backing up and restoring user-defined settings, files or folders in Enigma2
