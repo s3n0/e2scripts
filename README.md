@@ -28,3 +28,4 @@
 + **backrest**
    > - Backup & Restore bash-script
    > - a simple script for backing up and restoring user-defined settings, files or folders in Enigma2
+   > - disadvantage is the need to manually edit this script after each new function is added to Enigma (plugins, binary files, scripts, etc.) for full backup or restore
