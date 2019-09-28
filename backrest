@@ -14,16 +14,17 @@ ARCHIVE_FILENAME="backup-enigma"     # Note: The timestamp is automatically adde
 
 LIST="
 /etc/enigma2/
-/etc/tuxbox/*.xml
 
+/etc/tuxbox/*.xml
+/etc/auto.network
 /etc/cron/crontabs/root
 
 /usr/script/
 
 /usr/bin/oscam
-/etc/tuxbox/config/oscam/
 /etc/init.d/softcam
 /etc/rc3.d/*softcam
+/etc/tuxbox/config/oscam/
 
 /usr/bin/udpxy
 /etc/init.d/udpxy
