@@ -10,7 +10,7 @@
 
 BACKUP_DIR="/media/hdd/backup_folder"
 
-ARCHIVE_FILENAME="backup-enigma"       # Note: The timestamp is automatically added at the end of the file name and the file extension is ".tar.gz"
+ARCHIVE_FILENAME="backup-enigma"     # Note: The timestamp is automatically added at the end of the file name and the file extension is ".tar.gz"
 
 LIST="
 /etc/enigma2/
@@ -48,16 +48,30 @@ LIST=$(echo $LIST | tr "\n" " ")
 
 
 
+init_4_and_check() {
+    echo "Stopping the Enigma..."
+    init 4
+    if [ $? -eq 0 ]; then
+        echo "...done."
+        sleep 2
+    else
+        echo -e "...failed ! Backup & Restore script will be terminated !"
+        exit 1    
+    fi
+}
+
 do_backup() {
     echo "-----------------------"
+    if [ "$1" != "quickly" ]; then init_4_and_check; fi          # ignore the init commands to start or stop Enigma2, if the user choice was '--backup-quickly' argument
     echo "Creating the archive file:"
-    echo "   $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
+    echo "    $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
     echo "Files and folders to compress:"
-    echo "   $LIST "
+    echo "    $LIST "
     echo "-----------------------"
     mkdir -p $BACKUP_DIR
     tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
     ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
+    if [ "$1" != "quickly" ]; then init 3; fi
     echo "-----------------------"
 }
 
@@ -65,10 +79,12 @@ do_restore() {
     if [ -f $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz ]; then
         LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
         echo "-----------------------"
+        init_4_and_check
         echo "Extracting the latest archive file:"
         echo "   $LATEST_FILE "
         echo "-----------------------"
         tar --overwrite -xzphf $LATEST_FILE
+        init 3
         echo "-----------------------"
     else
         echo "ERROR! No archive files $ARCHIVE_FILENAME*.tar.gz found in the $BACKUP_DIR directory!"
@@ -81,16 +97,20 @@ do_restore() {
 
 
 case "$1" in
-    -b|--backup|b|backup)
-        do_backup
+    b|backup|-b|--backup)
+        do_backup "standard"
         ;;
-    -r|--restore|r|restore)
+    bq|backup-quickly|-bq|--backup-quickly)
+        do_backup "quickly"
+        ;;
+    r|restore|-r|--restore)
         do_restore
         ;; 
     *)
         echo "USAGE:"
-        echo "- to backup all user defined files & folders:     $0 b|backup|-b|--backup"
-        echo "- to restore all user defined files & folders:    $0 r|restore|-r|--restore"
+        echo -e "...to backup all user-defined files & folders: \n   $0 b|backup|-b|--backup"
+        echo -e "...to backup all user-defined files & folders  \n   without stopping the Enigma during the backup process:\n   $0 bq|backup-quickly|-bq|--backup-quickly"
+        echo -e "...to restore all user-defined files & folders:\n   $0 r|restore|-r|--restore"
         ;;
 esac
 
