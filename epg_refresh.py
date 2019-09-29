@@ -37,6 +37,7 @@ def enigmaInStandby():
     if 'true' in web_content.lower():
         return True
     else:
+        print("Enigma2 is not in standby mode. The 'epg_refresh.py' script will not be executed.")
         return False
 
 ###############################################
