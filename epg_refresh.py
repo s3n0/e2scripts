@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 #### change the path to your own userbouquet file(s) containing the satellite channels for which you want to refresh EPG data :
-BOUQUET_FILES = ['userbouquet.sat-skylink-only.tv']
+BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
 #### if you need more than one userbouquet, use the following syntax :
-#BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.free-sat.tv', 'userbouquet.orange.tv']
+#BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
 
 ###############################################
 # EPG Refresh
@@ -57,23 +57,23 @@ if __name__ == "__main__" and enigmaInStandby():
         blacklist_data = f.read().upper().split('\n')    
         blacklist_src = [ ':'.join(k.split(':')[0:10]) + ':' for k in blacklist_data ][0]        # remove all http:// and other unwanted text from the end of lines
     
-    to_tune = []
+    tuned_src = []
     for src in bouquet_src:
         # --- bouquet format for ServRefCode = service_type : 0 : service_quality : ServiceID : TransponderID : NetworkID : Namespace : 0 : 0 : 0 :
         # --- index of the ServRefCode =              0       1          2              3             4             5            6      7   8   9    ...
         # --- real example = '1:0:16:3725:C8E:3:EB0000:0:0:0:'
         field = src.split(':')
-        if not [ s for k in to_tune if field[4] + ':' + field[5] in k ]:
+        if not [ s for k in tuned_src if field[4] + ':' + field[5] in k ]:
             if not src in blacklist_src:
-                to_tune.append(src)
+                tuned_src.append(src)
     
-    print('Number of channels/transponders to tune: %s' % len(to_tune))
+    print('Number of channels/transponders to tune: %s' % len(tuned_src))
     print('Zapping the neccessary channels/transponders...')
     
-    for i, srefcode in enumerate(to_tune):
+    for i, srefcode in enumerate(tuned_src, 1):
         zapChannel(srefcode)
-        print('{:03d} / {:03d} - {}'.format(i, len(to_tune), srefcode))
-        sleep(20)       # waiting 20 sec. for receiving and retrieving all EPG data from the stream on the currently tuned transponder
+        print('{:03d} / {:03d} - {}'.format(i, len(tuned_src), srefcode))
+        sleep(20)       # waiting 20 sec. for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
     
     print('...done.')
     zapChannel('')
