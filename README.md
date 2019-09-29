@@ -19,10 +19,10 @@
    > - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all channels
    > - the script will find all the necessary transponders what you need to zapping
    > - transponders are selected from the userbouquet and zap only once
-   > - the best way to use EPG refresh is to add a new task to the CRON scheduler ... be sure to set the file attributes (`chmod 755 /usr/script/epg_refresh.py`) ... for example, to run the python script every 5th day at 03:00, as the background process, use the following line:
+   > - the best way to use EPG refresh is to add a new task to the CRON scheduler ... be sure to set the file attributes (`chmod 755 /usr/script/epg_refresh.py`) ... for example, to run the python script every 2th day at 03:00, as the background process, use the following line:
    
    ```
-       0 3 */5 * *        python /usr/script/epg_refresh.py &
+       0 3 */2 * *        python /usr/script/epg_refresh.py &
    ```
 
 + **backrest**
