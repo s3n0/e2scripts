@@ -16,8 +16,8 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
 ###############################################
 # - be sure to set the file attributes (chmod 755 /usr/script/epg_refresh.py)
 # - the best way to use EPG refresh is to add a new task to the CRON scheduler
-# - for example, to run the python script every 5th day at 03:00, use the following crontab line:
-#   0 3 */5 * *     python /usr/script/epg_refresh.py > /dev/null 2>&1
+# - for example, to run the python script every 5th day at 03:00, as the background process, use the following crontab line:
+#   0 3 */5 * *     python /usr/script/epg_refresh.py &
 ###############################################
 
 from time import sleep
@@ -25,13 +25,13 @@ from urllib2 import urlopen
 
 ###############################################
 
-def zapChannel(channel = '""'):               # zap channel using the OpenWebif
+def zapChannel(channel = '""'):               # zap channel using the Open-Webif
     if channel == ' ' or channel == '':
         channel = '""'
     response = urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
     web_content = response.read()
 
-def enigmaInStandby():
+def enigmaInStandby():                        # checking standby mode using the Open-Webif
     response = urlopen('http://127.0.0.1/web/powerstate')
     web_content = response.read()
     if 'true' in web_content.lower():
