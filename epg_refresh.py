@@ -16,8 +16,8 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
 ###############################################
 # - be sure to set the file attributes (chmod 755 /usr/script/epg_refresh.py)
 # - the best way to use EPG refresh is to add a new task to the CRON scheduler
-# - for example, to run the python script every 5th day at 03:00, as the background process, use the following crontab line:
-#   0 3 */5 * *     python /usr/script/epg_refresh.py &
+# - for example, to run the python script every 2nd day at 03:00, as the background process, use the following crontab line:
+#   0 3 */2 * *     python /usr/script/epg_refresh.py &
 ###############################################
 
 from time import sleep
