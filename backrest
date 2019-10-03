@@ -49,24 +49,17 @@ LIST=$(echo $LIST | tr "\n" " ")
 
 
 
-init_4_and_check() {
-    echo "Stopping the Enigma..."
-    init 4
-    if [ $? -eq 0 ]; then
-        echo "...done."
-        sleep 2
-    else
-        echo -e "...failed ! Backup & Restore script will be terminated !"
-        exit 1    
-    fi
-}
+
 
 do_backup() {
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         # store the Standby power state when the script starts:  5 = to turn the Enigma2 into Standby ,  4 = to wake-up the Enigma2 from Standby
         [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "true" ] && previous_standby_state=5 || previous_standby_state=4
-        init_4_and_check
+        echo "Stopping the Enigma..."
+        init 4
+        sleep 5
+        echo "...done."
         echo "-----------------------"
     fi
     echo "The archive file:"
@@ -98,7 +91,10 @@ do_restore() {
     if [ -f $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz ]; then
         LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
         echo "-----------------------"
-        init_4_and_check
+        echo "Stopping the Enigma..."
+        init 4
+        sleep 5
+        echo "...done."
         echo "-----------------------"
         echo "The latest archive file found in the directory:"
         echo "    $LATEST_FILE "
@@ -107,8 +103,9 @@ do_restore() {
         tar --overwrite -xzphf $LATEST_FILE
         echo "...done."
         echo "-----------------------"
-        echo "Starting the Enigma... (sending the 'init 3' command - without awaiting)"
-        init 3
+        echo "Restarting the set-top box..."
+        echo "(sending the 'init 6' command)"
+        init 6
         echo "...done."
         echo "-----------------------"
     else
