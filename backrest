@@ -48,6 +48,7 @@ LIST=$(echo $LIST | tr "\n" " ")
 
 
 
+
 init_4_and_check() {
     echo "Stopping the Enigma..."
     init 4
@@ -76,6 +77,7 @@ do_backup() {
     mkdir -p $BACKUP_DIR
     tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
     echo "...done."
+    echo "-----------------------"
     echo "Contents of the backup directory:"
     ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
     echo "-----------------------"
@@ -102,7 +104,10 @@ do_restore() {
         echo "Starting decompression..."
         tar --overwrite -xzphf $LATEST_FILE
         echo "...done."
+        echo "-----------------------"
+        echo "Starting the Enigma... (sending the 'init 3' command - without awaiting)"
         init 3
+        echo "...done."
         echo "-----------------------"
     else
         echo "ERROR! No archive files $ARCHIVE_FILENAME*.tar.gz found in the $BACKUP_DIR directory!"
