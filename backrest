@@ -51,15 +51,30 @@ LIST=$(echo $LIST | tr "\n" " ")
 
 
 
+init_4_with_feedback() {
+    echo "Stopping the Enigma..."
+    init 4
+    x=0
+    #while [ "$x" -le 10 ] && [ $(ps -o stat -C enigma2 | grep -v 'STAT') ] ; do
+    while [ "$x" -le 10 ] && [ $(pidof enigma2) ] ; do
+        #echo "...$x seconds waiting / Enigma state = "`ps -o stat -C enigma2 | grep -v 'STAT'`         # debugging output - for testing purpose only
+        x=$(( $x + 1 ))
+        sleep 1
+    done
+    if pidof enigma2 > /dev/null 2>&1 ; then
+        echo "...stopping failed ! The Backup & Restore script will aborted."
+        exit 1
+    else
+        echo "...successfully stopped after $x seconds."
+    fi
+}
+
 do_backup() {
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         # store the Standby power state when the script starts:  5 = to turn the Enigma2 into Standby ,  4 = to wake-up the Enigma2 from Standby
         [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "true" ] && previous_standby_state=5 || previous_standby_state=4
-        echo "Stopping the Enigma..."
-        init 4
-        sleep 5
-        echo "...done."
+        init_4_with_feedback
         echo "-----------------------"
     fi
     echo "The archive file:"
@@ -88,13 +103,10 @@ do_backup() {
 }
 
 do_restore() {
+    echo "-----------------------"
     if [ -f $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz ]; then
         LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
-        echo "-----------------------"
-        echo "Stopping the Enigma..."
-        init 4
-        sleep 5
-        echo "...done."
+        init_4_with_feedback
         echo "-----------------------"
         echo "The latest archive file found in the directory:"
         echo "    $LATEST_FILE "
@@ -110,6 +122,7 @@ do_restore() {
         echo "-----------------------"
     else
         echo "ERROR! No archive files $ARCHIVE_FILENAME*.tar.gz found in the $BACKUP_DIR directory!"
+        echo "-----------------------"
         exit 1
     fi
 }
