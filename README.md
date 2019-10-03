@@ -1,3 +1,6 @@
++ **LGTV-RS232 directory**
+   > - Switching on and off the LG TV via RS-232 interface
+
 + **softcam**
    > - OSCam startup bash-script '/etc/init.d/softcam' for Enigma2 based set-top-box
    > - the script verifies that Oscam has been successfully started or stopped
@@ -11,9 +14,6 @@
 
 + **OscamPiconsConverter.py**
    > - simple python script for converting PNG to TPL picons (for Oscam-Webif)
-
-+ **LGTV-RS232 directory**
-   > - Switching on and off the LG TV via RS-232 interface
 
 + **epg_refresh.py**
    > - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all channels
