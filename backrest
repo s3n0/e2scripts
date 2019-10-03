@@ -77,10 +77,12 @@ do_backup() {
     ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         init 3
-        echo "Waiting 120 seconds for the Enigma2 to start."
-        echo "Then, force the Enigma2 power to its original state - $([ $previous_standby_state == 5 ] && echo 'turn into Standby.' || echo 'wake-up from Standby.')"
+        echo "Starting the Enigma..."
+        echo "...waiting 120 seconds for the Enigma to start"
         sleep 120
+        echo "...force the Enigma power to its original state: $([ $previous_standby_state == 5 ] && echo 'turn into Standby' || echo 'wake-up from Standby')"
         wget -q -O - http://127.0.0.1/web/powerstate?newstate=$previous_standby_state > /dev/null 2>&1
+        echo "...done."
     fi
     echo "-----------------------"
 }
