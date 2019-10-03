@@ -67,14 +67,18 @@ do_backup() {
         [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "true" ] && previous_standby_state=5 || previous_standby_state=4
         init_4_and_check
     fi
-    echo "Creating the archive file:"
+    echo "The archive file:"
     echo "    $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
     echo "Files and folders to compress:"
     echo "    $LIST "
     echo "-----------------------"
+    echo "Starting compression..."
     mkdir -p $BACKUP_DIR
     tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
+    echo "...done."
+    echo "Contents of the backup directory:"
     ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
+    echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         init 3
         echo "Starting the Enigma..."
@@ -83,8 +87,8 @@ do_backup() {
         echo "...force the Enigma power to its original state: $([ $previous_standby_state == 5 ] && echo 'turn into Standby' || echo 'wake-up from Standby')"
         wget -q -O - http://127.0.0.1/web/powerstate?newstate=$previous_standby_state > /dev/null 2>&1
         echo "...done."
+        echo "-----------------------"
     fi
-    echo "-----------------------"
 }
 
 do_restore() {
@@ -92,10 +96,12 @@ do_restore() {
         LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
         echo "-----------------------"
         init_4_and_check
-        echo "Extracting the latest archive file:"
-        echo "   $LATEST_FILE "
+        echo "The latest archive file found in the directory:"
+        echo "    $LATEST_FILE "
         echo "-----------------------"
+        echo "Starting decompression..."
         tar --overwrite -xzphf $LATEST_FILE
+        echo "...done."
         init 3
         echo "-----------------------"
     else
