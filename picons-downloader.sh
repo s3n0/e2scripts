@@ -51,7 +51,7 @@ gdrive_download_by_ID() {
 #
 # (1) open the HTML file in some editor (Notepad++ is the best)
 # (2) press CTRL+F to find the satellite position, for example by finding the string:  9.0E
-# (3) when found it, look at the left side for a very long string (id="entry-...........") and copy the whole ID code, as backward part, from the HTML TAG, example:
+# (3) when found it, look at the left side for a very long string (id="entry-...........") and copy the whole ID code, as backward part, for example:
 #   - from the string:
 #          id="entry-15Msuion-19xqqHm0wg1paO4yLeAX3EFf"
 #   - do you need only the end of that string, i.e. this one (ID code):
