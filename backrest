@@ -2,7 +2,7 @@
 
 #############################
 # Backup & Restore bash-script
-# by s3n0, 2019-09-27
+# by s3n0, 2019-10-03
 #############################
 # simple bash script for backing up and restoring
 # user-defined settings, files or folders in Enigma2
@@ -23,12 +23,12 @@ LIST="
 
 /usr/bin/oscam
 /etc/init.d/softcam
-/etc/rc3.d/*softcam
+/etc/rc?.d/*softcam
 /etc/tuxbox/config/oscam/
 
 /usr/bin/udpxy
 /etc/init.d/udpxy
-/etc/rc3.d/*udpxy
+/etc/rc?.d/*udpxy
 
 /usr/lib/enigma2/python/Plugins/Extensions/EpgDownloadReplace/
 /usr/lib/enigma2/python/Plugins/Extensions/ChocholousekPicons/
@@ -48,7 +48,6 @@ LIST=$(echo $LIST | tr "\n" " ")
 
 
 
-
 init_4_and_check() {
     echo "Stopping the Enigma..."
     init 4
@@ -63,7 +62,11 @@ init_4_and_check() {
 
 do_backup() {
     echo "-----------------------"
-    if [ "$1" != "quickly" ]; then init_4_and_check; fi          # ignore the init commands to start or stop Enigma2, if the user choice was '--backup-quickly' argument
+    if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
+        # store the Standby power state when the script starts:  5 = to turn the Enigma2 into Standby ,  4 = to wake-up the Enigma2 from Standby
+        [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "true" ] && previous_standby_state=5 || previous_standby_state=4
+        init_4_and_check
+    fi
     echo "Creating the archive file:"
     echo "    $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
     echo "Files and folders to compress:"
@@ -72,7 +75,13 @@ do_backup() {
     mkdir -p $BACKUP_DIR
     tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
     ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
-    if [ "$1" != "quickly" ]; then init 3; fi
+    if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
+        init 3
+        echo "Waiting 120 seconds for the Enigma to start."
+        echo "Then, force the Enigma2 power to its original state - $([ $previous_standby_state == 5 ] && echo 'turn into Standby.' || echo 'wake-up from Standby.')"
+        sleep 120
+        wget -q -O - http://127.0.0.1/web/powerstate?newstate=$previous_standby_state > /dev/null 2>&1
+    fi
     echo "-----------------------"
 }
 
@@ -92,6 +101,8 @@ do_restore() {
         exit 1
     fi
 }
+
+
 
 
 
