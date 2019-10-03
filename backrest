@@ -121,10 +121,12 @@ case "$1" in
         do_restore
         ;; 
     *)
-        echo "USAGE:"
-        echo -e "...to backup all user-defined files & folders: \n   $0 b|backup|-b|--backup"
-        echo -e "...to backup all user-defined files & folders  \n   without stopping the Enigma during the backup process:\n   $0 bq|backup-quickly|-bq|--backup-quickly"
-        echo -e "...to restore all user-defined files & folders:\n   $0 r|restore|-r|--restore"
+        echo -e "\nUSAGE:"
+        echo -e "\t $0 <ARGUMENT>"
+        echo -e "ARGUMENT:"
+        echo -e "\t b|backup|-b|--backup \n\t\t ...to backup all user-defined files & folders"
+        echo -e "\t bq|backup-quickly|-bq|--backup-quickly \n\t\t ...to backup all user-defined files & folders without stopping the Enigma during the backup process"
+        echo -e "\t r|restore|-r|--restore \n\t\t ...to restore all user-defined files & folders"
         ;;
 esac
 
