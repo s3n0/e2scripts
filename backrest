@@ -57,7 +57,7 @@ init_4_with_feedback() {
     x=0
     #while [ "$x" -le 15 ] && [ $(ps -o stat -C enigma2 | grep -v 'STAT') ] ; do
     while [ "$x" -le 15 ] && [ $(pidof enigma2) ] ; do
-        #echo "...$x seconds waiting / Enigma state = "`ps -o stat -C enigma2 | grep -v 'STAT'`         # debugging output - for testing purpose only
+        #echo "...$x seconds waiting / Enigma state = "`ps -o stat -C enigma2 | grep -v 'STAT'`      # debugging output - for testing purpose only
         x=$(( $x + 1 ))
         sleep 1
     done
@@ -135,7 +135,7 @@ do_restore() {
 
 case "$1" in
     b|backup|-b|--backup)
-        do_backup "standard"
+        do_backup "normal"
         ;;
     bq|backup-quickly|-bq|--backup-quickly)
         do_backup "quickly"
