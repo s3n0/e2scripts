@@ -67,6 +67,7 @@ do_backup() {
         # store the Standby power state when the script starts:  5 = to turn the Enigma2 into Standby ,  4 = to wake-up the Enigma2 from Standby
         [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "true" ] && previous_standby_state=5 || previous_standby_state=4
         init_4_and_check
+        echo "-----------------------"
     fi
     echo "The archive file:"
     echo "    $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
@@ -98,6 +99,7 @@ do_restore() {
         LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
         echo "-----------------------"
         init_4_and_check
+        echo "-----------------------"
         echo "The latest archive file found in the directory:"
         echo "    $LATEST_FILE "
         echo "-----------------------"
