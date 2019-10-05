@@ -34,7 +34,7 @@ def table_from_srvid(caidsFilter = []):
     global DIR_OSCAMCFG
     print('Making a table from .srvid file...')
     with open(DIR_OSCAMCFG + '/oscam.srvid','r') as f:
-        data = re.findall(r'([0-9a-fA-F\,\:]+)\|.*', f.read()  )         # the result will [ '0D02,1815,0D97,0653:760d' , '0D96@000004@000008,1815,0966@005123,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ..... ]
+        data = re.findall(r'([0-9a-fA-F@\,\:]+)\|.*', f.read()  )         # the result will [ '0D02,1815,0D97,0653:760d' , '0D96@000004@000008,1815,0966@005123,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ..... ]
     d = {}
     for line in data:
         while '@' in line:                                               # remove all PROVIDs (6 digits with the "@" character at the begin => i.e. 7 places together)
