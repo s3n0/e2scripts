@@ -31,12 +31,15 @@ import re
 #############################################################################
 
 def table_from_srvid(caidsFilter = []):
-    global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
+    global DIR_OSCAMCFG
     print('Making a table from .srvid file...')
     with open(DIR_OSCAMCFG + '/oscam.srvid','r') as f:
-        data = re.findall(r'([0-9a-fA-F\,\:]+)\|.*', f.read()  )         # [ '0D02,1815,0D97,0653:760d' , '0D02,1815,0D97,0653:7669' , '0D02,1815,0D97,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ...... ]
+        data = re.findall(r'([0-9a-fA-F\,\:]+)\|.*', f.read()  )         # the result will [ '0D02,1815,0D97,0653:760d' , '0D96@000004@000008,1815,0966@005123,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ..... ]
     d = {}
     for line in data:
+        while '@' in line:                                               # remove all PROVIDs (6 digits with the "@" character at the begin => i.e. 7 places together)
+            i = line.find('@')
+            line = line[:i] + line[i+7:]
         caids, sid = line.upper().split(':')                             # split the whole part via ":" character
         caidsToAdd = list(set(caids.split(',')))
         if caidsFilter:
@@ -53,7 +56,7 @@ def table_from_srvid(caidsFilter = []):
     return d             # { '1807': ['0D03', '0D70', '0D96', '0624'],  '00CD': ['0B00', '09AF'],  '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'],  '00CB': ['0B00', '09AF'], ..... }
 
 def table_from_srvid2(caidsFilter = []):
-    global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
+    global DIR_OSCAMCFG
     print('Making a table from .srvid2 file...')
     with open(DIR_OSCAMCFG + '/oscam.srvid2','r') as f:
         data = f.read().splitlines()
@@ -61,6 +64,9 @@ def table_from_srvid2(caidsFilter = []):
     for line in data:
         if line.startswith('#') or line == '':
             continue
+        while '@' in line:                                               # remove all PROVIDs (6 digits with the "@" character at the begin => i.e. 7 places together)
+            i = line.find('@')
+            line = line[:i] + line[i+7:]
         sid, caids = line.upper().split('|')[0].split(':')               # remove the string from "|" to the end of line, and split the remaining part with the ":" character
         caids = re.sub('@[0-9a-fA-F]+', '', caids)                       # remove all strings such as "@0000A1CF" from the line
         caidsToAdd = list(set(caids.split(',')))
@@ -81,7 +87,7 @@ def table_from_png_only(caidsFilter = []):
     """
     To make the TPL picons from PNG files for only certain CAIDs (in the user configured value = CAIDS_FILTER)
     """
-    global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
+    global DIR_PNG
     print('Making a table from all PNG files...')
     d = {}
     dir_list = glob.glob(DIR_PNG + '/*.png')
@@ -97,7 +103,7 @@ def table_from_png_and_lamedb(caidsFilter = []):
     This function is experimental only, it's for a testing purpose only
     To make the TPL picons from PNG files for user selected CAIDs + filtered with the 'lamedb' database file
     """
-    global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
+    global DIR_PNG
     with open('/etc/enigma2/lamedb', 'r') as f:
         lamedb = f.read().upper().splitlines()
     d = {}
@@ -117,7 +123,7 @@ def table_from_png_and_lamedb(caidsFilter = []):
 #############################################################################
 
 def png2tpl(sid_table):
-    global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
+    global DIR_TPL, DIR_PNG
     print('Converting PNG to TPL images (Base64/template format)...')
     counter = 0
     for path_to_png in glob.glob(DIR_PNG + '/*.png'):
