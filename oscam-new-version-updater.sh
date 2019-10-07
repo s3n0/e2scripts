@@ -2,14 +2,20 @@
 
 
 #######################################
-# Oscam new version updater - script
+# Oscam new version updater
 # 2019-10, s3n0
-# This script is designed to avoid having to add another feed to your Enigma.
+#
+# This script checks if there is a newer version on the internet and if so,
+# updates the oscam binary file extracted from the downloaded IPK package.
+#
+# Script is designed to avoid having to add another feed to your Enigma.
+# '7zip' archiver is required since 'ar' tool is a problematic when splitting files from IPK packages.
 #######################################
-# This script uses "updates.mynonpublic.com" as an update source and
-# also uses the Python source code, from the script from here:
+# This script uses "updates.mynonpublic.com" as an update source and also
+# uses the Python source code, from the script from here:
 #       http://updates.mynonpublic.com/oea/feed
-# The 'feed' script was developed for the purpose of installing softcam feed into Enigma:
+#
+# The original 'feed' script was developed for the purpose of installing softcam-feed into Enigma:
 #       wget -O - -q http://updates.mynonpublic.com/oea/feed | bash
 #######################################
 
