@@ -32,7 +32,9 @@
 
 + **picons-downloader.sh**
    > - simple bash script for download & extract picons from Google-Drive server, which are compressed with 7zip
+   > - 7zip archiver is required
 
 + **oscam-new-version-updater.sh**
    > - script for automatic detection of new version on the internet and for immediate update in case of newer version
+   > - 7zip archiver is required since 'ar' is a problematic when splitting files from IPK packages
    > - this script uses "updates.mynonpublic.com" as an update source
