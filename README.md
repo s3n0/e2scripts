@@ -33,6 +33,5 @@
    > - simple bash script for download & extract picons from Google-Drive server, which are compressed with 7zip (i.e. 7zip archivator is required)
 
 + **oscam-new-version-updater.sh**
-   > - script for automatic detection of new version on the internet and for immediate update in case of newer version
-   > - the old binary file will be overwritten by the new one - extracted from the downloaded IPK package
+   > - script checks if there is a newer version on the internet and if so, updates the binary file extracted from the downloaded IPK package
    > - 7zip archiver is required since 'ar' tool is a problematic when splitting files from IPK packages
