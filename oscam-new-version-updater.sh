@@ -5,8 +5,8 @@
 # Oscam new version updater
 # 2019-10, s3n0
 #
-# This script checks if there is a newer version on the internet and if so,
-# updates the oscam binary file extracted from the downloaded IPK package.
+# This bash script checks if there is a newer version of Oscam on the internet and if so,
+# then downloads and overwrites the old Oscam binary file on the local disk.
 #
 # Script is designed to avoid having to add another feed to your Enigma.
 # '7zip' archiver is required since 'ar' tool is a problematic when splitting files from IPK packages.
@@ -20,7 +20,7 @@
 #######################################
 
 
-LOCAL_OSCAM_BINFILE="/usr/bin/oscam"    # Oscam executable/binary file with full directory path
+LOCAL_OSCAM_BINFILE="/usr/bin/oscam"   # Oscam executable/binary file with full directory path
 
 
 
