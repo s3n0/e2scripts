@@ -1,7 +1,6 @@
 #!/bin/bash
 
 
-
 #######################################
 # Oscam new version updater - script
 # 2019-10, s3n0
@@ -15,13 +14,18 @@
 #######################################
 
 
+LOCAL_OSCAM_BINFILE="/usr/bin/oscam"    # Oscam executable/binary file with full directory path
 
-#### Configuring the Enigma version and the chipset / CPU architecture (with the help of Python):
+
+
+
+#######################################
+
+#### Auto-configuring the Enigma version and the chipset / CPU architecture (with the help of Python):
 
 BASE_FEED="http://updates.mynonpublic.com/oea"
-# OEVER="4.3"
-# ARCH="mips32el"
-
+# OEVER="4.3"                           # this value is determined automatically using the Python script below
+# ARCH="mips32el"                       # this value is determined automatically using the Python script below
 
 
 export D=${D}
@@ -161,15 +165,17 @@ check_compat
 #######################################
 #######################################
 
-#### Download the list of all available packages
+#### Download the list of all available packages + find out the package name according to the required Oscam edition
 echo -n "Downloading and unpacking the list of softcam installation packages... "
-IPK_NAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "enigma2-plugin-softcams-oscam-trunk_1.20+svn" | cut -d " " -f 2)
+# - some examples of Oscam builds included on the feed server:
+#   "trunk_1.20", "trunk-ipv4only_1.20", "stable_1.20", "stable-ipv4only_1.20", "emu_1.20", "emu-ipv4only_1.20", etc.
+IPK_NAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "trunk_1.20" | cut -d " " -f 2)
 [ -z "$IPK_NAME" ] && { echo " failed!"; exit 1; } || echo " done."
 
 #### Finding out if there is a newer version of Oscam on the internet
-OSCAM_LOCAL_VERSION="11000"                                                                        # as a precaution if there is no Oscam on the flash drive yet
-OSCAM_LOCAL_VERSION=$(   /usr/bin/oscam --build-info | grep -i 'version:' | grep -o '.....$'  )    # output result is, as example:  11540
-OSCAM_ONLINE_VERSION=$(  echo $IPK_NAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'   )                    # output result is, as example:  11546
+OSCAM_LOCAL_VERSION="11000"                                                                             # as a precaution if there is no Oscam on the flash drive yet
+OSCAM_LOCAL_VERSION=$(   $LOCAL_OSCAM_BINFILE --build-info | grep -i 'version:' | grep -o '.....$'  )   # output result is, as example:  11540
+OSCAM_ONLINE_VERSION=$(  echo $IPK_NAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'   )                         # output result is, as example:  11546
 echo -e "Oscam version found online:\t$OSCAM_ONLINE_VERSION\nOscam version on flash drive:\t$OSCAM_LOCAL_VERSION"
 if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]; then
     echo "New Oscam version $OSCAM_ONLINE_VERSION is available and will updated now."
@@ -201,7 +207,7 @@ fi
 echo -n "The Oscam binary file has "; [ -f /tmp/aaa/oscam-trunk ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '/tmp/aaa'."; exit 1; }
 
 #### Replace the oscam binary file with new one
-/etc/init.d/softcam stop && mv -f /tmp/aaa/oscam-trunk /usr/bin/oscam && chmod 755 /usr/bin/oscam && /etc/init.d/softcam start
+/etc/init.d/softcam stop && mv -f /tmp/aaa/oscam-trunk $LOCAL_OSCAM_BINFILE && chmod 755 $LOCAL_OSCAM_BINFILE && /etc/init.d/softcam start
 
 #### Remove all temporary files (sub-directory)
 rm -fr /tmp/aaa
