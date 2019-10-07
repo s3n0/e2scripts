@@ -179,10 +179,12 @@ IPK_NAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep
 [ -z "$IPK_NAME" ] && { echo " failed!"; exit 1; } || echo " done."
 
 #### Finding out if there is a newer version of Oscam on the internet
-OSCAM_LOCAL_VERSION="11000"                                                                             # as a precaution if there is no Oscam on the flash drive yet
 OSCAM_LOCAL_VERSION=$(   $LOCAL_OSCAM_BINFILE --build-info | grep -i 'version:' | grep -o '.....$'  )   # output result is, as example:  11540
+[ -z "$OSCAM_LOCAL_VERSION" ] && OSCAM_LOCAL_VERSION="11000"                                            # as a precaution if there is no Oscam on the flash drive yet
 OSCAM_ONLINE_VERSION=$(  echo $IPK_NAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'   )                         # output result is, as example:  11546
-echo -e "Oscam version found online:\t$OSCAM_ONLINE_VERSION\nOscam version on flash drive:\t$OSCAM_LOCAL_VERSION"
+
+echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on flash drive:\t$OSCAM_LOCAL_VERSION"
+
 if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]; then
     echo "New Oscam version $OSCAM_ONLINE_VERSION is available and will updated now."
     # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1
