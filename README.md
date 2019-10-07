@@ -35,4 +35,5 @@
 
 + **oscam-new-version-updater.sh**
    > - script for automatic detection of new version on the internet and for immediate update in case of newer version
+   > - the old binary file will be overwritten by the new one - extracted from the downloaded IPK package
    > - 7zip archiver is required since 'ar' is a problematic when splitting files from IPK packages
