@@ -47,7 +47,7 @@ except:
     print "unknown"
 END
     )
-    OEVER=$(echo $OEVER | sed "s!OE-Alliance !!")
+    OEVER=$(echo $OEVER | sed "s/OE-Alliance //")
     if [ "x$OEVER" == "xunknown" ]; then
         if [[ -x "/usr/bin/openssl" ]]; then
             SSLVER=$(openssl version | awk '{ print $2 }')
