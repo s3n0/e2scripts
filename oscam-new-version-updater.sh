@@ -223,7 +223,7 @@ echo "---------------------------"
 #### Specify a startup softcam script (usually in the '/etc/init.d' folder)
 [ -f /etc/init.d/softcam ] && INITD_SCRIPT=/etc/init.d/softcam
 [ -f /etc/init.d/softcam.oscam ] && INITD_SCRIPT=/etc/init.d/softcam.oscam
-[ -z "$INITD_SCRIPT" ] && echo -e "Warning: Softcam control script (usually in the '/etc/init.d' folder) was not found !\nPlease download some autostart softcam script and use it on the particular run-level, for example:\nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
+[ -z "$INITD_SCRIPT" ] && echo -e "WARNING ! Softcam control script (usually placed in the '/etc/init.d' folder) was not found. \nPlease download some autostart softcam script + set the execution rights \nand apply the particular run-level. \nFor example using the following commands: \nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
 
 #### Replace the oscam binary file with new one
 [ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT stop
