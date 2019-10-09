@@ -74,10 +74,10 @@
 # ####################  USER SETUP  ########################
 # ----------------------------------------------------------
 # SOFTCAM BINARY DIRECTORY:
-softcam_dir='/usr/bin'
+softcam_bin_dir='/usr/bin'
 # ----------------------------------------------------------
 # SOFTCAM PROCESS NAME (BINARY FILE NAME):
-softcam_exec='oscam'
+softcam_bin_filename='oscam'
 # ----------------------------------------------------------
 # SOFTCAM ARGUMENTS:    (a note: argument "-c" for OSCam determines a configuration directory, for more info use "/usr/bin/oscam --help")
 softcam_args='-b -r 2 -c /etc/tuxbox/config/oscam'
@@ -94,7 +94,7 @@ hrline='------------------------------------------------------------'
 helptext="USAGE:     bash /etc/init.d/softcam <ARGUMENT>
 ARGUMENT:  start......the process will be started only if it's not running
            restart....the process will be stopped only if it's running & then will be started
-           stop.......stop and unload the $softcam_exec service from memory"
+           stop.......stop and unload the $softcam_bin_filename service from memory"
 # ----------------------------------------------------------
 # ###############  END OF THE USER SETUP  ##################
 
@@ -164,8 +164,8 @@ fStart() {
     if pidof $1 > /dev/null; then
         fLog "...$1 process has already started and is still running."
     else
-        $softcam_dir/$1 $softcam_args > /dev/null
-        fLog "command-line executed:   $softcam_dir/$1 $softcam_args"
+        $softcam_bin_dir/$1 $softcam_args > /dev/null
+        fLog "command-line executed:   $softcam_bin_dir/$1 $softcam_args"
         sleep 0.8s
         if pidof $1 > /dev/null; then
             fLog "...$1 was successfully started."
@@ -188,8 +188,8 @@ fRestart() {
 
 # CHECKING THE EXISTENCE OF THE BINARY/EXEC FILE
 
-if [ ! -f "$softcam_dir/$softcam_exec" ]; then
-    fLog "ERROR! Executable binary file '$softcam_dir/$softcam_exec' does not exist!"
+if [ ! -f "$softcam_bin_dir/$softcam_bin_filename" ]; then
+    fLog "ERROR! Executable binary file '$softcam_bin_dir/$softcam_bin_filename' does not exist!"
     fLog "$hrline"
     exit 1
 fi
@@ -200,15 +200,15 @@ fi
 
 case "$1" in
     start)
-        fStart "$softcam_exec"
+        fStart "$softcam_bin_filename"
         fLog "$hrline"
         ;;
     stop)
-        fStop "$softcam_exec"
+        fStop "$softcam_bin_filename"
         fLog "$hrline"
         ;;
     restart|reload|force-reload)
-        fRestart "$softcam_exec"
+        fRestart "$softcam_bin_filename"
         fLog "$hrline"
         ;;
     *)
