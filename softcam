@@ -1,24 +1,11 @@
 #!/bin/bash
 
+
 # 2011/01/26:
 # - OSCam start/stop/restart example script - http://www.streamboard.tv/wiki/OSCam/en/ShellCommands#Starting_and_stopping_OSCam
 
 # 2018/07/16:
-# - s3n0 edit (OpenATV target file:  /etc/init.d/softcam)
-# - this softcam script file can also be downloaded directly from my github profile:
-#      wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam
-# - in many Enigmas, the /etc/init.d/softcam startup script is directly supported through the embedded source code
-#   (for example, the OpenATV source code: /lib/python/Plugins/Extensions/Infopanel/plugin.py)
-# - so just copy the bash-script into the /etc/init.d folder and nothing else is needed (symbolic links to /etc/rc3.d and /etc/rc4.d are not necessary)
-# - please do not forget to set the execution rights for bash script:  chmod +x /etc/init.d/softcam
-# - if the '/etc/init.d/softcam' script auto start feature is not implemented in your Enigma2, then you must additionally create a symbolic link:
-#      ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam
-#   ...for remove (uninstall) the symbolic link you can simple delete the link:
-#      rm -f /etc/rc3.d/S90softcam
-#   ...you can also use the automated tool for adding the startup sym-links to all default run-levels:
-#      update-rc.d softcam defaults 90
-#   ...for remove (uninstall) startup sym-links from all run-levels use the following command:
-#      update-rc.d -f softcam remove
+# - s3n0 edit (target file:  /etc/init.d/softcam)
 
 # 2019/06/15
 # - s3n0 edit
@@ -29,7 +16,57 @@
 # - s3n0 edit
 # - some changes in start/stop/restart functions
 
+# 2019/10/09
+# - s3n0 edit
+# - improved and complete instructions on how to install Oscam
 
+
+
+
+# #######################  HOW-TO  #########################
+#
+# ----------------------------------------------------------
+#               OpenATV-6.3 or newer versions
+# ----------------------------------------------------------
+#
+# Download the script directly from my github profile ('softcam' file must to be renamed as 'softcam.oscam'):
+#      wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam.oscam
+#
+# Then copy your Oscam configuration files into the '/etc/tuxbox/config/oscam' folder (using the FTP connection)
+#
+# For example with helping of the following bash script, you can download also the oscam binary file:
+#      wget -qO- --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh | bash
+#
+# Then restart the set-top-box via the GUI MENU or via the Shell:
+#      reboot
+#
+# After restart, activate the particullar softcam via the GUI-MENU:
+#      MENU -> Info Panel -> Softcam Panel -> select Oscam by pressing the left / right buttons and activate with the green button
+#
+# ----------------------------------------------------------
+#         All other or unknown Enigma distributions
+# ----------------------------------------------------------
+#
+# Download the script directly from my github profile:
+#      wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam
+#
+# If the '/etc/init.d/softcam' script auto start feature is not implemented
+# in your Enigma2 then you must additionally create (install) a symbolic link:
+#      ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam
+# For remove (uninstall) the symbolic link you can simple delete the link:
+#      rm -f /etc/rc3.d/S90softcam
+# You can also use the automated tool for adding (install) the startup sym-links to all default run-levels:
+#      update-rc.d softcam defaults 90
+# For remove (uninstall) startup sym-links from all run-levels use the following command:
+#      update-rc.d -f softcam remove
+#
+# Then copy your Oscam configuration files into the '/etc/tuxbox/config/oscam' folder (using the FTP connection)
+#
+# For example with helping of the following bash script, you can download also the oscam binary file:
+#      wget -qO- --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh | bash
+#
+# Then restart the set-top-box via the GUI MENU or via the Shell:
+#      reboot
 
 
 
