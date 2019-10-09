@@ -56,7 +56,7 @@ if __name__ == "__main__" and enigmaInStandby():
     
     with open('/etc/enigma2/blacklist', 'r') as f:
         blacklist_data = f.read().upper().split('\n')    
-        blacklist_src = [ ':'.join(k.split(':')[0:10]) + ':' for k in blacklist_data ][0]        # remove all http:// and other unwanted text from the end of lines
+        blacklist_src = [ ':'.join(k.split(':')[0:10]) + ':' for k in blacklist_data ][:-1]     # remove all http:// and other unwanted text from the end of lines
     
     tuned_src = []
     for src in bouquet_src:
