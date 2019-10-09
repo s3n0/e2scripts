@@ -20,11 +20,20 @@
 #######################################
 
 
+
 LOCAL_OSCAM_BINFILE="/usr/bin/oscam"   # Oscam executable/binary file with full directory path
 
+REQUESTED_BUILD="oscam-trunk"
+# - some examples of Oscam builds included on the feed server, there is possible to change one of them:
+#      oscam-trunk
+#      oscam-trunk-ipv4only
+#      oscam-stable
+#      oscam-stable-ipv4only
 
 
 
+
+#######################################
 #######################################
 
 #### Auto-configuring the Enigma version and the chipset / CPU architecture (with the help of Python):
@@ -162,8 +171,6 @@ check_compat() {
     fi
 }
 
-#######################################
-
 get_oever
 get_arch
 check_compat
@@ -171,26 +178,22 @@ check_compat
 #######################################
 #######################################
 
-#### Download the list of all available packages + find out the package name according to the required Oscam edition
+#### Download and unpack the list of all available packages + find out the package name according to the required Oscam edition
 echo -n "Downloading and unpacking the list of softcam installation packages... "
-# - some examples of Oscam builds included on the feed server:
-#   "trunk_1.20", "trunk-ipv4only_1.20", "stable_1.20", "stable-ipv4only_1.20", "emu_1.20", "emu-ipv4only_1.20", etc.
-IPK_NAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "trunk_1.20" | cut -d " " -f 2)
-[ -z "$IPK_NAME" ] && { echo " failed!"; exit 1; } || echo " done."
+IPK_FILENAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "Filename:" | grep "$REQUESTED_BUILD"_1.20 | cut -d " " -f 2)
+[ -z "$IPK_FILENAME" ] && { echo " failed!"; exit 1; } || echo " done."
 
 #### Finding out if there is a newer version of Oscam on the internet
-OSCAM_LOCAL_VERSION=$(   $LOCAL_OSCAM_BINFILE --build-info | grep -i 'version:' | grep -o '.....$'  )   # output result is, as example:  11540
+OSCAM_LOCAL_VERSION=$(  $LOCAL_OSCAM_BINFILE --build-info | grep -i 'version:' | grep -o '.....$'  )    # output result is, as example:  11540
 [ -z "$OSCAM_LOCAL_VERSION" ] && OSCAM_LOCAL_VERSION="11000"                                            # as a precaution if there is no Oscam on the flash drive yet
-OSCAM_ONLINE_VERSION=$(  echo $IPK_NAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'   )                         # output result is, as example:  11546
-
+OSCAM_ONLINE_VERSION=$( echo $IPK_FILENAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'  )                       # output result is, as example:  11546
 echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on flash drive:\t$OSCAM_LOCAL_VERSION"
-
 if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]; then
-    echo "New Oscam version $OSCAM_ONLINE_VERSION is available and will updated now."
+    echo "A new version of Oscam has been found and will be updated."
     # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1
 else
-    echo "Installed Oscam version $OSCAM_LOCAL_VERSION is current. No need to update."
-    # wget -qO- "http://127.0.0.1/web/message?text=Installed+Oscam+version+$OSCAM_LOCAL_VERSION+is+current.%0ANo+need+to+update.&type=1&timeout=10" > /dev/null 2>&1
+    echo "Installed Oscam version is current. No need to update."
+    # wget -qO- "http://127.0.0.1/web/message?text=Installed+Oscam+version+($OSCAM_LOCAL_VERSION)+is+current.%0ANo+need+to+update.&type=1&timeout=10" > /dev/null 2>&1
     exit 0
 fi
 
@@ -199,7 +202,7 @@ rm -fr /tmp/aaa ; mkdir -p /tmp/aaa ; cd /tmp/aaa
 
 #### Download the necessary oscam package
 echo -n "Downloading the necessary Oscam installation package... "
-wget -q --show-progress -O /tmp/aaa/$IPK_NAME $BASE_FEED/$OEVER/$ARCH/$IPK_NAME && echo " done." || { echo " failed!"; exit 1; }
+wget -q --show-progress -O /tmp/aaa/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
 
 #### Checking if the 7zip archiver is installed on system
 if ! 7z > /dev/null 2>&1 ; then
@@ -209,17 +212,30 @@ if ! 7z > /dev/null 2>&1 ; then
 fi
 
 #### Extracting the IPK package
-7z e $IPK_NAME                           # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7z" archiver
-7z e data.tar.?z                         # 2. unpacking the ".gz" OR ".xz" archive
-7z e data.tar ./usr/bin/oscam-trunk      # 3. unpacking ".tar" archive, but only one "oscam-trunk" file
-echo -n "The Oscam binary file has "; [ -f /tmp/aaa/oscam-trunk ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '/tmp/aaa'."; exit 1; }
+echo "---------------------------"
+echo "Extracting the IPK package:"
+7z e $IPK_FILENAME                         # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7z" archiver
+7z e data.tar.?z                           # 2. unpacking the ".gz" OR ".xz" archive
+7z e data.tar ./usr/bin/$REQUESTED_BUILD   # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
+echo -n "The Oscam binary file has "; [ -f /tmp/aaa/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '/tmp/aaa'."; exit 1; }
+echo "---------------------------"
+
+#### Specify a startup softcam script (usually in the '/etc/init.d' folder)
+[ -f /etc/init.d/softcam ] && INITD_SCRIPT=/etc/init.d/softcam
+[ -f /etc/init.d/softcam.oscam ] && INITD_SCRIPT=/etc/init.d/softcam.oscam
+[ -z "$INITD_SCRIPT" ] && { echo -e "ERROR ! Softcam control script (usually in the '/etc/init.d' folder) was not found !\nPlease download some autostart softcam script and use it on the particular run-level, for example:\nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"; exit 1; }
 
 #### Replace the oscam binary file with new one
-/etc/init.d/softcam stop && mv -f /tmp/aaa/oscam-trunk $LOCAL_OSCAM_BINFILE && chmod 755 $LOCAL_OSCAM_BINFILE && /etc/init.d/softcam start
+$INITD_SCRIPT stop
+sleep 2
+mv -f /tmp/aaa/$REQUESTED_BUILD $LOCAL_OSCAM_BINFILE
+chmod 755 $LOCAL_OSCAM_BINFILE
+$INITD_SCRIPT start
 
 #### Remove all temporary files (sub-directory)
 rm -fr /tmp/aaa
 
+#######################################
 #######################################
 
 exit 0
