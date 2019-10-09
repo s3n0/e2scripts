@@ -63,8 +63,8 @@ if __name__ == "__main__" and enigmaInStandby():
         # --- bouquet format for ServRefCode = service_type : 0 : service_quality : ServiceID : TransponderID : NetworkID : Namespace : 0 : 0 : 0 :
         # --- index of the ServRefCode =              0       1          2              3             4             5            6      7   8   9    ...
         # --- real example = '1:0:16:3725:C8E:3:EB0000:0:0:0:'
-        field = src.split(':')
-        if not [ s for k in tuned_src if field[4] + ':' + field[5] in k ]:
+        fields = src.split(':')
+        if not [ s for k in tuned_src if fields[4] +':'+ fields[5] in k ]:   # if *:TransponderID:NetworkID:* is already included in the tuned_src list, then continue to search of another value
             if not src in blacklist_src:
                 tuned_src.append(src)
     
