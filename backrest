@@ -21,10 +21,11 @@ LIST="
 
 /usr/script/
 
-/usr/bin/oscam
-/etc/init.d/softcam
-/etc/rc?.d/*softcam
-/etc/tuxbox/config/oscam/
+/usr/bin/*cam*
+/etc/init.d/softcam*
+/etc/rc?.d/*softcam*
+/etc/tuxbox/config/
+/usr/keys/
 
 /usr/bin/udpxy
 /etc/init.d/udpxy
@@ -57,9 +58,10 @@ init_4_with_feedback() {
     x=0
     #while [ "$x" -le 15 ] && [ $(ps -o stat -C enigma2 | grep -v 'STAT') ] ; do
     while [ "$x" -le 15 ] && [ $(pidof enigma2) ] ; do
-        #echo "...$x seconds waiting / Enigma state = "`ps -o stat -C enigma2 | grep -v 'STAT'`      # debugging output - for testing purpose only
         x=$(( $x + 1 ))
         sleep 1
+        echo "...$x seconds waiting"
+        #echo "...Enigma state = "`ps -o stat -C enigma2 | grep -v 'STAT'`      # debugging output - for testing purpose only
     done
     if pidof enigma2 > /dev/null 2>&1 ; then
         echo "...stopping failed ! The Backup & Restore script will aborted."
