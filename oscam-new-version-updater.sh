@@ -22,7 +22,7 @@
 
 
 LOCAL_OSCAM_BINFILE=$(find /usr/bin -name oscam* | tail -n 1)
-#LOCAL_OSCAM_BINFILE="/usr/bin/oscam"   # Oscam executable/binary file with full directory path
+#LOCAL_OSCAM_BINFILE="/usr/bin/oscam"
 
 REQUESTED_BUILD="oscam-trunk"
 # - some examples of Oscam builds included on the feed server, there is possible to change one of them:
