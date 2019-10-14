@@ -18,7 +18,7 @@ opkg remove --force-depends enigma2-locale-{$(ls /usr/share/enigma2/po/ | grep -
 #opkg install enigma2-locale-{en,de,sk}
 
 #### A NOTE:
-###Please do not remove the English language (en) and the German language (de). These are the default and default languages that will be used when other languages do not exist. It also has a lot of plugins for OpenATV (as the default localization language in case of emergency).
+###Please do not remove the English language (en) and the German language (de). These are the default languages that will be used when other languages do not exist. It also has a lot of plugins for OpenATV (as the default localization language in case of emergency).
 
 #### FOLDERS USED IN ENIGMA2 FOR LANG. PACKAGES:
 #rm /usr/share/enigma2/countries/*.png
