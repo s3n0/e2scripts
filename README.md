@@ -36,4 +36,4 @@
 
 + **oscam-new-version-updater.sh**
    > - script checks if there is a newer version on the internet and if so, updates the binary file extracted from the downloaded IPK package
-   > - 7zip archiver is required since `ar` tool is a problematic (`ar` is part of the limited [BusyBox](https://busybox.net/) in most cases) when splitting files from IPK packages
+   > - 7zip archiver is required since 'ar' tool is a problematic ('ar' is part of the limited [BusyBox](https://busybox.net/) in most cases) when splitting files from IPK packages
