@@ -7,10 +7,10 @@
 #opkg remove --force-depends enigma2-locale-{ar,bg,ca,cs,da,el,en-gb,es,et,fa,fi,fr,fy,he,hr,hu,id,is,it,ku,lt,lv,nb,nl,no,pl,pt,pt-br,ro,ru,sk,sl,sr,sv,th,tr,uk,vi,zh-cn,zh-hk}    # remove all except EN,DE
 #opkg remove --force-depends enigma2-locale-{ar,bg,ca,cs,da,el,en-gb,es,et,fa,fi,fr,fy,he,hr,hu,id,is,it,ku,lt,lv,nb,nl,no,pl,pt,pt-br,ro,ru,sl,sr,sv,th,tr,uk,vi,zh-cn,zh-hk}       # remove all except EN,DE,SK
 
-#### HOW TO REMOVE LANGUAGE PACKAGES (WITH THE HELPING OF THE LOOP-FOR, BY S3N0):
+#### HOW TO REMOVE LANGUAGE PACKAGES (WITH THE HELPING OF THE DIR-LIST, BY S3N0):
 opkg remove --force-depends $(ls /usr/share/enigma2/po/ | grep -v -E 'en|de|sk' | awk '{print "enigma2-locale-" $0}' | tr '\n' ' ')     # remove all except EN,DE,SK
 
-#### HOW TO REMOVE LANGUAGE PACKAGES (WITH THE HELPING OF LOOP, BY OpenATV FORUM -> https://www.opena.tv/howtos/41966-howto-sprachen-deinstallieren-nachdem-die-box-online-geflasht-wurde-post360880.html#post360880 ):
+#### HOW TO REMOVE LANGUAGE PACKAGES (WITH THE HELPING OF LOOP-FOR AND DIR-LIST, BY OpenATV FORUM -> https://www.opena.tv/howtos/41966-howto-sprachen-deinstallieren-nachdem-die-box-online-geflasht-wurde-post360880.html#post360880 ):
 #for LANG in `ls /usr/share/enigma2/po/ | grep -v -E 'de|en|sk'` ; do opkg remove --force-depends enigma2-locale-$LANG ; done ;          # remove all except EN,DE,SK
 
 #### HOW TO INSTALL LANGUAGE PACKAGES:
