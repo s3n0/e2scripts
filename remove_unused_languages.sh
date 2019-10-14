@@ -4,11 +4,11 @@
 #opkg update && opkg list-installed | grep enigma2-locale
 
 #### HOW TO REMOVE LANGUAGE PACKAGES:
-#opkg --force-depends remove enigma2-locale-{ar,bg,ca,cs,da,el,en-gb,es,et,fa,fi,fr,fy,he,hk,hr,hu,id,is,it,ku,lt,lv,nb,nl,no,pl,pt,pt-br,ro,ru,sk,sl,sr,sv,th,tr,uk,vi,zh-cn,zh-hk}    # remove all except EN,DE
-#opkg --force-depends remove enigma2-locale-{ar,bg,ca,cs,da,el,en-gb,es,et,fa,fi,fr,fy,he,hk,hr,hu,id,is,it,ku,lt,lv,nb,nl,no,pl,pt,pt-br,ro,ru,sl,sr,sv,th,tr,uk,vi,zh-cn,zh-hk}       # remove all except EN,DE,SK
+#opkg remove --force-depends enigma2-locale-{ar,bg,ca,cs,da,el,en-gb,es,et,fa,fi,fr,fy,he,hk,hr,hu,id,is,it,ku,lt,lv,nb,nl,no,pl,pt,pt-br,ro,ru,sk,sl,sr,sv,th,tr,uk,vi,zh-cn,zh-hk}    # remove all except EN,DE
+#opkg remove --force-depends enigma2-locale-{ar,bg,ca,cs,da,el,en-gb,es,et,fa,fi,fr,fy,he,hk,hr,hu,id,is,it,ku,lt,lv,nb,nl,no,pl,pt,pt-br,ro,ru,sl,sr,sv,th,tr,uk,vi,zh-cn,zh-hk}       # remove all except EN,DE,SK
 
 #### HOW TO REMOVE LANGUAGE PACKAGES (WITH THE HELPING OF THE LOOP-FOR, BY S3N0):
-opkg --force-depends remove enigma2-locale-{$(ls /usr/share/enigma2/po/ | grep -v -E 'en|de|sk' | tr '\n' ',' | head -c -1)}      # remove all except EN,DE,SK
+opkg remove --force-depends enigma2-locale-{$(ls /usr/share/enigma2/po/ | grep -v -E 'en|de|sk' | tr '\n' ',' | head -c -1)}      # remove all except EN,DE,SK
 
 #### HOW TO REMOVE LANGUAGE PACKAGES (WITH THE HELPING OF LOOP, BY OpenATV FORUM -> https://www.opena.tv/howtos/41966-howto-sprachen-deinstallieren-nachdem-die-box-online-geflasht-wurde-post360880.html#post360880 ):
 #for r in `ls /usr/share/enigma2/po/ | grep -v -E 'de|en|sk'` ; do opkg remove --force-depends enigma2-locale-$r ; done ;         # remove all except EN,DE,SK
