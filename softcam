@@ -63,7 +63,7 @@
 # Then copy your Oscam configuration files into the '/etc/tuxbox/config/oscam' folder (using the FTP connection)
 #
 # For example with helping of the following bash script, you can download also the oscam binary file:
-#      wget -qO- --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh | bash
+#      wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
 # Then restart the set-top-box via the GUI MENU or via the Shell:
 #      reboot
