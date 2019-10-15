@@ -22,7 +22,7 @@
 
 
 LOCAL_OSCAM_BINFILE=$(find /usr/bin -name oscam* | head -n 1)
-[ -z "$LOCAL_OSCAM_BINFILE" ] && { LOCAL_OSCAM_BINFILE="/usr/bin/oscam"; echo "No Oscam binary file found. The default file name $LOCAL_OSCAM_BINFILE will be used to download and add a new Oscam."; } || echo "Oscam binary file $LOCAL_OSCAM_BINFILE was found."
+[ -z "$LOCAL_OSCAM_BINFILE" ] && { LOCAL_OSCAM_BINFILE="/usr/bin/oscam"; echo "No Oscam binary file found. The default file name $LOCAL_OSCAM_BINFILE will be used to download and add a new Oscam binary file."; } || echo "Oscam binary file $LOCAL_OSCAM_BINFILE was found."
 
 ## LOCAL_OSCAM_BINFILE="/usr/bin/oscam"
 ## [ -f $LOCAL_OSCAM_BINFILE ] || { echo "ERROR ! User-configured binary file $LOCAL_OSCAM_BINFILE not found !"; exit 1; }
