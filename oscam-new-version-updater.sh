@@ -21,13 +21,18 @@
 
 
 
-LOCAL_OSCAM_BINFILE=$(find /usr/bin -name oscam* | tail -n 1)
+LOCAL_OSCAM_BINFILE=$(find /usr/bin -name oscam* | head -n 1)
 [ -z "$LOCAL_OSCAM_BINFILE" ] && { LOCAL_OSCAM_BINFILE="/usr/bin/oscam"; echo "No Oscam binary file found. The default file name $LOCAL_OSCAM_BINFILE will be used to download and add a new Oscam."; } || echo "Oscam binary file $LOCAL_OSCAM_BINFILE was found."
 
 ## LOCAL_OSCAM_BINFILE="/usr/bin/oscam"
 ## [ -f $LOCAL_OSCAM_BINFILE ] || { echo "ERROR ! User-configured binary file $LOCAL_OSCAM_BINFILE not found !"; exit 1; }
 
+## LOCAL_OSCAM_BINFILE=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
+## [ -z "$LOCAL_OSCAM_BINFILE" ] && { LOCAL_OSCAM_BINFILE="/usr/bin/oscam"; echo "No Oscam process name found. The default file name $LOCAL_OSCAM_BINFILE will be used to download and add a new Oscam."; } || echo "Oscam process $LOCAL_OSCAM_BINFILE found."
+
+
 REQUESTED_BUILD="oscam-trunk"
+
 # - some examples of Oscam builds included on the feed server, there is possible to change one of them:
 #      oscam-trunk
 #      oscam-trunk-ipv4only
@@ -227,19 +232,26 @@ echo "---------------------------"
 #### Specify a startup softcam script (usually in the '/etc/init.d' folder)
 [ -f /etc/init.d/softcam ] && INITD_SCRIPT=/etc/init.d/softcam
 [ -f /etc/init.d/softcam.oscam ] && INITD_SCRIPT=/etc/init.d/softcam.oscam
-[ -z "$INITD_SCRIPT" ] && echo -e "WARNING ! Softcam control script (usually placed in the '/etc/init.d' folder) was not found. \nPlease download some autostart softcam script + set the execution rights \nand apply the particular run-level. \nFor example using the following commands: \nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
-
-#### Replace the oscam binary file with new one
-[ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT stop
-sleep 2
-mv -f /tmp/aaa/$REQUESTED_BUILD $LOCAL_OSCAM_BINFILE
-chmod 755 $LOCAL_OSCAM_BINFILE
-[ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT start
-
-#### Remove all temporary files (sub-directory)
-rm -fr /tmp/aaa
+[ -z "$INITD_SCRIPT" ] && echo -e "WARNING ! Softcam control script (usually placed in the '/etc/init.d' folder) not found. \nPlease download some autostart softcam script + set the execution rights \nand apply the particular run-level. \nFor example using the following commands: \nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
 
 #######################################
 #######################################
+
+(   
+    #### Run the following code in the background - as prevent when the script was started from the Oscam-Webif:
+    #### Using the syntax {....} does not create a sub-shell whereas (....) does. The reason for your error is that you tried to background something that didn’t create a sub-shell.
+
+    #### Replace the oscam binary file with new one
+    [ -z "$INITD_SCRIPT" ] || { $INITD_SCRIPT stop ; sleep 1 }
+    if ps -C ${LOCAL_OSCAM_BINFILE##*/} > /dev/null 2>&1 ; then killall -9 ${LOCAL_OSCAM_BINFILE##*/} ; fi     # if "init.d" script was not found, the task must to be killed
+    mv -f /tmp/aaa/$REQUESTED_BUILD $LOCAL_OSCAM_BINFILE
+    chmod 755 $LOCAL_OSCAM_BINFILE
+    [ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT start
+
+    #### Remove all temporary files (sub-directory)
+    rm -fr /tmp/aaa
+) &
+wait
+
 
 exit 0
