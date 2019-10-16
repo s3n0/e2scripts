@@ -22,7 +22,7 @@
 
 
 
-#### specify the plugin folder and the IPK output file:
+#### specify the plugin folder, the plugin version and the IPK output file:
 plugin_dir=/usr/lib/enigma2/python/Plugins/Extensions/ProjectXYZ
 VER=$(cat "$plugin_dir/version.txt")
 ipk_pckgname=enigma2-plugin-extensions-projectxyz
@@ -86,6 +86,7 @@ EOF
 
 
 #### remove all source files (Python source code):
+#### WARNING - make sure your source codes are backed up !
 rm -rf $plugin_dir/*.py
 
 #### as the first, it's a neccessary to set the execution rights to all files (mainly in the '/CONTROL' directory):
