@@ -37,6 +37,8 @@ $(find /etc -name *cam*)
 /usr/share/enigma2/MetrixHD/skinparts/infobar-mod_by_s3n0/
 
 /usr/share/enigma2/picon/
+/media/hdd/picon/
+/media/usb/picon/
 "
 
 #############################
