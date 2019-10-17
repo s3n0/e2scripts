@@ -61,7 +61,7 @@ init_4_with_feedback() {
         x=$(( $x + 1 ))
         sleep 1
         echo "...$x seconds waiting"
-        #echo "...Enigma state = "`ps -o stat -C enigma2 | grep -v 'STAT'`      # debugging output - for testing purpose only
+        #echo "...Enigma state = "`ps --no-headers -o stat -C enigma2`      # debugging output - for testing purpose only
     done
     if pidof enigma2 > /dev/null 2>&1 ; then
         echo "...stopping failed ! The Backup & Restore script will aborted."
