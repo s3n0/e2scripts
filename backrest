@@ -24,6 +24,7 @@ LIST="
 $(find /usr/bin -name *cam*)
 $(find /etc -name *cam*)
 /usr/keys/
+/etc/tuxbox/config/oscam/piconTPL/
 
 /usr/bin/udpxy
 /etc/init.d/udpxy
