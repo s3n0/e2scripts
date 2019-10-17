@@ -56,7 +56,7 @@ init_4_with_feedback() {
     echo "Stopping the Enigma..."
     init 4
     x=0
-    #while [ "$x" -le 15 ] && [ $(ps -o stat -C enigma2 | grep -v 'STAT') ] ; do
+    #while [ "$x" -le 15 ] && [ $(ps --no-headers -o stat -C enigma2) ] ; do
     while [ "$x" -le 15 ] && [ $(pidof enigma2) ] ; do
         x=$(( $x + 1 ))
         sleep 1
