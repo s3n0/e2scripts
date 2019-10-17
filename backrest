@@ -21,10 +21,8 @@ LIST="
 
 /usr/script/
 
-/usr/bin/*cam*
-/etc/init.d/softcam*
-/etc/rc?.d/*softcam*
-/etc/tuxbox/config/
+$(find /usr/bin -name *cam*)
+$(find /etc -name *cam*)
 /usr/keys/
 
 /usr/bin/udpxy
