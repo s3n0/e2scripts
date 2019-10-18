@@ -33,7 +33,6 @@ $(find /etc -name *cam*)
 /usr/lib/enigma2/python/Plugins/Extensions/EpgDownloadReplace/
 /usr/lib/enigma2/python/Plugins/Extensions/ChocholousekPicons/
 /usr/lib/enigma2/python/Plugins/Extensions/Remoover/
-/usr/lib/enigma2/python/Plugins/Extensions/YouTube/
 
 /usr/share/enigma2/MetrixHD/skinparts/infobar-mod_by_s3n0/
 
