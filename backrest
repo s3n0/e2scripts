@@ -106,7 +106,7 @@ do_backup() {
 
 do_restore() {
     echo "-----------------------"
-    if [ -f $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz ]; then
+    if ls $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz > /dev/null 2>&1 ; then
         LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
         init_4_with_feedback
         echo "-----------------------"
@@ -114,7 +114,7 @@ do_restore() {
         echo "    $LATEST_FILE "
         echo "-----------------------"
         echo "Starting decompression..."
-        tar --overwrite -xzphf $LATEST_FILE
+        tar -C / --overwrite -xzphf $LATEST_FILE
         echo "...done."
         echo "-----------------------"
         echo "Restarting the set-top box..."
