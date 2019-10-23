@@ -205,38 +205,41 @@ else
     exit 0
 fi
 
+#### Create a temporary sub-directory and go in
+rm -fr /tmp/aaa ; mkdir -p /tmp/aaa ; cd /tmp/aaa
+
+#### Download the necessary Oscam installation package
+echo -n "Downloading the necessary Oscam installation package... "
+wget -q --show-progress -O /tmp/aaa/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
+
+#### Checking if the 7zip archiver is installed on system
+if ! 7z > /dev/null 2>&1 ; then
+    echo "ERROR ! The 7zip archiver was not found ! Please install the 7zip archiver !"
+    echo "For example, using the following commands:   opkg update && opkg install p7zip-full"
+    exit 1
+fi
+
+#### Extracting the IPK package
+echo "---------------------------"
+echo "Extracting the IPK package:"
+7z e $IPK_FILENAME                         # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7z" archiver
+7z e data.tar.?z                           # 2. unpacking the ".gz" OR ".xz" archive
+7z e data.tar ./usr/bin/$REQUESTED_BUILD   # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
+echo -n "The Oscam binary file has "; [ -f /tmp/aaa/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '/tmp/aaa'."; exit 1; }
+echo "---------------------------"
+
+#### Specify a startup softcam script (usually in the '/etc/init.d' folder)
+[ -f /etc/init.d/softcam ] && INITD_SCRIPT=/etc/init.d/softcam
+[ -f /etc/init.d/softcam.oscam ] && INITD_SCRIPT=/etc/init.d/softcam.oscam
+[ -z "$INITD_SCRIPT" ] && echo -e "WARNING ! Softcam control script (usually placed in the '/etc/init.d' folder) not found. \nPlease download some autostart softcam script + set the execution rights \nand apply the particular run-level. \nFor example using the following commands: \nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
+
 #### Run a separate process in the background
-echo "Starting a separate process in the background."
+echo "Starting a separate process in the background, for replace oscam binary file."
+echo "The new Oscam binary file will replaced now."
+echo "If you start the script via the Oscam Webif, please wait 10 seconds and reload the Oscam Webif."
+sleep 5
 
-nohup (
-    #### Create a temporary sub-directory and go in
-    rm -fr /tmp/aaa ; mkdir -p /tmp/aaa ; cd /tmp/aaa
-
-    #### Download the necessary Oscam installation package
-    echo -n "Downloading the necessary Oscam installation package... "
-    wget -q --show-progress -O /tmp/aaa/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
-
-    #### Checking if the 7zip archiver is installed on system
-    if ! 7z > /dev/null 2>&1 ; then
-        echo "ERROR ! The 7zip archiver was not found ! Please install the 7zip archiver !"
-        echo "For example, using the following commands:   opkg update && opkg install p7zip-full"
-        exit 1
-    fi
-
-    #### Extracting the IPK package
-    echo "---------------------------"
-    echo "Extracting the IPK package:"
-    7z e $IPK_FILENAME                         # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7z" archiver
-    7z e data.tar.?z                           # 2. unpacking the ".gz" OR ".xz" archive
-    7z e data.tar ./usr/bin/$REQUESTED_BUILD   # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
-    echo -n "The Oscam binary file has "; [ -f /tmp/aaa/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '/tmp/aaa'."; exit 1; }
-    echo "---------------------------"
-
-    #### Specify a startup softcam script (usually in the '/etc/init.d' folder)
-    [ -f /etc/init.d/softcam ] && INITD_SCRIPT=/etc/init.d/softcam
-    [ -f /etc/init.d/softcam.oscam ] && INITD_SCRIPT=/etc/init.d/softcam.oscam
-    [ -z "$INITD_SCRIPT" ] && echo -e "WARNING ! Softcam control script (usually placed in the '/etc/init.d' folder) not found. \nPlease download some autostart softcam script + set the execution rights \nand apply the particular run-level. \nFor example using the following commands: \nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
-
+background_process() {    
     #### Replace the oscam binary file with new one
     [ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT stop
     if ps -C ${LOCAL_OSCAM_BINFILE##*/} > /dev/null 2>&1 ; then killall -9 ${LOCAL_OSCAM_BINFILE##*/} ; fi     # if "init.d" script was not found, the task must to be killed
@@ -247,4 +250,6 @@ nohup (
 
     #### Remove all temporary files (sub-directory)
     rm -fr /tmp/aaa
-) &
+}
+background_process &
+
