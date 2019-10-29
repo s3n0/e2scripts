@@ -21,23 +21,39 @@
 
 
 
-LOCAL_OSCAM_BINFILE=$(find /usr/bin -name oscam* | head -n 1)
-[ -z "$LOCAL_OSCAM_BINFILE" ] && { LOCAL_OSCAM_BINFILE="/usr/bin/oscam"; echo "No Oscam binary file found. The default path and filename $LOCAL_OSCAM_BINFILE will be used to download and add a new Oscam binary file."; } || echo "Oscam binary file $LOCAL_OSCAM_BINFILE was found."
 
-## LOCAL_OSCAM_BINFILE="/usr/bin/oscam"
-## [ -f $LOCAL_OSCAM_BINFILE ] || { echo "ERROR ! User-configured binary file $LOCAL_OSCAM_BINFILE not found !"; exit 1; }
+OSCAM_LOCAL_PATH=$(find /usr/bin -name oscam* | head -n 1)
+[ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam binary file found. The default path and filename $OSCAM_LOCAL_PATH will be used to download and add a new Oscam binary file."; } || echo "Oscam binary file $OSCAM_LOCAL_PATH was found."
 
-## LOCAL_OSCAM_BINFILE=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
-## [ -z "$LOCAL_OSCAM_BINFILE" ] && { LOCAL_OSCAM_BINFILE="/usr/bin/oscam"; echo "No Oscam process name found. The default file name $LOCAL_OSCAM_BINFILE will be used to download and add a new Oscam."; } || echo "Oscam process $LOCAL_OSCAM_BINFILE found."
+## OSCAM_LOCAL_PATH="/usr/bin/oscam"
+## [ -f $OSCAM_LOCAL_PATH ] || { echo "ERROR ! User-configured binary file $OSCAM_LOCAL_PATH not found !"; exit 1; }
+
+## OSCAM_LOCAL_PATH=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
+## [ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam process name found. The default file name $OSCAM_LOCAL_PATH will be used to download and add a new Oscam."; } || echo "Oscam process $OSCAM_LOCAL_PATH found."
+
+
 
 
 REQUESTED_BUILD="oscam-trunk"
+#REQUESTED_BUILD="oscam-emu"
 
 # - some examples of Oscam builds included on the feed server, there is possible to change one of them:
-#      oscam-trunk
-#      oscam-trunk-ipv4only
-#      oscam-stable
-#      oscam-stable-ipv4only
+#
+#       oscam-trunk
+#       oscam-trunk-ipv4only
+#       oscam-stable
+#       oscam-stable-ipv4only
+#
+#       oscam-emu
+#       oscam-emu-ipv4only
+
+
+
+
+# A temporary directory
+TMP_DIR="/tmp/softcam_updating"
+
+
 
 
 
@@ -186,16 +202,50 @@ check_compat
 #######################################
 #######################################
 
+#### Checking if the 7-zip archiver is installed on system
+if [ -f /usr/bin/7z ]; then
+    BIN7Z=/usr/bin/7z
+#elif [ -f /usr/bin/7za ]; then    # !!!!! "7za" stand-alone archiver does not support the "ar" method (the outer layer of the .ipk file is compressed just through the "ar" archiver)
+#    BIN7Z=/usr/bin/7za
+else
+    echo "ERROR ! The 7-zip archiver was not found ! Please install the 7-zip archiver !"
+    echo "For example, using the following commands:   opkg update && opkg install p7zip-full"
+    exit 1
+fi
+
 #### Download and unpack the list of all available packages + Find out the package name according to the required Oscam edition
 echo -n "Downloading and unpacking the list of softcam installation packages... "
 IPK_FILENAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "Filename:" | grep "$REQUESTED_BUILD"_1.20 | cut -d " " -f 2)
 [ -z "$IPK_FILENAME" ] && { echo " failed!"; exit 1; } || echo " done."
 
-#### Finding out if there is a newer version of Oscam on the internet
-OSCAM_LOCAL_VERSION=$(  $LOCAL_OSCAM_BINFILE --build-info | grep -i 'version:' | grep -o '.....$'  )    # output result is, as example:  11540
-[ -z "$OSCAM_LOCAL_VERSION" ] && OSCAM_LOCAL_VERSION="11000"                                            # as a precaution if there is no Oscam on the flash drive yet
-OSCAM_ONLINE_VERSION=$( echo $IPK_FILENAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'  )                       # output result is, as example:  11546
-echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on flash drive:\t$OSCAM_LOCAL_VERSION"
+#### Create a temporary sub-directory and go in
+rm -fr $TMP_DIR ; mkdir -p $TMP_DIR ; cd $TMP_DIR
+
+#### Download the necessary Oscam installation package
+echo -n "Downloading the necessary Oscam installation package... "
+wget -q --show-progress -O $TMP_DIR/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
+
+#### Extracting the IPK package
+echo "---------------------------"
+echo "Extracting the IPK package:"
+$BIN7Z e -y $IPK_FILENAME                          # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7-zip" archiver
+$BIN7Z e -y data.tar.?z                            # 2. unpacking the ".gz" OR ".xz" archive
+$BIN7Z e -y data.tar ./usr/bin/$REQUESTED_BUILD    # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
+echo -n "The Oscam binary file has " ; [ -f $TMP_DIR/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '$TMP_DIR'."; exit 1; }
+echo "---------------------------"
+
+#### Retrieve Oscam online version   (from downloaded binary file)
+chmod a+x $TMP_DIR/$REQUESTED_BUILD
+OSCAM_ONLINE_VERSION=$( $TMP_DIR/$REQUESTED_BUILD --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}' )    # output result is, as example:  11552
+#OSCAM_ONLINE_VERSION=$( echo $IPK_FILENAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'  )                              # old method to retrieve online Oscam version
+[ -z "$OSCAM_LOCAL_VERSION" ] || { echo "Error! The Oscam online version cannot be recognized!"; exit 1; }
+
+#### Retrieve Oscam local version    (from current binary file placed in the /usr/bin folder)
+OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}'   )       # output result is, as example:  11546
+[ -z "$OSCAM_LOCAL_VERSION" ] && OSCAM_LOCAL_VERSION="11000"                                                    # sets the null version as a precaution if there is no Oscam on the local harddisk yet
+
+#### Compare Oscam local version VS. online version
+echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on local drive:\t$OSCAM_LOCAL_VERSION"
 if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]; then
     echo "A new version of Oscam has been found and will be updated."
     # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1
@@ -205,32 +255,16 @@ else
     exit 0
 fi
 
-#### Create a temporary sub-directory and go in
-rm -fr /tmp/aaa ; mkdir -p /tmp/aaa ; cd /tmp/aaa
 
-#### Download the necessary Oscam installation package
-echo -n "Downloading the necessary Oscam installation package... "
-wget -q --show-progress -O /tmp/aaa/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
+#######################################
+#######################################
 
-#### Checking if the 7zip archiver is installed on system
-if ! 7z > /dev/null 2>&1 ; then
-    echo "ERROR ! The 7zip archiver was not found ! Please install the 7zip archiver !"
-    echo "For example, using the following commands:   opkg update && opkg install p7zip-full"
-    exit 1
-fi
-
-#### Extracting the IPK package
-echo "---------------------------"
-echo "Extracting the IPK package:"
-7z e $IPK_FILENAME                         # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7z" archiver
-7z e data.tar.?z                           # 2. unpacking the ".gz" OR ".xz" archive
-7z e data.tar ./usr/bin/$REQUESTED_BUILD   # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
-echo -n "The Oscam binary file has "; [ -f /tmp/aaa/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '/tmp/aaa'."; exit 1; }
-echo "---------------------------"
 
 #### Specify a startup softcam script (usually in the '/etc/init.d' folder)
 [ -f /etc/init.d/softcam ] && INITD_SCRIPT=/etc/init.d/softcam
+[ -f /etc/init.d/softcam.sh ] && INITD_SCRIPT=/etc/init.d/softcam.sh
 [ -f /etc/init.d/softcam.oscam ] && INITD_SCRIPT=/etc/init.d/softcam.oscam
+[ -f /etc/init.d/oscam ] && INITD_SCRIPT=/etc/init.d/oscam
 [ -z "$INITD_SCRIPT" ] && echo -e "WARNING ! Softcam control script (usually placed in the '/etc/init.d' folder) not found. \nPlease download some autostart softcam script + set the execution rights \nand apply the particular run-level. \nFor example using the following commands: \nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
 
 #### Run a separate process in the background
@@ -242,14 +276,15 @@ sleep 5
 background_process() {    
     #### Replace the oscam binary file with new one
     [ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT stop
-    if ps -C ${LOCAL_OSCAM_BINFILE##*/} > /dev/null 2>&1 ; then killall -9 ${LOCAL_OSCAM_BINFILE##*/} ; fi     # if "init.d" script was not found, the task must to be killed
+    OSCAM_LOCAL_BIN=${OSCAM_LOCAL_PATH##*/}
+    if ps -C $OSCAM_LOCAL_BIN > /dev/null 2>&1 ; then killall -9 $OSCAM_LOCAL_BIN ; fi     # if "init.d" script was not found, the task must to be killed
     sleep 1
-    mv -f /tmp/aaa/$REQUESTED_BUILD $LOCAL_OSCAM_BINFILE
-    chmod 755 $LOCAL_OSCAM_BINFILE
+    mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
+    chmod a+x $OSCAM_LOCAL_PATH
     [ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT start
 
     #### Remove all temporary files (sub-directory)
-    rm -fr /tmp/aaa
+    rm -fr $TMP_DIR
 }
-background_process &
 
+background_process &
