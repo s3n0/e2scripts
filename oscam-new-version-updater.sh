@@ -241,7 +241,7 @@ OSCAM_ONLINE_VERSION=$( $TMP_DIR/$REQUESTED_BUILD --build-info | grep -i 'versio
 [ -z "$OSCAM_LOCAL_VERSION" ] || { echo "Error! The Oscam online version cannot be recognized!"; exit 1; }
 
 #### Retrieve Oscam local version    (from current binary file placed in the /usr/bin folder)
-OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}'   )       # output result is, as example:  11546
+OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}'   )          # output result is, as example:  11546
 [ -z "$OSCAM_LOCAL_VERSION" ] && OSCAM_LOCAL_VERSION="11000"                                                    # sets the null version as a precaution if there is no Oscam on the local harddisk yet
 
 #### Compare Oscam local version VS. online version
@@ -273,18 +273,20 @@ echo "The new Oscam binary file will replaced now."
 echo "If you start the script via the Oscam Webif, please wait 10 seconds and reload the Oscam Webif."
 sleep 5
 
-background_process() {    
+background_process() {
+    
     #### Replace the oscam binary file with new one
-    [ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT stop
     OSCAM_LOCAL_BIN=${OSCAM_LOCAL_PATH##*/}
-    if ps -C $OSCAM_LOCAL_BIN > /dev/null 2>&1 ; then killall -9 $OSCAM_LOCAL_BIN ; fi     # if "init.d" script was not found, the task must to be killed
+    OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_LOCAL_BIN | head -n 1 | grep -o '/.*$')
+    [ -z "$INITD_SCRIPT" ] && killall -9 $OSCAM_LOCAL_BIN || sh $INITD_SCRIPT stop      # if "init.d" script was not found, the task must to be killed
     sleep 1
-    mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
+    mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH                                   # replace the oscam binary file with new one
     chmod a+x $OSCAM_LOCAL_PATH
-    [ -z "$INITD_SCRIPT" ] || $INITD_SCRIPT start
-
+    [ -z "$INITD_SCRIPT" ] && $OSCAM_CMD || sh $INITD_SCRIPT start                      # if "init.d" script was not found, the task must to be started again with previous arguments
+    
     #### Remove all temporary files (sub-directory)
     rm -fr $TMP_DIR
 }
 
 background_process &
+
