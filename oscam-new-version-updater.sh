@@ -22,14 +22,16 @@
 
 
 
-OSCAM_LOCAL_PATH=$(find /usr/bin -name oscam* | head -n 1)
-[ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam binary file found. The default path and filename $OSCAM_LOCAL_PATH will be used to download and add a new Oscam binary file."; } || echo "Oscam binary file $OSCAM_LOCAL_PATH was found."
 
 ## OSCAM_LOCAL_PATH="/usr/bin/oscam"
 ## [ -f $OSCAM_LOCAL_PATH ] || { echo "ERROR ! User-configured binary file $OSCAM_LOCAL_PATH not found !"; exit 1; }
 
+OSCAM_LOCAL_PATH=$(find /usr/bin -name oscam* | head -n 1)
+[ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam binary file found. The default path and filename $OSCAM_LOCAL_PATH will be used to download and add a new Oscam binary file."; } || echo "Oscam binary file $OSCAM_LOCAL_PATH was found."
+
 ## OSCAM_LOCAL_PATH=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
 ## [ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam process name found. The default file name $OSCAM_LOCAL_PATH will be used to download and add a new Oscam."; } || echo "Oscam process $OSCAM_LOCAL_PATH found."
+
 
 
 
@@ -50,6 +52,7 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 
+
 # A temporary directory
 TMP_DIR="/tmp/softcam_updating"
 
@@ -65,6 +68,7 @@ TMP_DIR="/tmp/softcam_updating"
 BASE_FEED="http://updates.mynonpublic.com/oea"
 # OEVER="4.3"                           # this value is determined automatically using the Python script below
 # ARCH="mips32el"                       # this value is determined automatically using the Python script below
+
 
 
 export D=${D}
@@ -195,6 +199,7 @@ check_compat() {
     fi
 }
 
+
 get_oever
 get_arch
 check_compat
@@ -255,38 +260,20 @@ else
     exit 0
 fi
 
-
 #######################################
 #######################################
 
+#### Replace the oscam binary file with new one
+OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
+OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')
+killall -9 $OSCAM_BIN_FNAME
+mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
+chmod a+x $OSCAM_LOCAL_PATH
+$OSCAM_CMD
 
-#### Specify a startup softcam script (usually in the '/etc/init.d' folder)
-[ -f /etc/init.d/softcam ] && INITD_SCRIPT=/etc/init.d/softcam
-[ -f /etc/init.d/softcam.sh ] && INITD_SCRIPT=/etc/init.d/softcam.sh
-[ -f /etc/init.d/softcam.oscam ] && INITD_SCRIPT=/etc/init.d/softcam.oscam
-[ -f /etc/init.d/oscam ] && INITD_SCRIPT=/etc/init.d/oscam
-[ -z "$INITD_SCRIPT" ] && echo -e "WARNING ! Softcam control script (usually placed in the '/etc/init.d' folder) not found. \nPlease download some autostart softcam script + set the execution rights \nand apply the particular run-level. \nFor example using the following commands: \nwget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod +x /etc/init.d/softcam && update-rc.d softcam defaults 90"
+#### Remove all temporary files (sub-directory)
+rm -fr $TMP_DIR
 
-#### Run a separate process in the background
-echo "Starting a separate process in the background, for replace oscam binary file."
-echo "The new Oscam binary file will replaced now."
-echo "If you start the script via the Oscam Webif, please wait 10 seconds and reload the Oscam Webif."
-sleep 5
 
-background_process() {
-    
-    #### Replace the oscam binary file with new one
-    OSCAM_LOCAL_BIN=${OSCAM_LOCAL_PATH##*/}
-    OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_LOCAL_BIN | head -n 1 | grep -o '/.*$')
-    [ -z "$INITD_SCRIPT" ] && killall -9 $OSCAM_LOCAL_BIN || sh $INITD_SCRIPT stop      # if "init.d" script was not found, the task must to be killed
-    sleep 1
-    mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH                                   # replace the oscam binary file with new one
-    chmod a+x $OSCAM_LOCAL_PATH
-    [ -z "$INITD_SCRIPT" ] && $OSCAM_CMD || sh $INITD_SCRIPT start                      # if "init.d" script was not found, the task must to be started again with previous arguments
-    
-    #### Remove all temporary files (sub-directory)
-    rm -fr $TMP_DIR
-}
 
-background_process &
-
+exit 0
