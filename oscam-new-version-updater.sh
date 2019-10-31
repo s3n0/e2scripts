@@ -27,7 +27,7 @@
 ## [ -f $OSCAM_LOCAL_PATH ] || { echo "ERROR ! User-configured binary file $OSCAM_LOCAL_PATH not found !"; exit 1; }
 
 OSCAM_LOCAL_PATH=$(find /usr/bin -name oscam* | head -n 1)
-[ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam binary file found. The default path and filename $OSCAM_LOCAL_PATH will be used to download and add a new Oscam binary file."; } || echo "Oscam binary file $OSCAM_LOCAL_PATH was found."
+[ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam binary file found ! The default path+filename $OSCAM_LOCAL_PATH will be used to download + add a new Oscam binary file."; } || echo "Recognized binary file: $OSCAM_LOCAL_PATH"
 
 ## OSCAM_LOCAL_PATH=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
 ## [ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam process name found. The default file name $OSCAM_LOCAL_PATH will be used to download and add a new Oscam."; } || echo "Oscam process $OSCAM_LOCAL_PATH found."
@@ -231,11 +231,14 @@ echo -n "Downloading the necessary Oscam installation package... "
 wget -q --show-progress -O $TMP_DIR/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
 
 #### Extracting the IPK package
+extractor() {
+    echo -n "Extracting:  $1 $2  --  "; $BIN7Z e -y $1 $2 > /dev/null 2>&1 && echo "OK" || { echo "FAILED!"; exit 1; }
+}
 echo "---------------------------"
 echo "Extracting the IPK package:"
-$BIN7Z e -y $IPK_FILENAME                          # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7-zip" archiver
-$BIN7Z e -y data.tar.?z                            # 2. unpacking the ".gz" OR ".xz" archive
-$BIN7Z e -y data.tar ./usr/bin/$REQUESTED_BUILD    # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
+extractor $IPK_FILENAME                          # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7-zip" archiver
+extractor data.tar.?z                            # 2. unpacking the ".gz" OR ".xz" archive
+extractor data.tar ./usr/bin/$REQUESTED_BUILD    # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
 echo -n "The Oscam binary file has " ; [ -f $TMP_DIR/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '$TMP_DIR'."; exit 1; }
 echo "---------------------------"
 
@@ -243,7 +246,7 @@ echo "---------------------------"
 chmod a+x $TMP_DIR/$REQUESTED_BUILD
 OSCAM_ONLINE_VERSION=$( $TMP_DIR/$REQUESTED_BUILD --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}' )    # output result is, as example:  11552
 #OSCAM_ONLINE_VERSION=$( echo $IPK_FILENAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'  )                              # old method to retrieve online Oscam version
-[ -z "$OSCAM_LOCAL_VERSION" ] || { echo "Error! The Oscam online version cannot be recognized!"; exit 1; }
+[ -z "$OSCAM_ONLINE_VERSION" ] && { echo "Error! The Oscam online version cannot be recognized!"; exit 1; }
 
 #### Retrieve Oscam local version    (from current binary file placed in the /usr/bin folder)
 OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}'   )          # output result is, as example:  11546
@@ -266,10 +269,10 @@ fi
 #### Replace the oscam binary file with new one
 OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
 OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')
-killall -9 $OSCAM_BIN_FNAME
+[ -z "$OSCAM_CMD" ] || killall -9 $OSCAM_BIN_FNAME
 mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
 chmod a+x $OSCAM_LOCAL_PATH
-$OSCAM_CMD
+[ -z "$OSCAM_CMD" ] || $OSCAM_CMD
 
 #### Remove all temporary files (sub-directory)
 rm -fr $TMP_DIR
