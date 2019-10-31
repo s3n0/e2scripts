@@ -54,7 +54,7 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 # A temporary directory
-TMP_DIR="/tmp/softcam_updating"
+TMP_DIR="/tmp/temp-dir-${RANDOM}"
 
 
 
