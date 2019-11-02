@@ -254,28 +254,24 @@ OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | gr
 
 #### Compare Oscam local version VS. online version
 echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on local drive:\t$OSCAM_LOCAL_VERSION"
-if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]; then
+if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]
+then
     echo "A new version of Oscam has been found and will be updated."
-    # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1
+    # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1    
+    #### Replace the oscam binary file with new one
+    OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
+    OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')
+    [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" }
+    mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
+    chmod a+x $OSCAM_LOCAL_PATH
+    [ -z "$OSCAM_CMD" ] || $OSCAM_CMD
 else
     echo "Installed Oscam version is current. No need to update."
     # wget -qO- "http://127.0.0.1/web/message?text=Installed+Oscam+version+($OSCAM_LOCAL_VERSION)+is+current.%0ANo+need+to+update.&type=1&timeout=10" > /dev/null 2>&1
-    exit 0
 fi
 
-#######################################
-#######################################
-
-#### Replace the oscam binary file with new one
-OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
-OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')
-[ -z "$OSCAM_CMD" ] || killall -9 $OSCAM_BIN_FNAME
-mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
-chmod a+x $OSCAM_LOCAL_PATH
-[ -z "$OSCAM_CMD" ] || $OSCAM_CMD
-
 #### Remove all temporary files (sub-directory)
-rm -fr $TMP_DIR
+rm -rf $TMP_DIR
 
 
 
