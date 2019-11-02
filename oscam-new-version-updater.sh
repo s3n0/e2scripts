@@ -54,7 +54,7 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 # A temporary directory
-TMP_DIR="/tmp/temp-dir-${RANDOM}"
+TMP_DIR="/tmp/oscam_binary_update"
 
 
 
@@ -207,6 +207,7 @@ check_compat
 #######################################
 #######################################
 
+
 #### Checking if the 7-zip archiver is installed on system
 if [ -f /usr/bin/7z ]; then
     BIN7Z=/usr/bin/7z
@@ -219,6 +220,7 @@ else
 fi
 
 #### Download and unpack the list of all available packages + Find out the package name according to the required Oscam edition
+echo "---------------------------"
 echo -n "Downloading and unpacking the list of softcam installation packages... "
 IPK_FILENAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "Filename:" | grep "$REQUESTED_BUILD"_1.20 | cut -d " " -f 2)
 [ -z "$IPK_FILENAME" ] && { echo " failed!"; exit 1; } || echo " done."
@@ -261,7 +263,7 @@ then
     #### Replace the oscam binary file with new one
     OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
     OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')
-    [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" }
+    [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" ; }
     mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
     chmod a+x $OSCAM_LOCAL_PATH
     [ -z "$OSCAM_CMD" ] || $OSCAM_CMD
@@ -274,5 +276,7 @@ fi
 rm -rf $TMP_DIR
 
 
+
+echo "---------------------------"
 
 exit 0
