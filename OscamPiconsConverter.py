@@ -30,7 +30,7 @@ import base64
 try:
     from PIL import Image
 except:
-    os.system("opkg install python-imaging")
+    os_system("opkg install python-imaging")
     from PIL import Image
 
 #############################################################################
