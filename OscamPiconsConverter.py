@@ -19,14 +19,19 @@
 # python /tmp/OscamPiconsConverter.py
 #############################################################################
 
-from PIL import Image
-from io import BytesIO
-import base64
-
 from sys import argv as sys_argv, stdout as sys_stdout
 from os import path as os_path, system as os_system
 import glob
 import re
+
+from io import BytesIO
+import base64
+
+try:
+    from PIL import Image
+except:
+    os.system("opkg install python-imaging")
+    from PIL import Image
 
 #############################################################################
 
