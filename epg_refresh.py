@@ -78,5 +78,3 @@ if __name__ == "__main__" and enigmaInStandby():
     
     print('...done.')
     zapChannel('')
-
-
