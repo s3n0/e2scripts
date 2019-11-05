@@ -120,7 +120,7 @@ cp -rp ${plugin_dir}/* ${project_dir}/${plugin_dir}
 
 #### create two archive files "control.tar.gz" and "data.tar.gz" + also the file "debian-binary" into build_dir
 mkdir -p ${build_dir}
-tar -C ${project_dir} -czf ${build_dir}/data.tar.gz . --exclude=CONTROL
+tar -C ${project_dir} --exclude='CONTROL' -czf ${build_dir}/data.tar.gz .
 tar -C ${project_dir}/CONTROL -czf ${build_dir}/control.tar.gz .
 echo -e "2.0\n" > ${build_dir}/debian-binary
 
