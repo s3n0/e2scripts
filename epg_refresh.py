@@ -77,4 +77,5 @@ if __name__ == "__main__" and enigmaInStandby():
         sleep(20)       # waiting 20 sec. for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
     
     print('...done.')
+    
     zapChannel('')
