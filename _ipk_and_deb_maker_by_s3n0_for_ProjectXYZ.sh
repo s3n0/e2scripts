@@ -126,12 +126,15 @@ ar -r ${ipk_targetfile} ./debian-binary ./control.tar.gz  ./data.tar.gz
 
 #### make a copy from .ipk package as the .deb package
 #### replace "/" by " " character from the end of filenames inside the "ar" archive
-replaceByte() {
-    printf "$(printf '\\x%02X' $3)" | dd of="$1" bs=1 seek=$2 count=1 conv=notrunc &> /dev/null
-} # replaceByte "filename" offset byte
 cp -f ${ipk_targetfile} ${ipk_targetfile%.ipk}.deb
-replaceByte "${ipk_targetfile%.ipk}.deb" 21 32    
-replaceByte "${ipk_targetfile%.ipk}.deb" 86 32
+#replaceByte() {
+#    printf "$(printf '\\x%02X' $3)" | dd of="$1" bs=1 seek=$2 count=1 conv=notrunc &> /dev/null
+#} #### replaceByte "filename" offset byte
+#replaceByte "${ipk_targetfile%.ipk}.deb" 21 32    
+#replaceByte "${ipk_targetfile%.ipk}.deb" 86 32
+#sed -i 's/data.tar.gz\//data.tar.gz /g' ${ipk_targetfile%.ipk}.deb
+sed -i 's/debian-binary\//debian-binary /g' ${ipk_targetfile%.ipk}.deb
+sed -i 's/control.tar.gz\//control.tar.gz /g' ${ipk_targetfile%.ipk}.deb
 sed -i 's/data.tar.gz\//data.tar.gz /g' ${ipk_targetfile%.ipk}.deb
 
 
