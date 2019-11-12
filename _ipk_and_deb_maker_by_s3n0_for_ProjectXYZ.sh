@@ -125,7 +125,7 @@ ar -r ${ipk_targetfile} ./debian-binary ./control.tar.gz  ./data.tar.gz
 
 
 #### make a copy from .ipk package as the .deb package
-#### remove "/" from the end of filenames inside the "ar" archive
+#### replace "/" by " " character from the end of filenames inside the "ar" archive
 replaceByte() {
     printf "$(printf '\\x%02X' $3)" | dd of="$1" bs=1 seek=$2 count=1 conv=notrunc &> /dev/null
 } # replaceByte "filename" offset byte
