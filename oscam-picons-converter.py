@@ -10,13 +10,15 @@
 # simple python script for converting PNG to TPL picons (for Oscam-Webif)
 #############################################################################
 # USAGE:
-# - upload the script into the set-top-box, for example into the '/tmp' folder
-#   or download the script directly via the Shell:
-# wget -O /tmp/OscamPiconsConverter.py --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/OscamPiconsConverter.py
-# - then start the script via command-line Shell:
-# python /tmp/OscamPiconsConverter.py OPTIONS PNG-directory TPL-directory
-# - start the script without arguments for show the man-page:
-# python /tmp/OscamPiconsConverter.py
+# ---- Upload the script into the set-top-box, for example into the '/tmp'
+#      folder or download the script directly via the Shell:
+#           wget -O /tmp/oscam-picons-converter.py --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-picons-converter.py
+# ---- Then start the script via command-line Shell:
+#           python /tmp/oscam-picons-converter.py <OPTIONS> <PNG-directory> <TPL-directory>
+# ---- Start the script without arguments for show the man-page:
+#           python /tmp/oscam-picons-converter.py
+# ---- Of course, the script can also be started directly from the internet (from github):
+#           wget -qO- --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-picons-converter.py | python -- - <OPTIONS> <PNG-directory> <TPL-directory>
 #############################################################################
 
 from sys import argv as sys_argv, stdout as sys_stdout
@@ -169,6 +171,7 @@ def table_size_checking(tbl):
     return True
 
 def show_man_page():
+    script_path = sys_argv[0] if sys_argv[0] else "<script_path_&_file_name>"
     print('''
 USAGE:
     python {0} OPTIONS SOURCE-PNG-DIR TARGET-TPL-DIR
@@ -194,7 +197,8 @@ EXAMPLES:
 
 RECOMMENDED:
     python {0} -1 -2 -d -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
-    '''.format(sys_argv[0])  )
+    '''.format(script_path)
+    )
 
 def prepare_arguments():    
     global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
