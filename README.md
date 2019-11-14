@@ -14,7 +14,7 @@
 + **make_ipk_by_s3n0_for_ProjectXYZ.py**
    > - IPK creation tool for Enigma2, debugged and tested on OpenATV
 
-+ **OscamPiconsConverter.py**
++ **oscam-picons-converter.py**
    > - simple python script for converting PNG to TPL picons (for Oscam-Webif)
 
 + **epg_refresh.py**
