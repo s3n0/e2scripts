@@ -78,9 +78,9 @@ get_oever() {
     OEVER=$(python - <<END
 import sys
 import os
-dest=""
+dest = ""
 if os.environ.get('D'):
-        dest=os.environ.get('D')
+    dest = os.environ.get('D')
 sys.path.append(dest + '/usr/lib/enigma2/python')
 try:
     from boxbranding import getOEVersion
