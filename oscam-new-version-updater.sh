@@ -17,6 +17,9 @@
 #
 # The original 'feed' script was developed for the purpose of installing softcam-feed into Enigma:
 #       wget -O - -q http://updates.mynonpublic.com/oea/feed | bash
+#
+# To run this script directly from the github server, use the following command:
+#       wget -qO- --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #######################################
 
 
@@ -68,6 +71,7 @@ TMP_DIR="/tmp/oscam_binary_update"
 BASE_FEED="http://updates.mynonpublic.com/oea"
 # OEVER="4.3"                           # this value is determined automatically using the Python script below
 # ARCH="mips32el"                       # this value is determined automatically using the Python script below
+
 
 
 
@@ -203,6 +207,7 @@ check_compat() {
 get_oever
 get_arch
 check_compat
+
 
 #######################################
 #######################################
