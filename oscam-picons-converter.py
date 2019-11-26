@@ -40,17 +40,17 @@ except:
 def table_from_srvid(caidsFilter = []):
     global DIR_OSCAMCFG
     print('Making a table from .srvid file...')
-    with open(DIR_OSCAMCFG + '/oscam.srvid','r') as f:
-        data = re.findall(r'([0-9a-fA-F@\,\:]+)\|.*', f.read()  )         # the result will [ '0D02,1815,0D97,0653:760d' , '0D96@000004@000008,1815,0966@005123,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ..... ]
+    with open(DIR_OSCAMCFG + '/oscam.srvid', 'r') as f:
+        data = re.findall(r'([0-9a-fA-F@\,\:]+)\|.*', f.read()  )       # the result will [ '0D02,1815,0D97,0653:760d' , '0D96@000004@000008,1815,0966@005123,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ..... ]
     d = {}
     for line in data:
-        while '@' in line:                                               # remove all PROVIDs (6 digits with the "@" character at the begin => i.e. 7 places together)
+        while '@' in line:                                              # remove all PROVIDs (6 digits with the "@" character at the begin => i.e. 7 places together)
             i = line.find('@')
             line = line[:i] + line[i+7:]
-        caids, sid = line.upper().split(':')                             # split the whole part via ":" character
+        caids, sid = line.upper().split(':')                            # split the whole part via ":" character
         caidsToAdd = list(set(caids.split(',')))
         if caidsFilter:
-            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )   # checking CAIDs by user defined CAIDS_FILTER
+            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )  # checking CAIDs by user defined CAIDS_FILTER
         if caidsToAdd:
             #d.setdefault(sid, []).append(caidsToAdd)
             if sid in d.keys():
@@ -58,27 +58,27 @@ def table_from_srvid(caidsFilter = []):
             else:
                 d[sid] = caidsToAdd
     for key, values in d.iteritems():
-        d[key] = list(set(values))                      # remove duplicated caids in dictionary variables (browsing through all dict.values for each one dict.key)
+        d[key] = list(set(values))                                      # remove duplicated caids in dictionary variables (browsing through all dict.values for each one dict.key)
     print('...done.\n')
-    return d             # { '1807': ['0D03', '0D70', '0D96', '0624'],  '00CD': ['0B00', '09AF'],  '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'],  '00CB': ['0B00', '09AF'], ..... }
+    return d                    # { '1807': ['0D03', '0D70', '0D96', '0624'],  '00CD': ['0B00', '09AF'],  '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'],  '00CB': ['0B00', '09AF'], ..... }
 
 def table_from_srvid2(caidsFilter = []):
     global DIR_OSCAMCFG
     print('Making a table from .srvid2 file...')
-    with open(DIR_OSCAMCFG + '/oscam.srvid2','r') as f:
+    with open(DIR_OSCAMCFG + '/oscam.srvid2', 'r') as f:
         data = f.read().splitlines()
     d = {}
     for line in data:
         if line.startswith('#') or line == '':
             continue
-        while '@' in line:                                               # remove all PROVIDs (6 digits with the "@" character at the begin => i.e. 7 places together)
+        while '@' in line:                                              # remove all PROVIDs (6 digits with the "@" character at the begin => i.e. 7 places together)
             i = line.find('@')
             line = line[:i] + line[i+7:]
-        sid, caids = line.upper().split('|')[0].split(':')               # remove the string from "|" to the end of line, and split the remaining part with the ":" character
-        caids = re.sub('@[0-9a-fA-F]+', '', caids)                       # remove all strings such as "@0000A1CF" from the line
+        sid, caids = line.upper().split('|')[0].split(':')              # remove the string from "|" to the end of line, and split the remaining part with the ":" character
+        caids = re.sub('@[0-9a-fA-F]+', '', caids)                      # remove all strings such as "@0000A1CF" from the line
         caidsToAdd = list(set(caids.split(',')))
         if caidsFilter:    
-            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )   # checking CAIDs by user defined CAIDS_FILTER
+            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )  # checking CAIDs by user defined CAIDS_FILTER
         if caidsToAdd:
             #d.setdefault(sid, []).append(caidsToAdd)
             if sid in d.keys():
@@ -86,9 +86,9 @@ def table_from_srvid2(caidsFilter = []):
             else:
                 d[sid] = caidsToAdd
     for key, values in d.iteritems():
-        d[key] = list(set(values))                      # remove duplicated caids in dictionary variables (browsing through all dict.values for each one dict.key)
+        d[key] = list(set(values))                                      # remove duplicated caids in dictionary variables (browsing through all dict.values for each one dict.key)
     print('...done.\n')
-    return d             # { '1807': ['0D03', '0D70', '0D96', '0624'], '00CD': ['0B00', '09AF'], '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'], '00CB': ['0B00', '09AF'], ..... }
+    return d                    # { '1807': ['0D03', '0D70', '0D96', '0624'], '00CD': ['0B00', '09AF'], '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'], '00CB': ['0B00', '09AF'], ..... }
 
 def table_from_png_only(caidsFilter = []):
     """
@@ -143,7 +143,7 @@ def png2tpl(sid_table):
                 else:
                     img.thumbnail((100,60))
                 buffer = BytesIO()
-                img.save(buffer, format='PNG')           # img.save('/tmp/temp.png', format='PNG')
+                img.save(buffer, format='PNG')        # img.save('/tmp/temp.png', format='PNG')
                 data_bin = buffer.getvalue()
                 data_string = 'data:image/png;base64,' + base64.b64encode(data_bin)
                 with open('{0}/IC_{1}_{2}.tpl'.format(DIR_TPL, caid, sid),'w') as f:
@@ -164,17 +164,15 @@ def table_size_checking(tbl):
     if dict_length > 2000:
         while True:
             answer = raw_input('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\nDo you really want to continue ?\n(y/n)\n>')
-            if answer.lower() == 'y':
-                return True
-            elif answer.lower() == 'n':
+            if answer.lower() == 'n':
                 return False
     return True
 
 def show_man_page():
-    script_path = sys_argv[0] if sys_argv[0] else "<script_path_&_file_name>"
+    script_path = sys_argv[0] or '</path_to_script/script_file_name.py>'
     print('''
 USAGE:
-    python {0} OPTIONS SOURCE-PNG-DIR TARGET-TPL-DIR
+    python {0} <OPTIONS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
 
 OPTIONS:
     -a \t\t\t make TPL picons from all PNG files, created just for user-selected CAIDs only
