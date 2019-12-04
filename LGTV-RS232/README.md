@@ -1,6 +1,8 @@
 Switching on and off the LG TV via RS-232 serial interface
 ==========================================================
 
+The shell script can be called from within the HDMI-CEC plugin or it can be called directly from the Enigma source code - always when the standby is de / activated.
+
 - command to display basic serial interfaces under LINUX systems:
   - `setserial -g -a /dev/ttyS[0123]`
 
