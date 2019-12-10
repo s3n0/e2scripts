@@ -37,3 +37,9 @@
 + **oscam-new-version-updater.sh**
    > - script checks if there is a newer version on the internet and if so, updates the binary file extracted from the downloaded IPK package
    > - 7zip archiver is required since 'ar' tool is a problematic ('ar' is part of the limited [BusyBox](https://busybox.net/) in most cases) when splitting files from IPK packages
+
++ **oscam_emm_refresh.sh**
+   > - script for re-refreshing EMM packets by tuning a specific DVB channel for a short time (1 minute) while the device is in Standby mode ... after this short time the DVB channel stops again (DVB reception stops again)
+   > - to tune and stop the DVB channel is used the Enigma Webif interface
+   > - to determine the duration of Standby mode is used the Oscam Webif interface
+
