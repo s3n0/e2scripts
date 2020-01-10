@@ -3,7 +3,8 @@
 
 #######################################
 # Oscam new version updater
-# 2019-10, s3n0
+#######################################
+# 2019/10/21 script written by s3n0
 #
 # This bash script checks if there is a newer version of Oscam on the internet and if so,
 # then downloads and overwrites the old Oscam binary file on the local disk.
