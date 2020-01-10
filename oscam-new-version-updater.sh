@@ -30,7 +30,7 @@
 ## [ -f $OSCAM_LOCAL_PATH ] || { echo "ERROR ! User-configured binary file $OSCAM_LOCAL_PATH not found !"; exit 1; }
 
 OSCAM_LOCAL_PATH=$(find /usr/bin -name oscam* | head -n 1)
-[ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam binary file found ! The default path+filename $OSCAM_LOCAL_PATH will be used to download + add a new Oscam binary file."; } || echo "Recognized binary file: $OSCAM_LOCAL_PATH"
+[ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "Oscam binary file was not found in folder '/usr/bin'. The default path and filename $OSCAM_LOCAL_PATH will be used to download and to add a new Oscam binary file."; } || echo "Recognized binary file: $OSCAM_LOCAL_PATH"
 
 ## OSCAM_LOCAL_PATH=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
 ## [ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam process name found. The default file name $OSCAM_LOCAL_PATH will be used to download and add a new Oscam."; } || echo "Oscam process $OSCAM_LOCAL_PATH found."
@@ -230,11 +230,11 @@ echo -n "Downloading and unpacking the list of softcam installation packages... 
 IPK_FILENAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "Filename:" | grep "$REQUESTED_BUILD"_1.20 | cut -d " " -f 2)
 [ -z "$IPK_FILENAME" ] && { echo " failed!"; exit 1; } || echo " done."
 
-#### Create a temporary sub-directory and go in
+#### Create the temporary subdirectory and go in
 rm -fr $TMP_DIR ; mkdir -p $TMP_DIR ; cd $TMP_DIR
 
 #### Download the necessary Oscam installation package
-echo -n "Downloading the necessary Oscam installation package... "
+echo -n "Downloading the necessary Oscam installation IPK package... "
 wget -q --show-progress -O $TMP_DIR/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
 
 #### Extracting the IPK package
@@ -246,7 +246,8 @@ echo "Extracting the IPK package:"
 extractor $IPK_FILENAME                          # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7-zip" archiver
 extractor data.tar.?z                            # 2. unpacking the ".gz" OR ".xz" archive
 extractor data.tar ./usr/bin/$REQUESTED_BUILD    # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
-echo -n "The Oscam binary file has " ; [ -f $TMP_DIR/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '$TMP_DIR'."; exit 1; }
+echo -n "The Oscam binary file has "
+[ -f $TMP_DIR/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '$TMP_DIR'."; exit 1; }
 echo "---------------------------"
 
 #### Retrieve Oscam online version   (from downloaded binary file)
@@ -264,7 +265,7 @@ echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on loc
 if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]
 then
     echo "A new version of Oscam has been found and will be updated."
-    # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1    
+    # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1     # show WebGUI info message
     #### Replace the oscam binary file with new one
     OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
     OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')
@@ -274,7 +275,7 @@ then
     [ -z "$OSCAM_CMD" ] || $OSCAM_CMD
 else
     echo "Installed Oscam version is current. No need to update."
-    # wget -qO- "http://127.0.0.1/web/message?text=Installed+Oscam+version+($OSCAM_LOCAL_VERSION)+is+current.%0ANo+need+to+update.&type=1&timeout=10" > /dev/null 2>&1
+    # wget -qO- "http://127.0.0.1/web/message?text=Installed+Oscam+version+($OSCAM_LOCAL_VERSION)+is+current.%0ANo+need+to+update.&type=1&timeout=10" > /dev/null 2>&1     # show WebGUI info message
 fi
 
 #### Remove all temporary files (sub-directory)
