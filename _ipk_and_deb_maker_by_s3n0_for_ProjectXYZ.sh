@@ -59,9 +59,8 @@ Maintainer: s3n0
 License: GPLv3
 Architecture: all
 OE: ${ipk_pckgname}
-Homepage: N/A
-Depends: 
-Source: N/A
+Homepage: https://github.com/s3n0
+Source: https://github.com/s3n0
 EOF
 
 cat > ${project_dir}/CONTROL/postinst << EOF
@@ -78,6 +77,7 @@ EOF
 
 cat > ${project_dir}/CONTROL/postrm << EOF
 #!/bin/sh
+[ "$1" != "upgrade" ] || exit 0 > /dev/null 2>&1               # prevent the OE2.5+ based Enigma2 for deleting files when the package is "upgrading"
 rm -rf ${plugin_dir}
 echo "*********************************************************"
 echo "                  ProjectXYZ ${VER}                  "
