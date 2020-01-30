@@ -108,16 +108,16 @@ ARGUMENT:  start......the process will be started only if it's not running
 
 fLog() {
     if [[ $1 != *"-----"* ]]; then
-        logline=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line
+        logmsg=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line
     else
-        logline="$1"
+        logmsg="$1"
     fi
     
-    #echo "$logline" > /dev/null                          ### null device   <---  log will disabled (do nothing)
-    #echo "$logline" >> $softcam_logfile                  ### file
-    #echo "$logline" >> $softcam_logfile 2>&1             ### file + stderr
-    #echo "$logline" | tee -a $softcam_logfile            ### file + stdout(display)
-    echo "$logline" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
+    #echo "$logmsg" > /dev/null                          ### null device   <---  log will disabled (do nothing)
+    #echo "$logmsg" >> $softcam_logfile                  ### file
+    #echo "$logmsg" >> $softcam_logfile 2>&1             ### file + stderr
+    #echo "$logmsg" | tee -a $softcam_logfile            ### file + stdout(display)
+    echo "$logmsg" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
     
     #### reduction the log filesize, if neccessary (delete first 20 lines):
     if [ -f "$softcam_logfile" ] && [ $(stat -c%s "$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
