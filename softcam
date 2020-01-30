@@ -164,8 +164,8 @@ fStart() {
     if pidof $1 > /dev/null; then
         fLog "...$1 process has already started and is still running."
     else
+        fLog "...command to execute:   $softcam_bin_dir/$1 $softcam_args"
         $softcam_bin_dir/$1 $softcam_args > /dev/null
-        fLog "command-line executed:   $softcam_bin_dir/$1 $softcam_args"
         sleep 0.8s
         if pidof $1 > /dev/null; then
             fLog "...$1 was successfully started."
