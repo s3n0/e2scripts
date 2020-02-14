@@ -31,4 +31,4 @@ The shell script can be called from within the HDMI-CEC plugin or it can be call
 
 A note
 ======
-After restarting the set-top box, the bash script will be run via the code in "Standby.py" only after the second activation of standby mode. I haven't found out yet why it is. So don't worry if the TV doesn't turn off after the set-top box is restarted. Try it again and then it will still work.
+After restarting the set-top box, the shell script will be run via the code in "Standby.py" only after the second activation of standby mode (tested on OpenATV). I haven't found out yet why it is. So don't worry if the TV doesn't turn off after the set-top box is restarted. Try it again and then it will still work.
