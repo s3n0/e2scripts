@@ -4,17 +4,17 @@
 ####    in the case of other Enigma, copy the script where you see fit (!!! not to the directory "/tmp" !!!)
 #### 2) assign the execution rights for script file:
 ####        chmod +x /usr/script/oscam_emm_refresh.sh
-#### 3) to start the script between 06:00 and 23:00, every 1 hour, add the following line into the crontabs configuration file:
-####        0 6-23/1 * * *     sh /usr/script/oscam_emm_refresh.sh
+#### 3) to start the script between 06:00 and 23:00, every 15 minutes, add the following line into the CRON configuration file:
+####        */15 6-23 * * *     sh /usr/script/oscam_emm_refresh.sh
 ####
-#### A note:
-#### During editing the crontabs config file (/etc/cron/crontabs/root), CRON daemon must be stopped (as prevention),
-#### so, use the command-line first (OpenATV image):
-####        /etc/init.d/crond {start|stop|restart}      # use the stop argument before edit and when all will done, then use the start argument to start daemon again
+#### Note:
+####    During editing the CRON config file (/etc/cron/crontabs/root), the CRON daemon must be stopped (as prevention),
+####    so, use the following command-line (OpenATV Enigma):
+####        /etc/init.d/crond {start|stop|restart}  # use the stop argument before edit and when all will done, then use the start argument to start daemon again
 ####
 #### Version history:
-#### 04.10.2018 - script proposed by s3n0
-#### 30.01.2019 - minor repairs
+####        04.10.2018 - script proposed by s3n0
+####        30.01.2019 - minor repairs
 #### 
 #### For a testing purpose only:
 ####        wget -q -O /tmp/test-oscam-api.xml $WEBIF_OSCAM/oscamapi.html?part=status
