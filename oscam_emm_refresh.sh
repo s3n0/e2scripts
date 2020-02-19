@@ -22,8 +22,8 @@
 ####        cat /tmp/test-oscam-api.xml | sed -rn '/name="'$READER_LABEL'"/,/times/ {s/.*idle="([0-9]+)".*/\1/p}'
 
 #### USER CONFIGURATION:
-WEBIF_ENIGMA="http://127.0.0.1:80"                  # "http://127.0.0.1:PORT"  or  "http://LOGIN:PASSWORD@127.0.0.1:PORT"  if you also use a password for Enigma Webif
-WEBIF_OSCAM="http://127.0.0.1:8888"                 # "http://127.0.0.1:PORT"  or  "http://LOGIN:PASSWORD@127.0.0.1:PORT"  if you also use a password for Oscam Webif
+WEBIF_ENIGMA="http://127.0.0.1:80"                  # use "http://LOGIN:PASSWORD@127.0.0.1:PORT"  if you also use a password for Enigma-Webif
+WEBIF_OSCAM="http://127.0.0.1:8888"                 # use "http://LOGIN:PASSWORD@127.0.0.1:PORT"  if you also use a password for Oscam-Webif
 READER_LABEL="reader_sci0"                          # card-reader name
 IDLE_TIME=3600                                      # the time interval [sec.] to retreive a new EMMs (only when Enigma is standby)
 EMM_AWAITING="1m"                                   # awaiting to EMM arrival (1m = meaning 1 min. waiting time, 30s = meaning 30 secs, ... etc.)
