@@ -3,7 +3,7 @@
 #### 1) for OpenATV / OpenPLi Enigma please copy the script file into the directory "/usr/script" (create the directory if does not exist)
 ####    in the case of other Enigma, copy the script where you see fit (!!! not to the directory "/tmp" !!!)
 #### 2) assign the execution rights for script file:
-####        chmod +x /usr/script/oscam_emm_refresh.sh
+####        chmod a+x /usr/script/oscam_emm_refresh.sh
 #### 3) to start the script between 06:00 and 23:00, every 15 minutes, add the following line into the CRON configuration file:
 ####        */15 6-23 * * *     sh /usr/script/oscam_emm_refresh.sh
 ####
