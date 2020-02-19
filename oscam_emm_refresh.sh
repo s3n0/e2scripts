@@ -51,7 +51,7 @@ then
 	sleep $EMM_AWAITING          # sleep 30s        # sleep 2m
 else
 	echo `date '+%Y-%m-%d %H:%M:%S'`": The $READER_LABEL reader idle time is not greater than the configured $IDLE_TIME secs. Script canceled." >> $LOG_FILE
-	exit
+	exit 0
 fi
 
 #### at the end of script execution we have to recheck the standby mode
