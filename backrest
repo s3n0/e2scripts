@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #############################
 # Backup & Restore bash-script
@@ -10,7 +10,7 @@
 
 BACKUP_DIR="/media/hdd/backup_folder"
 
-ARCHIVE_FILENAME="backup-enigma"     # Note: The timestamp is automatically added at the end of the file name and the file extension is ".tar.gz"
+ARCHIVE_PREFIX="backup-enigma"     # Note: The timestamp is automatically added at the end of the file name and the file extension is ".tar.gz"
 
 LIST="
 /etc/enigma2/
@@ -79,18 +79,21 @@ do_backup() {
         init_4_with_feedback
         echo "-----------------------"
     fi
-    echo "The archive file:"
-    echo "    $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
+    BACKUP_FILENAME="$BACKUP_DIR/$ARCHIVE_PREFIX-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
+    echo "Output archive file name:"
+    echo "    $BACKUP_FILENAME"
+    echo "-----------------------"
     echo "Files and folders to compress:"
     echo "    $LIST "
     echo "-----------------------"
     echo "Starting compression..."
     mkdir -p $BACKUP_DIR
-    tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_DIR/$ARCHIVE_FILENAME-`date '+%Y-%m-%d-%H%M%S'`.tar.gz $LIST
-    echo "...done."
+    #tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_FILENAME $LIST         # --ignore-failed-read ...... is unfortunately a unknown argument in `tar` under OpenPLi 7.1
+    tar --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_FILENAME $LIST
+    echo "...compression done."                                                                     # [ $? -eq 0 ] && echo "...done." || echo "...failed ! (exit code = $?)"
     echo "-----------------------"
-    echo "Contents of the backup directory:"
-    ls -l $BACKUP_DIR/$ARCHIVE_FILENAME*
+    echo "List of files in the backup directory:"
+    ls -l $BACKUP_DIR/$ARCHIVE_PREFIX*
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         init 3
@@ -106,8 +109,8 @@ do_backup() {
 
 do_restore() {
     echo "-----------------------"
-    if ls $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz > /dev/null 2>&1 ; then
-        LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_FILENAME*.tar.gz | head -n 1)
+    if ls $BACKUP_DIR/$ARCHIVE_PREFIX*.tar.gz > /dev/null 2>&1 ; then
+        LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_PREFIX*.tar.gz | head -n 1)
         init_4_with_feedback
         echo "-----------------------"
         echo "The latest archive file found in the directory:"
@@ -123,7 +126,7 @@ do_restore() {
         echo "...done."
         echo "-----------------------"
     else
-        echo "ERROR! No archive files $ARCHIVE_FILENAME*.tar.gz found in the $BACKUP_DIR directory!"
+        echo "ERROR! No archive files $ARCHIVE_PREFIX*.tar.gz found in the $BACKUP_DIR directory!"
         echo "-----------------------"
         exit 1
     fi
@@ -152,6 +155,8 @@ case "$1" in
         echo -e "\t b|backup|-b|--backup \n\t\t ...to backup all user-defined files & folders"
         echo -e "\t bq|backup-quickly|-bq|--backup-quickly \n\t\t ...to backup all user-defined files & folders without stopping the Enigma during the backup process"
         echo -e "\t r|restore|-r|--restore \n\t\t ...to restore all user-defined files & folders"
+        echo -e "BACKUP DIR:"
+        echo -e "\t $BACKUP_DIR"
         ;;
 esac
 
