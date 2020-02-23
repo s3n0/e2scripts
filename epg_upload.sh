@@ -20,7 +20,7 @@ xpass="user_password"
 if [ ! "$(curl --version)" ]
 then
 	echo `date`": curl command NOT found (NOT installed)... please install it first: 'opkg install curl'" >> $log_file
-	exit
+	exit 0
 fi
 
 
@@ -34,3 +34,6 @@ then
 else
 	echo `date`": $local_file file to upload is too small or not found" >> $log_file
 fi
+
+
+exit 0
