@@ -15,14 +15,10 @@ local_file="/etc/enigma2/epg.dat"
 # online server with the "epg.dat" stored file:
 online_file="http://example.com/folder/epg.dat"
 
-
-
 if [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "false" ]; then
     echo `date`": Enigma2 is not in Standby. EPG-file downloading script was canceled." >> $log_file
-    exit
+    exit 0
 fi
-
-
 
 if wget --spider ${online_file} 2>/dev/null     # checking the online file
 then
@@ -41,6 +37,4 @@ else
     echo `date`": $online_file file was not found" >> $log_file
 fi
 
-
-
-exit
+exit 0
