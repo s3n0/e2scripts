@@ -20,7 +20,7 @@ if [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | c
     exit 0
 fi
 
-if wget --spider ${online_file} 2>/dev/null     # checking the online file
+if wget --spider ${online_file} 2>/dev/null     # check the existence of an online file
 then
     init 4              # stop the Enigma2 (to leave the /etc/enigma2/epg.dat file from Enigma2 processing)
     sleep 5s            # wait a few seconds (stopping of the Enigma2)
