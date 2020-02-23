@@ -19,7 +19,7 @@
 
 # 2020/02/19
 # - s3n0 edit
-# - improved and complete instructions how-to install the Oscam
+# - improved and complete instructions how-to install the OSCam
 
 
 
@@ -33,7 +33,7 @@
 # 1)   Download the script directly from my github profile + also renaming filename from "softcam" to "softcam.oscam":
 #         wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.oscam
 #
-# 2)   Copy your Oscam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
+# 2)   Copy your OSCam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
 #
 # 3)   Download and prepare a binary file - for example with helping of the following bash script, you can download also the oscam binary file:
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
@@ -42,7 +42,7 @@
 #         reboot
 #
 # 5)   After restart, select and activate the particullar Softcam via the GUI-MENU:
-#         MENU -> Info Panel -> Softcam Panel -> select Oscam by pressing the left / right buttons and activate with the green button
+#         MENU -> Info Panel -> Softcam Panel -> select OSCam by pressing the left / right buttons and activate with the green button
 #
 # ----------------------------------------------------------
 #      All other or unknown Enigma distributions
@@ -61,7 +61,7 @@
 #      For remove (uninstall) startup sym-links from all run-levels use the following command:
 #         update-rc.d -f softcam remove
 #
-# 3)   Copy your Oscam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
+# 3)   Copy your OSCam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
 #
 # 4)   Download and prepare a binary file - for example with helping of the following bash script, you can download also the oscam binary file:
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
