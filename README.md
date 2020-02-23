@@ -1,4 +1,4 @@
-## Simple scripts for Enigma 2, focused on OpenATV.
+## Simple scripts for Enigma 2, focused on OpenATV and OpenPLi.
 
 + **LGTV-RS232 directory**
    > - switching on and off the LG TV via RS-232 interface
