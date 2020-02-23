@@ -77,23 +77,23 @@
 # ####################  USER SETUP  ########################
 # ----------------------------------------------------------
 # SOFTCAM BINARY DIRECTORY:
-softcam_bin_dir='/usr/bin'
+softcam_bin_dir="/usr/bin"
 # ----------------------------------------------------------
 # SOFTCAM PROCESS NAME (BINARY FILE NAME):
-softcam_bin_filename='oscam'
+softcam_bin_filename="oscam"
 # ----------------------------------------------------------
 # SOFTCAM ARGUMENTS:    (a note: argument "-c" for OSCam determines a configuration directory, for more info use "/usr/bin/oscam --help")
-softcam_args='-b -r 2 -c /etc/tuxbox/config/oscam'
+softcam_args="-b -r 2 -c /etc/tuxbox/config/oscam"
 # ----------------------------------------------------------
 # Waiting time to kill the softcam process by standard SIGTERM (-15). Then softcam process will be killed with force SIGKILL (-9).
 softcam_kill_waiting=3
 # ----------------------------------------------------------
 # LOG FILE FOR THE SOFTCAM HANDLING:
-softcam_logfile='/tmp/oscam_handling.log'
+softcam_logfile="/tmp/oscam_handling.log"
 softcam_logfile_sizemax=45000       # max. file size [Bytes]
 # ----------------------------------------------------------
 # PRIVATE VARIABLES:
-hrline='------------------------------------------------------------'
+hrline="------------------------------------------------------------"
 helptext="USAGE:     bash /etc/init.d/softcam <ARGUMENT>
 ARGUMENT:  start......the process will be started only if it's not running
            restart....the process will be stopped only if it's running & then will be started
@@ -110,8 +110,8 @@ ARGUMENT:  start......the process will be started only if it's not running
 # FUNCTIONS ************************************************
 
 fLog() {
-    if [[ $1 != *"-----"* ]]; then
-        logmsg=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line
+    if [[ "$1" != "$hrline" ]]; then
+        logmsg=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line (header line)
     else
         logmsg="$1"
     fi
@@ -134,22 +134,17 @@ fStop() {
         fLog "...sending a default SIGTERM signal to PID $(pidof $1)"
         kill -15 $(pidof $1) > /dev/null
         sleep 0.8s       # changed from 1s to 0.8s, as the '/lib/python/Screens/SoftcamSetup.py' restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3s-0.6s
-        if pidof $1 > /dev/null; then
-            i=1
-            while expr $i != $softcam_kill_waiting > /dev/null
-            do
-                if pidof $1 > /dev/null; then
-                    fLog "...waiting for termination: $i of max. $softcam_kill_waiting seconds"
-                    sleep 1
-                else
-                    fLog "...$1 was successfully terminated using the default SIGTERM signal."
-                    break
-                fi
-                i=`expr $i + 1`
-            done
-        else
-            fLog "...$1 was successfully terminated using the default SIGTERM signal."
-        fi
+        i=1
+        while [ $i -le $softcam_kill_waiting ]; do
+            if pidof $1 > /dev/null; then
+                fLog "...waiting for termination: $i of max. $softcam_kill_waiting seconds"
+                sleep 1
+            else
+                fLog "...$1 was successfully terminated using the default SIGTERM signal."
+                break
+            fi
+            i=$(( i + 1 ))
+        done
         if pidof $1 > /dev/null; then
             fLog "...sending a forced SIGKILL signal to $1 process"
             killall -9 $1 > /dev/null
@@ -182,6 +177,7 @@ fRestart() {
     if pidof $1 > /dev/null; then fStop $1; fi       # start the process - the process will be stopped/killed only if it's running
     fStart $1
 }
+
 
 
 
