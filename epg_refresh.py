@@ -1,24 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#### change the path to your own userbouquet file(s) containing the satellite channels for which you want to refresh EPG data :
-BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
-#### if you need more than one userbouquet, use the following syntax :
-#BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
-
 ###############################################
 # EPG Refresh
 # by s3n0, 2019-08-24
 ###############################################
-# - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all channels
+# - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all DVB channels/transponders
 # - the script will find all the necessary transponders what you need to zapping
 # - transponders are selected from the userbouquet and zap only once
 ###############################################
 # - be sure to set the file attributes (chmod 755 /usr/script/epg_refresh.py)
 # - the best way to use EPG refresh is to add a new task to the CRON scheduler
-# - for example, to run the python script every 2nd day at 03:00, as the background process, use the following crontab line:
-#   0 3 */2 * *     python /usr/script/epg_refresh.py &
+# - for example, to run the python script every 2nd day, at 03:00, as the background process, use the following crontab line:
+#       00 03 */2 * *      /usr/bin/python /usr/script/epg_refresh.py &
 ###############################################
+
+#### change the path to your own userbouquet file(s) containing the satellite channels for which you want to refresh EPG data :
+BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
+
+#### if you need more than one userbouquet, use the following syntax :
+#BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
 
 from time import sleep
 from urllib2 import urlopen
@@ -79,3 +80,4 @@ if __name__ == "__main__" and enigmaInStandby():
     print('...done.')
     
     zapChannel('')
+ 
