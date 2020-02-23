@@ -18,7 +18,7 @@
    > - simple python script for converting PNG to TPL picons (for Oscam-Webif)
 
 + **epg_refresh.py**
-   > - simple python script for Enigma2 based set-top-box, for refresh EPG data on all channels/transponders
+   > - simple python script for Enigma2 based set-top-box, for refresh EPG data on all DVB channels
    > - the script will find all the necessary transponders what you need to zapping
    > - transponders are selected from the userbouquet and zap only once
    > - the best way to use EPG refresh is to add a new task to the CRON scheduler ... be sure to set the file attributes (`chmod 755 /usr/script/epg_refresh.py`) ... for example, to run the python script every 2th day at 03:00, as the background process, use the following line:
