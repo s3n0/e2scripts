@@ -17,11 +17,11 @@
 ####    During editing the CRON config file (/etc/cron/crontabs/root), the CRON daemon must be stopped (as prevention),
 ####    so, use the following command-line (OpenATV Enigma):
 ####        /etc/init.d/crond {start|stop|restart}  # use the stop argument before edit and when all will done, then use the start argument to start daemon again
-####
+
 #### Version history:
 ####        04.10.2018 - script proposed by s3n0
 ####        30.01.2019 - minor repairs
-#### 
+
 #### For a testing purpose only:
 ####        wget -q -O /tmp/test-oscam-api.xml $WEBIF_OSCAM/oscamapi.html?part=status
 ####        cat /tmp/test-oscam-api.xml | sed -rn '/name="'$READER_LABEL'"/,/times/p'
