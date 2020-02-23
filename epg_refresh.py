@@ -5,7 +5,7 @@
 # EPG Refresh
 # by s3n0, 2019-08-24
 ###############################################
-# - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all DVB channels/transponders
+# - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all DVB channels
 # - the script will find all the necessary transponders what you need to zapping
 # - transponders are selected from the userbouquet and zap only once
 ###############################################
