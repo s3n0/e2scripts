@@ -8,7 +8,7 @@
 # -OpenATV:   MENU > Settings > EPG > EPG settings > Auto-reload: "Yes"
 # -EPG refresh interval we can leave as the default value - i.e. every 24 hours
 
-# folders:
+# paths:
 log_file="/tmp/epg_download.log"
 local_file="/etc/enigma2/epg.dat"
 
