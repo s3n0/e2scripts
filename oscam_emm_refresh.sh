@@ -1,5 +1,11 @@
 #!/bin/sh
 
+#### The problem with some firmware on IRDETO cards is that after an hour in idle time, "Entitlements" are lost.
+#### Then they have to be reloaded through EMMs, which sometimes takes up to 5 - 20 seconds.
+####
+#### This script is designed to re-wake the DVB tuner once per hour and wait for 1 minute to receive EMMs.
+#### These EMMs are then automatically sent to the decoder card.
+
 #### 1) for OpenATV / OpenPLi Enigma please copy the script file into the directory "/usr/script" (create the directory if does not exist)
 ####    in the case of other Enigma, copy the script where you see fit (!!! not to the directory "/tmp" !!!)
 #### 2) assign the execution rights for script file:
