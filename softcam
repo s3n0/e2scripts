@@ -174,7 +174,7 @@ fStart() {
 }
 
 fRestart() {
-    if pidof $1 > /dev/null; then fStop $1; fi       # start the process - the process will be stopped/killed only if it's running
+    if pidof $1 > /dev/null; then fStop $1; fi              # the process will be stopped/killed only if it's running
     fStart $1
 }
 
