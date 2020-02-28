@@ -234,7 +234,7 @@ wget -q --show-progress -O $TMP_DIR/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_F
 #### Extracting the IPK package
 extractor() {
     echo -n "Extracting:  $1 $2  --  "; $BIN7Z e -y $1 $2 > /dev/null 2>&1 && echo "OK" || { echo "FAILED!"; exit 1; }
-}
+    }
 echo "---------------------------"
 echo "Extracting the IPK package:"
 extractor $IPK_FILENAME                          # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7-zip" archiver
@@ -262,7 +262,11 @@ then
     # wget -qO- "http://127.0.0.1/web/message?text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1     # show WebGUI info message
     #### Replace the oscam binary file with new one
     OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
-    OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')
+    if ps --version; then
+        OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')            # OpenATV firmware ,  full-featured `ps` command
+    else
+        OSCAM_CMD=$(ps | grep $OSCAM_BIN_FNAME | grep -v grep | head -n 1 | grep -o '/.*$')         # OpenPLi firmare  ,  feature-poor `ps` command - from BusyBox
+    fi
     [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" ; }
     mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
     chmod a+x $OSCAM_LOCAL_PATH
