@@ -252,7 +252,7 @@ OSCAM_ONLINE_VERSION=$( $TMP_DIR/$REQUESTED_BUILD --build-info | grep -i 'versio
 
 #### Retrieve Oscam local version    (from current binary file placed in the /usr/bin folder)
 OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}'   )          # output result is, as example:  11546
-[ -z "$OSCAM_LOCAL_VERSION" ] && OSCAM_LOCAL_VERSION="11000"                                                    # sets the null version as a precaution if there is no Oscam on the local harddisk yet
+[ -z "$OSCAM_LOCAL_VERSION" ] && OSCAM_LOCAL_VERSION="11000"                                                    # sets the null version as a precaution if there is no Oscam binary file on the local harddisk yet
 
 #### Compare Oscam local version VS. online version
 echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on local drive:\t$OSCAM_LOCAL_VERSION"
@@ -263,9 +263,9 @@ then
     #### Replace the oscam binary file with new one
     OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
     if ps --version; then
-        OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')            # OpenATV firmware ,  full-featured `ps` command
+        OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')            # full-featured `ps` command (OpenATV)
     else
-        OSCAM_CMD=$(ps | grep $OSCAM_BIN_FNAME | grep -v grep | head -n 1 | grep -o '/.*$')         # OpenPLi firmare  ,  feature-poor `ps` command - from BusyBox
+        OSCAM_CMD=$(ps | grep $OSCAM_BIN_FNAME | grep -v grep | head -n 1 | grep -o '/.*$')         # feature-poor `ps` command from BusyBox (OpenPLi)
     fi
     [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" ; }
     mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
