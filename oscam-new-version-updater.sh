@@ -6,21 +6,22 @@
 #######################################
 # 2019/10/21 script written by s3n0
 #
-# This bash script checks if there is a newer version of Oscam on the internet and if so,
+# This script checks if there is a newer version of Oscam on the internet and if so,
 # then downloads and overwrites the old Oscam binary file on the local disk.
 #
-# Script is designed to avoid having to add another feed to your Enigma.
-# '7zip' archiver is required since 'ar' tool is a problematic when splitting files from IPK packages.
+# This script is designed to avoid having to add another 'feed' to your Enigma.
+# Unfortunately the '7zip' archiver is required since the 'ar' tool is problematic when splitting files from IPK packages.
+#
+# To run my script on your set-top box, directly from the github, use the following command:
+#       wget -qO- --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #######################################
-# This script uses "updates.mynonpublic.com" as an update source and also
-# uses the Python source code, from the script from here:
+# This script uses "updates.mynonpublic.com" as an update source and also uses the Python source code,
+# from the script by @SpaceRat:
 #       http://updates.mynonpublic.com/oea/feed
 #
-# The original 'feed' script was developed for the purpose of installing softcam-feed into Enigma:
+# The original 'feed' script was developed by @SpaceRat for the purpose of installing softcam-feed into Enigma/OpenATV,
+# but it also works in other Enigmas. Use the following command to install the feed:
 #       wget -O - -q http://updates.mynonpublic.com/oea/feed | bash
-#
-# To run this script directly from the github server, use the following command:
-#       wget -qO- --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #######################################
 
 
