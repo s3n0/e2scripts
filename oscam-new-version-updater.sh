@@ -71,32 +71,23 @@ TMP_DIR="/tmp/oscam_binary_update"
 #### Auto-configuring the Enigma version and the chipset / CPU architecture (with the help of Python):
 
 BASE_FEED="http://updates.mynonpublic.com/oea"
-# OEVER="4.3"                           # this value is determined automatically using the Python script below
+# OEVER="4.3"                           # this value is determined automatically using the Python script below - a note: OEVER here means the OE-Alliance version ! not the OE-core version (by Dreambox) !
 # ARCH="mips32el"                       # this value is determined automatically using the Python script below
 
 
 
 
-export D=${D}
-
-
 get_oever() {
     OEVER=$(python - <<END
 import sys
-import os
-dest = ""
-if os.environ.get('D'):
-    dest = os.environ.get('D')
-sys.path.append(dest + '/usr/lib/enigma2/python')
+sys.path.append("/usr/lib/enigma2/python")
 try:
     from boxbranding import getOEVersion
-    oever = getOEVersion()
-    print oever
+    print(getOEVersion().replace("OE-Alliance ", ""))
 except:
-    print "unknown"
+    print("unknown")
 END
     )
-    OEVER=$(echo $OEVER | sed "s/OE-Alliance //")
     if [ "x$OEVER" == "xunknown" ]; then
         if [[ -x "/usr/bin/openssl" ]]; then
             SSLVER=$(openssl version | awk '{ print $2 }')
@@ -127,20 +118,16 @@ END
     fi
 }
 
+
 get_arch() {
     ARCH=$(python - <<END
 import sys
-import os
-dest=""
-if os.environ.get('D'):
-        dest=os.environ.get('D')
-sys.path.append(dest + '/usr/lib/enigma2/python')
+sys.path.append("/usr/lib/enigma2/python")
 try:
     from boxbranding import getImageArch
-    arch = getImageArch()
-    print arch
+    print(getImageArch())
 except:
-    print "unknown"
+    print("unknown")
 END
     )
     if [ "x$ARCH" == "xunknown" ]; then
@@ -174,33 +161,34 @@ END
     fi
 }
 
+
 check_compat() {
     case "$OEVER" in
         unknown)
-            echo Broken boxbranding ...
+            echo "Broken boxbranding ..."
             exit 1
             ;;
         3.4)
             ;;
         3.*)
-            echo Your image is EOL ...
+            echo "Your image is EOL ..."
             exit 1
             ;;
         2.*)
-            echo Your image is EOL ...
+            echo "Your image is EOL ..."
             exit 1
             ;;
         1.*)
-            echo Your image is EOL ...
+            echo "Your image is EOL ..."
             exit 1
             ;;
         0.*)
-            echo Your image is EOL ...
+            echo "Your image is EOL ..."
             exit 1
             ;;
     esac
     if [ "x$ARCH" == "xunknown" ]; then
-        echo Broken boxbranding ...
+        echo "Broken boxbranding ..."
         exit 1
     fi
 }
