@@ -206,11 +206,15 @@ check_compat
 #### Checking if the 7-zip archiver is installed on system
 if [ -f /usr/bin/7z ]; then
     BIN7Z=/usr/bin/7z
-#elif [ -f /usr/bin/7za ]; then    # !!!!! "7za" stand-alone archiver does not support the "ar" method (the outer layer of the .ipk file is compressed just through the "ar" archiver)
-#    BIN7Z=/usr/bin/7za
 else
-    echo "ERROR ! The 7-zip archiver was not found ! Please install the 7-zip archiver !"
-    echo "For example, using the following commands:   opkg update && opkg install p7zip-full"
+    echo "ERROR ! The '7z' archiver was not found !"
+    if [ -f /usr/bin/7za ]; then
+        echo "--- Although the standalone '7za' archiver has been found, it does not support the 'ar' method of splitting files."
+        echo "--- Unfortunately, the outer layer of the '.ipk' file must be split with the 'ar' method."
+    fi
+    echo "Please install the '7z' archiver from the Enigma feed, for example, using the following commands:"
+    echo "    opkg update"
+    echo "    opkg install p7zip-full"
     exit 1
 fi
 
