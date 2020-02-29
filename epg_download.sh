@@ -2,7 +2,7 @@
 
 
 #### CRON config example - download epg.dat file, every day, at 5:00
-#### 00 5 * * *        sh /usr/script/epg_download.sh
+#### 00 5 * * *        /bin/sh /usr/script/epg_download.sh
 
 
 online_file="http://example.com/iptv/epg.dat"           # online server with the "epg.dat" stored file
