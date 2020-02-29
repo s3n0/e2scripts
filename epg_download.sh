@@ -23,6 +23,8 @@ if wget --spider ${online_file} 2>/dev/null; then       # check the existence of
         mv -f /tmp/e $local_file
         wget -q -O - http://127.0.0.1/web/loadepg       # reload epg.dat file - using the Enigma2 Open-Webif
         echo `date '+%Y-%m-%d %H:%M:%S'`": $online_file file was downloaded, replaced and reloaded in your Enigma2" >> $log_file
+    else
+        echo `date '+%Y-%m-%d %H:%M:%S'`": $online_file file was downloaded, not replaced (it is the same file size as local file in Enigma2)" >> $log_file
     fi
     rm -f /tmp/e
 else
