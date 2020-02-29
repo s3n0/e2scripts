@@ -19,7 +19,7 @@ xpass="user_password"
 # for sure I will test the functionality and presence of the necessary "curl" in the system!
 if [ ! "$(curl --version)" ]
 then
-	echo `date`": curl command NOT found (NOT installed)... please install it first: 'opkg install curl'" >> $log_file
+	echo `date '+%Y-%m-%d %H:%M:%S'`": curl command NOT found (NOT installed)... please install it first: 'opkg install curl'" >> $log_file
 	exit 0
 fi
 
@@ -30,9 +30,9 @@ if [ -f "$local_file" ] && [ $(stat -c%s "$local_file") -gt 65000 ]           # 
 then
 	#### Warning: If you do not have "curl" installed on your Linux set-top box, install it - via Telnet / SSH:   opkg update && opkg install curl
 	curl --insecure --ftp-ssl -u $xuser:$xpass -T $local_file $online_file
-	echo `date`": $local_file file was uploaded" >> $log_file
+	echo `date '+%Y-%m-%d %H:%M:%S'`": $local_file file was uploaded" >> $log_file
 else
-	echo `date`": $local_file file to upload is too small or not found" >> $log_file
+	echo `date '+%Y-%m-%d %H:%M:%S'`": $local_file file to upload is too small or not found" >> $log_file
 fi
 
 
