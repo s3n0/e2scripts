@@ -26,13 +26,13 @@ from urllib2 import urlopen
 
 ###############################################
 
-def zapChannel(channel = '""'):               # zap channel using the Enigma2 Open-Webif
+def zapChannel(channel = '""'):             # zap channel (using the Enigma2 Open-Webif)
     if channel == ' ' or channel == '':
         channel = '""'
     response = urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
     web_content = response.read()
 
-def enigmaInStandby():                        # checking standby mode using the Open-Webif
+def enigmaInStandby():                      # checking standby mode (using the Enigma2 Open-Webif)
     response = urlopen('http://127.0.0.1/web/powerstate')
     web_content = response.read()
     if 'true' in web_content.lower():
@@ -40,6 +40,10 @@ def enigmaInStandby():                        # checking standby mode using the 
     else:
         print("Enigma2 is not in standby mode. The 'epg_refresh.py' script will not be executed.")
         return False
+
+def saveEPG():                              # save EPG cache to disk - as the file "epg.dat" (using the Enigma2 Open-Webif)
+    response = urlopen('http://127.0.0.1/web/saveepg')
+    web_content = response.read()
 
 ###############################################
 ###############################################
@@ -78,6 +82,6 @@ if __name__ == "__main__" and enigmaInStandby():
         sleep(20)           # waiting 20 sec. for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
     
     print('...done.')
-    
-    zapChannel('')          # shut down the tuner / stop watching DVB channel
+    zapChannel()            # shut down the tuner / stop watching DVB channel
+    saveEPG()               # save EPG cache to disk, if we need to upload the file "epg.dat" to another set-top box or to some server on the internet
  
