@@ -259,7 +259,7 @@ echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on loc
 if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]
 then
     echo "A new version of Oscam has been found and will be updated."
-    # wget -qO- "http://127.0.0.1/web/message?type=1&text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now.&type=1&timeout=10" > /dev/null 2>&1     # show WebGUI info message
+    # wget -qO- "http://127.0.0.1/web/message?type=1&timeout=10&text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now." > /dev/null 2>&1     # show WebGUI info message
     #### Replace the oscam binary file with new one
     OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
     if ps --version; then
@@ -273,7 +273,7 @@ then
     [ -z "$OSCAM_CMD" ] || $OSCAM_CMD
 else
     echo "Installed Oscam version is current. No need to update."
-    # wget -qO- "http://127.0.0.1/web/message?type=1&text=Installed+Oscam+version+($OSCAM_LOCAL_VERSION)+is+current.%0ANo+need+to+update.&type=1&timeout=10" > /dev/null 2>&1     # show WebGUI info message
+    # wget -qO- "http://127.0.0.1/web/message?type=1&timeout=10&text=Installed+Oscam+version+($OSCAM_LOCAL_VERSION)+is+current.%0ANo+need+to+update." > /dev/null 2>&1     # show WebGUI info message
 fi
 
 #### Remove all temporary files (sub-directory)
