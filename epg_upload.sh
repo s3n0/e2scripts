@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 #### CRON config example - upload epg.dat file via the script, every 2nd day, at 03:00
 #### 00 03 */2 * *      /bin/sh /usr/script/epg_upload.sh
 
@@ -19,16 +20,15 @@ xpass="user_password"
 # for sure I will test the functionality and presence of the necessary "curl" in the system!
 if [ ! "$(curl --version)" ]
 then
-	echo `date '+%Y-%m-%d %H:%M:%S'`": curl command NOT found (NOT installed)... please install it first: 'opkg install curl'" >> $log_file
+	echo `date '+%Y-%m-%d %H:%M:%S'`": curl command NOT found (NOT installed)... please install it first:  opkg update && opkg install curl" >> $log_file
 	exit 0
 fi
 
 
 
-# I will only upload the $local_file (EPG data) only if it exists and is larger than 65 kB
-if [ -f "$local_file" ] && [ $(stat -c%s "$local_file") -gt 65000 ]           #  -gt = GreaterThan       # -lt = LesserThan
-then
-	#### Warning: If you do not have "curl" installed on your Linux set-top box, install it - via Telnet / SSH:   opkg update && opkg install curl
+# I will only upload the $local_file (EPG data) only if exists and is greater than 65 kB
+#wget -q -O - "http://127.0.0.1/web/saveepg" > /dev/null 2>&1         # save epg.dat file to disk - using the Enigma2 Open-Webif
+if [ -f "$local_file" ] && [ $(wc -c < "$local_file") -gt 65000 ]; then             #  -gt = GreaterThan       # -lt = LesserThan
 	curl --insecure --ftp-ssl -u $xuser:$xpass -T $local_file $online_file
 	echo `date '+%Y-%m-%d %H:%M:%S'`": $local_file file was uploaded" >> $log_file
 else
