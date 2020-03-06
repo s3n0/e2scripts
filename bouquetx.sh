@@ -50,7 +50,7 @@ download_userbouquet() {
         mv -f $tmp_file $local_file
         echo `date '+%Y-%m-%d %H:%M:%S'`": $online_file file was downloaded, replaced and reloaded in your Enigma2" >> $log_file
     else
-        echo `date '+%Y-%m-%d %H:%M:%S'`": $online_file file was downloaded, not replaced (it is the same file size as local file in Enigma2)" >> $log_file
+        echo `date '+%Y-%m-%d %H:%M:%S'`": $online_file file was downloaded, but not replaced ((no differences in file content))" >> $log_file
     fi
     rm -f $tmp_file
     # wget -q -O - "http://127.0.0.1/web/servicelistreload?mode=2" > /dev/null 2>&1
