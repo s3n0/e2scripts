@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-#### Shell script to download and overwrite a "userbouquet" file from the internet if there is a new modification (tested by file size).
+#### Shell script to download and overwrite a "userbouquet" file from the internet if there is a new modification (tested by differences).
 #### It is based on "init 4" and "init 3" reboots of Enigma as the most reliable method for all Enigma distributions.
 
 
