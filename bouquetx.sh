@@ -52,7 +52,6 @@ download_userbouquet() {
     else
         echo `date '+%Y-%m-%d %H:%M:%S'`": $online_file file was downloaded, but not replaced ((no differences in file content))" >> $log_file
     fi
-    rm -f $tmp_file
     # wget -q -O - "http://127.0.0.1/web/servicelistreload?mode=2" > /dev/null 2>&1
 }
 
@@ -87,6 +86,9 @@ case "$1" in
         echo "$help_msg"
         ;;
 esac
+
+
+[ -f $tmp_file ] && rm -f $tmp_file
 
 
 exit 0
