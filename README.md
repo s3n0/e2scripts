@@ -43,3 +43,6 @@
    > - to tune and stop the DVB channel is used the Enigma Webif interface
    > - to determine the duration of Standby mode is used the Oscam Webif interface
 
++ **bouquetx.sh**
+   > - shell script to download and overwrite a "userbouquet-iptv" file from the internet if there is a new modification (tested for file content differences)
+   > - it is based on "init 4" and "init 3" reboots of Enigma as the most reliable method for all Enigma distributions
