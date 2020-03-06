@@ -1,8 +1,8 @@
 #!/bin/sh
 
 
-#### Shell script to download and overwrite a "userbouquet" file from the internet if there is a new modification (tested by differences).
-#### It is based on "init 4" and "init 3" reboots of Enigma as the most reliable method for all Enigma distributions.
+#### shell script to download userbouquet file from internet and overwrite local userbouquet file, but only if there is a change in the file (tested for file content differences)
+#### it is based on "init 4" and "init 3" reboots of Enigma as the most reliable method for all Enigma distributions
 
 
 #### CRON config example - check and download new userbouquet file - every day, at 05:15 :
