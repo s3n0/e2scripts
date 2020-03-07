@@ -124,7 +124,7 @@ fLog() {
     echo "$logmsg" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
     
     #### reduction the log filesize, if neccessary (delete first 20 lines):
-    if [ -f "$softcam_logfile" ] && [ $(stat -c%s "$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
+    if [ -f "$softcam_logfile" ] && [ $(wc -c < "$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
 }
 
 fStop() {
