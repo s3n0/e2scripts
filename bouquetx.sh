@@ -40,7 +40,7 @@ is_standby() {
 is_new_bouquet() {
     # [ "$(wget -q -O - "$online_file" | wc -c)" != "$(wc -c < $local_file)" ]
     # wget -q -O $tmp_file "$online_file" > /dev/null 2>&1 && [ "$(wc -c < $tmp_file)" != "$(wc -c < $local_file)" ]
-    wget -q -O $tmp_file "$online_file" > /dev/null 2>&1 && diff -aw $tmp_file $local_file > /dev/null 2>&1
+    wget -q -O $tmp_file "$online_file" > /dev/null 2>&1 && ! diff -aw $tmp_file $local_file > /dev/null 2>&1
 }
 
 
