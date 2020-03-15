@@ -8,7 +8,7 @@
 
 #### 1) for OpenATV / OpenPLi Enigma please copy the script file into the directory "/usr/script" (create the directory if does not exist)
 ####    in the case of other Enigma, copy the script where you see fit (!!! not to the directory "/tmp" !!!)
-#### 2) assign the execution rights for script file:
+#### 2) assign the execution attributes to the script file:
 ####        chmod a+x /usr/script/oscam_emm_refresh.sh
 #### 3) to start the script between 06:00 and 23:00, every 10 minutes, add the following line into the CRON configuration file:
 ####        */10 6-23 * * *     sh /usr/script/oscam_emm_refresh.sh
@@ -43,13 +43,13 @@ function is_standby(){
 }
 
 #### reduction the log file size, if neccessary (delete first 20 lines)
-if [ -f "$LOG_FILE" ] && [ $(stat -c%s "$LOG_FILE") -gt $LOG_MAXSIZE ]; then sed -i -e 1,20d "$LOG_FILE"; fi
+if [ -f "$LOG_FILE" ] && [ $(wc -c < "$LOG_FILE") -gt $LOG_MAXSIZE ]; then sed -i -e 1,20d "$LOG_FILE"; fi
 
 #### if Enigma is not in standby, exit the script
 if ! is_standby; then echo `date '+%Y-%m-%d %H:%M:%S'`": Enigma2 is not in Standby. Script canceled." >> $LOG_FILE; exit 0; fi
 
 #### in another step will check the card-reader idle time...
-#### if the idle time of the specific card reader in Oscam is greater than $IDLE_TIME, then EMM refresh begins (zap to the satellite channel for a short time period), otherwise exiting script
+#### if the idle time of the specific card $READER_LABEL in Oscam is greater than $IDLE_TIME, then EMM refresh begins (zap to the satellite channel for a short time period), otherwise exiting script
 if [ $(wget -q -O - $WEBIF_OSCAM/oscamapi.html?part=status | sed -rn '/name="'$READER_LABEL'"/,/times/ {s/.*idle="([0-9]+)".*/\1/p}') -gt $IDLE_TIME ]
 then
 	wget -q -O - "$WEBIF_ENIGMA/web/zap?sRef=$SRC" > /dev/null 2>&1
@@ -75,3 +75,4 @@ fi
 
 
 exit 0
+
