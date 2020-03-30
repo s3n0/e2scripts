@@ -15,7 +15,8 @@
    > - IPK creation tool for Enigma2, debugged and tested on OpenATV
 
 + **oscam-picons-converter.py**
-   > - simple python script for converting PNG to TPL picons (for Oscam-Webif)
+   > - simple script to convert PNG picons to TPL picons - for the needs of Oscam Webif (Oscam WebGUI)
+   > - TPL picon names are determined by srvid or srvid2 databases
 
 + **epg_refresh.py**
    > - simple python script for Enigma2 based set-top-box, for refresh EPG data on all DVB channels
