@@ -31,7 +31,8 @@
 # ----------------------------------------------------------
 #
 # 1)   Download the script directly from my github profile + also renaming filename from "softcam" to "softcam.oscam":
-#         wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.oscam
+#         wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam
+#         chmod a+x /etc/init.d/softcam.oscam
 #
 # 2)   Copy your OSCam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
 #
@@ -49,7 +50,8 @@
 # ----------------------------------------------------------
 #
 # 1)   Download the script directly from my github profile:
-#         wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam
+#         wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam
+#         chmod a+x /etc/init.d/softcam
 #
 # 2.A) If the "/etc/init.d/softcam" script auto start feature is not implemented in your Enigma2 then you must additionally create a symbolic link:
 #         ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam
