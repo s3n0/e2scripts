@@ -30,28 +30,26 @@
 #      OpenATV 6.3  &  OpenPLi 7.2  (or similar Enigma)
 # ----------------------------------------------------------
 #
-# 1)   Download the script directly from my github profile + also renaming filename from "softcam" to "softcam.oscam":
-#         wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam
-#         chmod a+x /etc/init.d/softcam.oscam
+# 1)   Download the softcam script directly from my github profile + renaming filename from "softcam" to "softcam.oscam" + set the execution rights:
+#         wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.oscam
 #
 # 2)   Copy your OSCam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
 #
-# 3)   Download and prepare a binary file - for example with helping of the following bash script, you can download also the oscam binary file:
+# 3)   Download and prepare a softcam binary file - for example with helping of the following bash script, you can download the oscam binary file:
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
-# 4)   Restart the set-top box via the GUI MENU or via the Shell:
+# 4)   Restart the set-top box via the GUI-MENU or via the Shell:
 #         reboot
 #
 # 5)   After restart, select and activate the particullar Softcam via the GUI-MENU:
-#         MENU -> Info Panel -> Softcam Panel -> select OSCam by pressing the left / right buttons and activate with the green button
+#         MENU -> Info Panel -> Softcam Panel -> select Oscam by pressing the left/right buttons and then activate it with the green button
 #
 # ----------------------------------------------------------
 #      All other or unknown Enigma distributions
 # ----------------------------------------------------------
 #
-# 1)   Download the script directly from my github profile:
-#         wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam
-#         chmod a+x /etc/init.d/softcam
+# 1)   Download the softcam script directly from my github profile + set the execution rights:
+#         wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam
 #
 # 2.A) If the "/etc/init.d/softcam" script auto start feature is not implemented in your Enigma2 then you must additionally create a symbolic link:
 #         ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam
@@ -66,10 +64,10 @@
 #
 # 3)   Copy your OSCam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
 #
-# 4)   Download and prepare a binary file - for example with helping of the following bash script, you can download also the oscam binary file:
+# 4)   Download and prepare a softcam binary file - for example with helping of the following bash script, you can download the oscam binary file:
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
-# 5)   Then restart the set-top box via the GUI MENU or via the Shell:
+# 5)   Then restart the set-top box via the GUI-MENU or via the Shell:
 #         reboot
 #
 # #########################################################
