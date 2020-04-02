@@ -73,7 +73,7 @@ TMP_DIR="/tmp/oscam_binary_update"
 BASE_FEED="http://updates.mynonpublic.com/oea"
 # OEVER="4.3"                           # this value is determined automatically using the Python script below - a note: OEVER here means the OE-Alliance version ! not the OE-core version (by Dreambox) !
 # ARCH="mips32el"                       # this value is determined automatically using the Python script below
-
+# Example:   "$BASE_FEED/$OEVER/$ARCH/Packages.gz"  ----  "http://updates.mynonpublic.com/oea/4.3/(aarch64,sh4,mips32el)/Packages.gz"
 
 
 
@@ -262,10 +262,10 @@ then
     # wget -qO- "http://127.0.0.1/web/message?type=1&timeout=10&text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now." > /dev/null 2>&1     # show WebGUI info message
     #### Replace the oscam binary file with new one
     OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
-    if ps --version; then
-        OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')            # full-featured `ps` command (OpenATV)
+    if ps --version 2>&1 | grep -q -i "busybox"; then
+        OSCAM_CMD=$(ps | grep $OSCAM_BIN_FNAME | grep -v grep | head -n 1 | grep -o '/.*$')         # feature-poor `ps` command from BusyBox (for example in OpenPLi image)
     else
-        OSCAM_CMD=$(ps | grep $OSCAM_BIN_FNAME | grep -v grep | head -n 1 | grep -o '/.*$')         # feature-poor `ps` command from BusyBox (OpenPLi)
+        OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')            # full-featured `ps` command from Linux OS (for example in OpenATV image)
     fi
     [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" ; }
     mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
