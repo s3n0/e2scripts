@@ -1,19 +1,32 @@
 #!/bin/bash
 
-#############################
-# Backup & Restore bash-script
+####################################################
+# Backup & Restore shell script
 # by s3n0, 2019-10-03
-#############################
-# simple bash script for backing up and restoring
-# user-defined settings, files or folders in Enigma2
-#############################
+####################################################
+# simple shell script for backing up and restoring
+# user-defined files and folders in the Enigma2
+####################################################
 
-BACKUP_DIR="/media/hdd/backup_folder"
 
-ARCHIVE_PREFIX="backup-enigma"     # Note: The timestamp is automatically added at the end of the file name and the file extension is ".tar.gz"
+#### user defined folder with your stored / archived backup files
+# BACKUP_DIR=""                                  # leave blank, i.e. empty folder -> means the current directory (in the Shell)
+# BACKUP_DIR="/media/hdd/backrest_folder/"
+# BACKUP_DIR="/media/mmc/backrest_folder/"
+BACKUP_DIR="/home/root/backrest_folder/"
+
+
+ARCHIVE_PREFIX="e2-backup"                       # Note: The timestamp is automatically added at the end of the file name and the file extension will to be ".tar.gz"
+
 
 LIST="
 /etc/enigma2/
+
+/usr/share/enigma2/picon/
+/media/hdd/picon/
+/media/usb/picon/
+
+/usr/share/enigma2/MetrixHD/skinparts/infobar-mod_by_s3n0/
 
 /etc/tuxbox/*.xml
 /etc/auto.network
@@ -22,33 +35,24 @@ LIST="
 /usr/script/
 
 $(find /usr/bin -name *cam*)
-$(find /etc -name *cam*)
+/etc/init.d/softcam*
+/etc/rc?.d/*softcam*
+/etc/tuxbox/config/
 /usr/keys/
-/etc/tuxbox/config/oscam/piconTPL/
 
 /usr/bin/udpxy
 /etc/init.d/udpxy
 /etc/rc?.d/*udpxy
 
-/usr/lib/enigma2/python/Plugins/Extensions/EpgDownloadReplace/
 /usr/lib/enigma2/python/Plugins/Extensions/ChocholousekPicons/
-/usr/lib/enigma2/python/Plugins/Extensions/Remoover/
-
-/usr/share/enigma2/MetrixHD/skinparts/infobar-mod_by_s3n0/
-
-/usr/share/enigma2/picon/
-/media/hdd/picon/
-/media/usb/picon/
 "
-
-#############################
-#############################
 
 LIST=$(echo $LIST | tr "\n" " ")
 
 
 
-
+####################################################
+####################################################
 
 
 
@@ -75,25 +79,28 @@ do_backup() {
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         # store the Standby power state when the script starts:  5 = to turn the Enigma2 into Standby ,  4 = to wake-up the Enigma2 from Standby
-        [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "true" ] && previous_standby_state=5 || previous_standby_state=4
+        [ "$(wget -q -O - http://127.0.0.1/web/powerstate | grep '</e2instandby>' | cut -f 1)" = "true" ] && previous_standby_state=5 || previous_standby_state=4
         init_4_with_feedback
         echo "-----------------------"
     fi
-    BACKUP_FILENAME="$BACKUP_DIR/$ARCHIVE_PREFIX-`date '+%Y-%m-%d-%H%M%S'`.tar.gz"
-    echo "Output archive file name:"
-    echo "    $BACKUP_FILENAME"
+    BACKUP_TMP="/tmp/${ARCHIVE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
+    BACKUP_FINAL="${BACKUP_DIR}${ARCHIVE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
+    echo "Output archive file name: "
+    echo "    TMP:   ${BACKUP_TMP}  "
+    echo "    FINAL: ${BACKUP_FINAL}"
     echo "-----------------------"
     echo "Files and folders to compress:"
-    echo "    $LIST "
+    echo "    LIST:  ${LIST}"
     echo "-----------------------"
     echo "Starting compression..."
-    mkdir -p $BACKUP_DIR
+    [ -z "$BACKUP_DIR" ] || mkdir -p $BACKUP_DIR
     #tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_FILENAME $LIST         # --ignore-failed-read ...... is unfortunately a unknown argument in `tar` under OpenPLi 7.1
-    tar --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_FILENAME $LIST
+    tar --exclude='/etc/enigma2/epg.dat' --exclude='/hdd/epg.dat' --exclude='/media/hdd/epg.dat' -czpf $BACKUP_TMP $LIST
+    mv -f $BACKUP_TMP $BACKUP_FINAL
     echo "...compression done."                                                                     # [ $? -eq 0 ] && echo "...done." || echo "...failed ! (exit code = $?)"
     echo "-----------------------"
     echo "List of files in the backup directory:"
-    ls -l $BACKUP_DIR/$ARCHIVE_PREFIX*
+    ls -l "${BACKUP_DIR}${ARCHIVE_PREFIX}"*
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         init 3
@@ -109,12 +116,12 @@ do_backup() {
 
 do_restore() {
     echo "-----------------------"
-    if ls $BACKUP_DIR/$ARCHIVE_PREFIX*.tar.gz > /dev/null 2>&1 ; then
-        LATEST_FILE=$(ls -tc $BACKUP_DIR/$ARCHIVE_PREFIX*.tar.gz | head -n 1)
+    if ls "${BACKUP_DIR}${ARCHIVE_PREFIX}"*.tar.gz > /dev/null 2>&1 ; then
+        LATEST_FILE=$(ls -tc "${BACKUP_DIR}${ARCHIVE_PREFIX}"*.tar.gz | head -n 1)
         init_4_with_feedback
         echo "-----------------------"
         echo "The latest archive file found in the directory:"
-        echo "    $LATEST_FILE "
+        echo "    ${LATEST_FILE}"
         echo "-----------------------"
         echo "Starting decompression..."
         tar -C / --overwrite -xzphf $LATEST_FILE
@@ -126,7 +133,7 @@ do_restore() {
         echo "...done."
         echo "-----------------------"
     else
-        echo "ERROR! No archive files $ARCHIVE_PREFIX*.tar.gz found in the $BACKUP_DIR directory!"
+        echo "ERROR! No archive files ${ARCHIVE_PREFIX}*.tar.gz found in the ${BACKUP_DIR} directory!"
         echo "-----------------------"
         exit 1
     fi
@@ -134,7 +141,8 @@ do_restore() {
 
 
 
-
+####################################################
+####################################################
 
 
 
@@ -152,14 +160,16 @@ case "$1" in
         echo -e "\nUSAGE:"
         echo -e "\t $0 <ARGUMENT>"
         echo -e "ARGUMENT:"
-        echo -e "\t b|backup|-b|--backup \n\t\t ...to backup all user-defined files & folders"
-        echo -e "\t bq|backup-quickly|-bq|--backup-quickly \n\t\t ...to backup all user-defined files & folders without stopping the Enigma during the backup process"
-        echo -e "\t r|restore|-r|--restore \n\t\t ...to restore all user-defined files & folders"
+        echo -e "\t b|backup|-b|--backup"
+        echo -e "\t\t ...backup user-defined files & folders (Enigma will be stopped during the backup process)"
+        echo -e "\t bq|backup-quickly|-bq|--backup-quickly"
+        echo -e "\t\t ...backup user-defined files & folders (Enigma will not be stopped during the backup process)"
+        echo -e "\t r|restore|-r|--restore"
+        echo -e "\t\t ...restore user-defined files & folders - latest archive found in directory (set-top-box will restarted!)"
         echo -e "BACKUP DIR:"
-        echo -e "\t $BACKUP_DIR"
+        [ -z "$BACKUP_DIR" ] && echo -e "\t $(pwd) (as the current directory)" || echo -e "\t ${BACKUP_DIR}"
         ;;
 esac
-
 
 
 
