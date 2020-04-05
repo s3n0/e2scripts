@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ####################################################
-# Backup & Restore shell script
+# Backup & Restore
 # by s3n0, 2019-10-03
 ####################################################
 # simple shell script for backing up and restoring
