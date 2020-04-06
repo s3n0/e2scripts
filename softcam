@@ -111,10 +111,10 @@ ARGUMENT:  start......the process will be started only if it's not running
 # FUNCTIONS ************************************************
 
 fLog() {
-    if [[ "$1" != "$hrline" ]]; then
-        logmsg=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line (header line)
-    else
+    if [ "$1" = "$hrline" ]; then
         logmsg="$1"
+    else
+        logmsg=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line (header line)
     fi
     
     #echo "$logmsg" > /dev/null                          ### null device   <---  log will disabled (do nothing)
@@ -124,7 +124,7 @@ fLog() {
     echo "$logmsg" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
     
     #### reduction the log filesize, if neccessary (delete first 20 lines):
-    if [ -f "$softcam_logfile" ] && [ $(wc -c < "$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
+    if [ -f "$softcam_logfile" ] && [ $(wc -c <"$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
 }
 
 fStop() {
