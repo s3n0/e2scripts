@@ -47,4 +47,4 @@
 
 + **bouquetx.sh**
    > - shell script to download userbouquet file from internet and overwrite local userbouquet file, but only if there is a change in the file (tested for file content differences)
-   > - it is based on "init 4" and "init 3" reboots of Enigma as the most reliable method for all Enigma distributions
+   > - script is based on regular reloading of services using OpenWebif interface (i.e. mode 0 and also mode 4)
