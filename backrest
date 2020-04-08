@@ -16,7 +16,7 @@
 BACKUP_DIR="/home/root/backrest_folder/"
 
 
-ARCHIVE_PREFIX="e2-backup"                       # Note: The timestamp is automatically added at the end of the file name and the file extension will to be ".tar.gz"
+FILE_PREFIX="e2-backup"                         # Note: The timestamp is automatically added at the end of the file name and the file extension will to be ".tar.gz"
 
 
 LIST="
@@ -60,7 +60,6 @@ init_4_with_feedback() {
     echo "Stopping the Enigma..."
     init 4
     x=0
-    #while [ "$x" -le 15 ] && [ $(ps --no-headers -o stat -C enigma2) ] ; do
     while [ "$x" -le 15 ] && [ $(pidof enigma2) ] ; do
         x=$(( $x + 1 ))
         sleep 1
@@ -68,7 +67,7 @@ init_4_with_feedback() {
         #echo "...Enigma state = "`ps --no-headers -o stat -C enigma2`      # debugging output - for testing purpose only
     done
     if pidof enigma2 > /dev/null 2>&1 ; then
-        echo "...stopping failed ! The Backup & Restore script will aborted."
+        echo "...stopping failed ! the 'backrest' script was aborted !"
         exit 1
     else
         echo "...successfully stopped after $x seconds."
@@ -83,8 +82,8 @@ do_backup() {
         init_4_with_feedback
         echo "-----------------------"
     fi
-    BACKUP_TMP="/tmp/${ARCHIVE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
-    BACKUP_FINAL="${BACKUP_DIR}${ARCHIVE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
+    BACKUP_TMP="/tmp/${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
+    BACKUP_FINAL="${BACKUP_DIR}${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
     echo "Output archive file name: "
     echo "    TMP:   ${BACKUP_TMP}  "
     echo "    FINAL: ${BACKUP_FINAL}"
@@ -100,7 +99,7 @@ do_backup() {
     echo "...compression done."                                                                     # [ $? -eq 0 ] && echo "...done." || echo "...failed ! (exit code = $?)"
     echo "-----------------------"
     echo "List of files in the backup directory:"
-    ls -l "${BACKUP_DIR}${ARCHIVE_PREFIX}"*
+    ls -l "${BACKUP_DIR}${FILE_PREFIX}"*
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         init 3
@@ -116,8 +115,8 @@ do_backup() {
 
 do_restore() {
     echo "-----------------------"
-    if ls "${BACKUP_DIR}${ARCHIVE_PREFIX}"*.tar.gz > /dev/null 2>&1 ; then
-        LATEST_FILE=$(ls -tc "${BACKUP_DIR}${ARCHIVE_PREFIX}"*.tar.gz | head -n 1)
+    if ls "${BACKUP_DIR}${FILE_PREFIX}"*.tar.gz > /dev/null 2>&1 ; then
+        LATEST_FILE=$(ls -1 "${BACKUP_DIR}${FILE_PREFIX}"*.tar.gz | tail -n 1)
         init_4_with_feedback
         echo "-----------------------"
         echo "The latest archive file found in the directory:"
@@ -133,7 +132,7 @@ do_restore() {
         echo "...done."
         echo "-----------------------"
     else
-        echo "ERROR! No archive files ${ARCHIVE_PREFIX}*.tar.gz found in the ${BACKUP_DIR} directory!"
+        echo "ERROR! No archive files ${FILE_PREFIX}*.tar.gz found in the ${BACKUP_DIR} directory!"
         echo "-----------------------"
         exit 1
     fi
