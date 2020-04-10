@@ -95,46 +95,44 @@ def table_from_png_only(caidsFilter = []):
     To make the TPL picons from PNG files for only certain CAIDs (in the user configured value = CAIDS_FILTER)
     """
     global DIR_PNG
-    print('Making a table from all PNG files...')
+    print('Making a table from all PNG files, with user defined CAIDs...')
     d = {}
-    dir_list = glob.glob(DIR_PNG + '/*.png')
-    for path_to_png in dir_list:
+    for path_to_png in glob.glob(DIR_PNG + '/*.png'):
         sref   = path_to_png.split('/')[-1].split('.')[0].upper().split('_')
         sid    = sref[3].rjust(4,'0')
         d[sid] = caidsFilter
     print('...done.\n')
     return d
 
-def table_from_png_and_lamedb(caidsFilter = []):
-    """
-    This function is experimental only, it's for a testing purpose only
-    To make the TPL picons from PNG files for user selected CAIDs + filtered with the 'lamedb' database file
-    """
-    global DIR_PNG
-    with open('/etc/enigma2/lamedb', 'r') as f:
-        lamedb = f.read().upper().splitlines()
-    d = {}
-    dir_list = glob.glob(DIR_PNG + '/*.png')
-    for path_to_png in dir_list:
-        sref  = path_to_png.split('/')[-1].split('.')[0].upper().split('_')
-        sid   = sref[3].rjust(4,'0')
-        match = ':'.join((sid, sref[6].rjust(8,'0'), sref[4].rjust(4,'0'), sref[5].rjust(4,'0'), str(int(sref[2],16)), '0', '0'))
-        idx   = [ i for i,e in enumerate(lamedb) if match in e ]
-        if idx:
-            idx = idx[0]
-            caids = list(set(  lamedb[idx+2].replace('C:','').split(',')[1:]  )   &   set(caidsFilter)  )
-            if caids:
-                d[sid] = caids
-    return d
+#def table_from_png_and_lamedb(caidsFilter = []):
+#    """
+#    This function is experimental only, it's for a testing purpose only
+#    To make the TPL picons from PNG files for user selected CAIDs + filtered with the 'lamedb' database file
+#    """
+#    global DIR_PNG
+#    with open('/etc/enigma2/lamedb', 'r') as f:
+#        lamedb = f.read().upper().splitlines()
+#    d = {}
+#    for path_to_png in glob.glob(DIR_PNG + '/*.png'):
+#        sref  = path_to_png.split('/')[-1].split('.')[0].upper().split('_')
+#        sid   = sref[3].rjust(4,'0')
+#        match = ':'.join((sid, sref[6].rjust(8,'0'), sref[4].rjust(4,'0'), sref[5].rjust(4,'0'), str(int(sref[2],16)), '0', '0'))
+#        idx   = [ i for i,e in enumerate(lamedb) if match in e ]
+#        if idx:
+#            idx = idx[0]
+#            caids = list(set(  lamedb[idx+2].replace('C:','').split(',')[1:]  )   &   set(caidsFilter)  )
+#            if caids:
+#                d[sid] = caids
+#    return d
 
 #############################################################################
 
-def png2tpl(sid_table):
+def convert_png2tpl(sid_table):
     global DIR_TPL, DIR_PNG
-    print('Converting PNG to TPL images (Base64/template format)...')
+    print('Converting PNG-picons (files that must exist on disk) to TPL-picons (Base64/template format)...')
     counter = 0
     for path_to_png in glob.glob(DIR_PNG + '/*.png'):
-        sid = path_to_png.split('/')[-1].split('_')[3].rjust(4,'0').upper()
+        sid = path_to_png.split('_')[-7].rjust(4,'0').upper()
         if sid in sid_table:
             for caid in sid_table[sid]:
                 img = Image.open(path_to_png)
@@ -172,33 +170,63 @@ def table_size_checking(tbl):
 
 def show_man_page():
     script_path = sys_argv[0] or "/path_to_script/script_file_name.py"
-    print('''
-USAGE:
-    python {0} <OPTIONS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
+    print("""
+python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
 
-OPTIONS:
-    -a \t\t\t make TPL picons from all PNG files, created just for user-selected CAIDs only
-       \t\t\t WARNING: the argument '-a' must also be specified with the argument '-c CAIDs'!
-       \t\t\t          the arguments '-1' and '-2' will also be ignored here!
-    -1 \t\t\t make TPL picons from 'oscam.srvid' file, filtered by user-selected CAIDs (if they are specified)
-    -2 \t\t\t make TPL picons from 'oscam.srvid2' file, filtered by user-selected CAIDs (if they are specified)
-       \t\t\t the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE, which could also be included as TPL picons
-    -c CAID[,CAID,...] \t user-selected CAIDs (which are the only ones to be considered)
-       \t\t\t if you do not specify the argument '-c' then all found CAIDs will be used! beware of the large number of CAIDs (TPL files)!
-    -o PATH \t\t path to oscam config dir (.srvid and .srvid2 files), if the script did not find the Oscam configuration dir automatically
-    -q \t\t\t higher quality image processing with antialiasing filter (higher quality means a larger file size)
-    -d \t\t\t delete the whole target TPL-directory before processing
+=== BASIC INFO:
 
-EXAMPLES:
-    python {0} -a -c 0624 -d /tmp/transparent-png-220x132 /etc/tuxbox/config/oscam/piconTPL
-    python {0} -2 -c 0624,0D96,FFFE /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
-    python {0} -1 -2 /tmp/png_images /etc/tuxbox/config/oscam/piconTPL
-    python {0} -o /etc/tuxbox/config -q -1 /media/hdd/picon /media/hdd/piconTPL
+    Python script developed to convert PNG-picons (taken from Enigma2-SKIN) to TPL-picons (to Oscam-Webif format).
 
-RECOMMENDED:
-    python {0} -1 -2 -d -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
-    '''.format(script_path)
-    )
+    The algorithm processes all found PNG-picons belonging to Enigma2-SKIN.
+
+    The TPL-picon name format consists of 'IC_<CAID>_<SID>.tpl' so therefore it's necessary to
+    create a table of all SIDs and CAIDs as the first.
+
+    I also recommend using the CAID filter, i.e. argument '-c CAIDs' for argument '-a', to avoid very many
+    TPL-picons belonging to all existing CAIDs in the Enigma !
+
+=== COMMANDS:
+    
+    Method of creating table SID:CAIDs (choose with caution):
+    
+-a  make a table of SIDs found in PNG picon names (SIDs obtained from file names) + user-defined CAIDs
+    so, do not search for any CAIDs - they must be specified by user, via the '-c CAIDs' argument
+    and also all SIDs will be used from the PNG-picons (file names) found in Enigma2 / SKIN
+    WARNING:   '-c CAIDs' is necessary if '-a' is used
+    NOTE:      '-1' and '-2' will be ignored if '-a' is used
+
+-1  make a table from all available SID:CAIDs in 'oscam.srvid' file
+
+-2  make a table from all available SID:CAIDs in 'oscam.srvid2' file
+    NOTE:  the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE,
+           which could also be included as TPL-picons (automatically in the generated table)
+
+    Filter:    (it's important in case of the argument '-a')
+
+-c <CAID[,CAID,...]>
+        user-defined CAIDs separated by a comma (which are the only ones to be considered)
+        NOTE:   if you do not specify the argument '-c' then all found CAIDs will be used in the case
+                of '-1' and '-2' arguments ! Beware of the large number of CAIDs (TPL files)!
+    
+    Additional options:
+
+-o <PATH>    path to oscam config dir, if the script did not find the Oscam configuration dir automatically
+-q           higher quality image processing with antialiasing filter (higher quality means a larger file size!)
+-d           delete the whole target TPL-directory before processing
+
+=== EXAMPLES:
+
+python {0} -a -c 0624 -d /tmp/transparent-png-220x132 /etc/tuxbox/config/oscam/piconTPL
+python {0} -2 -c 0624,0D96,FFFE /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+python {0} -1 -2 /tmp/piconPNG /tmp/piconsTPL
+python {0} -o /etc/tuxbox/config -q -1 /media/hdd/picon /media/hdd/piconTPL
+
+=== RECOMMENDED USE:
+
+python {0} -d -1 -2 -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+python {0} -d -a -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+
+""".format(script_path)   )
 
 def prepare_arguments():    
     global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
@@ -217,6 +245,8 @@ def prepare_arguments():
                 show_man_page()
                 print('ERROR ! The Oscam configration folder was not found ! Please use the "-o" argument.')
                 return False
+            else:
+                print('Oscam configuration directory found: %s' % DIR_OSCAMCFG)
         if '-1' in sys_argv and not os_path.isfile(DIR_OSCAMCFG + '/oscam.srvid'):
             print('ERROR ! The oscam.srvid file does not exist !')
             return False
@@ -248,7 +278,7 @@ if __name__ == "__main__" and prepare_arguments():
     global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG    
     
     if '-d' in sys_argv:
-        os_system('rm -f %s' % (DIR_PNG + '/*.tpl'))
+        os_system('rm -f %s' % DIR_TPL + '/*.tpl')
     
     if '-1' in sys_argv and '-a' not in sys_argv:
         table = table_from_srvid(CAIDS_FILTER)
@@ -256,7 +286,7 @@ if __name__ == "__main__" and prepare_arguments():
         #with open('/tmp/table-1.dat','w') as f:
         #    f.write(json.dumps(table))
         if table_size_checking(table):
-            png2tpl(table)
+            convert_png2tpl(table)
     
     if '-2' in sys_argv and '-a' not in sys_argv:
         table = table_from_srvid2(CAIDS_FILTER)
@@ -264,12 +294,12 @@ if __name__ == "__main__" and prepare_arguments():
         #with open('/tmp/table-2.dat','w') as f:
         #    f.write(json.dumps(table))
         if table_size_checking(table):
-            png2tpl(table)
+            convert_png2tpl(table)
     
     if '-a' in sys_argv:
         table = table_from_png_only(CAIDS_FILTER)
         if table_size_checking(table):
-            png2tpl(table)
+            convert_png2tpl(table)
     
     print('Good bye')
 
