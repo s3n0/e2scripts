@@ -164,12 +164,14 @@ def table_size_checking(tbl):
     if dict_length > 2000:
         while True:
             answer = raw_input('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\nDo you really want to continue ?\n(y/n)\n>')
-            if answer.lower() == 'n':
+            if answer.lower() == 'y':
+                return True
+            elif answer.lower() == 'n':
                 return False
     return True
 
 def show_man_page():
-    script_path = sys_argv[0] or '</path_to_script/script_file_name.py>'
+    script_path = sys_argv[0] or "/path_to_script/script_file_name.py"
     print('''
 USAGE:
     python {0} <OPTIONS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
