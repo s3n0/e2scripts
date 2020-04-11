@@ -229,7 +229,7 @@ rm -fr $TMP_DIR ; mkdir -p $TMP_DIR ; cd $TMP_DIR
 
 #### Download the necessary Oscam installation package
 echo -n "Downloading the necessary Oscam installation IPK package... "
-wget -q --show-progress -O $TMP_DIR/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
+wget -q -O $TMP_DIR/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo " done." || { echo " failed!"; exit 1; }
 
 #### Extracting the IPK package
 extractor() {
@@ -246,9 +246,13 @@ echo "---------------------------"
 
 #### Retrieve Oscam online version   (from downloaded binary file)
 chmod a+x $TMP_DIR/$REQUESTED_BUILD
+if $TMP_DIR/$REQUESTED_BUILD --build-info 2>&1 | grep -q 'required by'; then
+    opkg update > /dev/null 2>&1
+    opkg install libc6 libcrypto1.0.2 libssl1.0.2 libusb-1.0-0
+fi
 OSCAM_ONLINE_VERSION=$( $TMP_DIR/$REQUESTED_BUILD --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}' )    # output result is, as example:  11552
 #OSCAM_ONLINE_VERSION=$( echo $IPK_FILENAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'  )                              # old method to retrieve online Oscam version
-[ -z "$OSCAM_ONLINE_VERSION" ] && { echo "Error! The Oscam online version cannot be recognized!"; exit 1; }
+[ -z "$OSCAM_ONLINE_VERSION" ] && { echo "Error! The online version cannot be recognized! Script canceled!"; exit 1; }
 
 #### Retrieve Oscam local version    (from current binary file placed in the /usr/bin folder)
 OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}'   )          # output result is, as example:  11546
