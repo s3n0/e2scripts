@@ -56,6 +56,8 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 
+HR_LINE="----------------------------------"
+
 
 
 # A temporary directory
@@ -70,10 +72,14 @@ TMP_DIR="/tmp/oscam_binary_update"
 
 #### Auto-configuring the Enigma version and the chipset / CPU architecture (with the help of Python):
 
-BASE_FEED="http://updates.mynonpublic.com/oea"
 # OEVER="4.3"                           # this value is determined automatically using the Python script below - a note: OEVER here means the OE-Alliance version ! not the OE-core version (by Dreambox) !
 # ARCH="mips32el"                       # this value is determined automatically using the Python script below
-# Example:   "$BASE_FEED/$OEVER/$ARCH/Packages.gz"  ----  "http://updates.mynonpublic.com/oea/4.3/(aarch64,sh4,mips32el)/Packages.gz"
+# BASE_FEED="http://updates.mynonpublic.com/oea"       # feed server with all Oscam packages (for OpenATV of course)
+# Wget example:      wget -O /tmp/Packages.gz "$BASE_FEED/$OEVER/$ARCH/Packages.gz"
+# Specific URL example:     "http://updates.mynonpublic.com/oea/4.3/{aarch64,sh4,mips32el,armv7ahf-neon,cortexa15hf-neon-vfpv4}/Packages.gz"
+
+
+BASE_FEED="http://updates.mynonpublic.com/oea"
 
 
 
@@ -203,6 +209,9 @@ check_compat
 #######################################
 
 
+#### Unfortunately, OpenPLi-7.2 uses older versions of some libraries (/lib/libc-2.25.so), so... I have to use older OEVER="4.1" folder to work the Oscam under OpenPLi-7.2:
+[ -f /etc/opkg/all-feed.conf ] && cat /etc/opkg/all-feed.conf | grep -q "openpli-7" && OEVER="4.1"
+
 #### Checking if the 7-zip archiver is installed on system
 if [ -f /usr/bin/7z ]; then
     BIN7Z=/usr/bin/7z
@@ -219,7 +228,7 @@ else
 fi
 
 #### Download and unpack the list of all available packages + Find out the package name according to the required Oscam edition
-echo "---------------------------"
+echo "$HR_LINE"
 echo -n "Downloading and unpacking the list of softcam installation packages... "
 IPK_FILENAME=$(wget -q -O - "$BASE_FEED/$OEVER/$ARCH/Packages.gz" | gunzip -c | grep "Filename:" | grep "$REQUESTED_BUILD"_1.20 | cut -d " " -f 2)
 [ -z "$IPK_FILENAME" ] && { echo " failed!"; exit 1; } || echo " done."
@@ -235,21 +244,39 @@ wget -q -O $TMP_DIR/$IPK_FILENAME $BASE_FEED/$OEVER/$ARCH/$IPK_FILENAME && echo 
 extractor() {
     echo -n "Extracting:  $1 $2  --  "; $BIN7Z e -y $1 $2 > /dev/null 2>&1 && echo "OK" || { echo "FAILED!"; exit 1; }
     }
-echo "---------------------------"
+echo "$HR_LINE"
 echo "Extracting the IPK package:"
 extractor $IPK_FILENAME                          # 1. splitting linked files ("ar" archive) - since "ar" separates files from the archive with difficulty, so I will use "7-zip" archiver
 extractor data.tar.?z                            # 2. unpacking the ".gz" OR ".xz" archive
 extractor data.tar ./usr/bin/$REQUESTED_BUILD    # 3. unpacking ".tar" archive, but only one file - i.e. an oscam binary file, for example as "oscam-trunk"
 echo -n "The Oscam binary file has "
 [ -f $TMP_DIR/$REQUESTED_BUILD ] && echo "been successfully extracted." || { echo "not been extracted! Please check the folder '$TMP_DIR'."; exit 1; }
-echo "---------------------------"
+chmod a+x $TMP_DIR/$REQUESTED_BUILD
+echo "$HR_LINE"
+
+#### Check the availability of some dependent libraries:
+if $TMP_DIR/$REQUESTED_BUILD --build-info 2>&1 | grep -q 'required by'; then
+   echo "Unfortunately, some dependent libraries are missed for downloaded Oscam binary file."
+   echo "You can try to install / to update them manually ... for example:"
+   echo "    opkg update"                       # opkg update > /dev/null 2>&1
+   echo "    opkg install libc6 libcrypto1.0.2 libssl1.0.2 libusb-1.0-0"
+   echo "$HR_LINE"
+   $TMP_DIR/$REQUESTED_BUILD --build-info
+   exit 1
+fi
+
+#### Check the availability of some sym-links to libraries:
+if $TMP_DIR/$REQUESTED_BUILD --build-info 2>&1 | grep -q 'shared libraries'; then
+   echo "Unfortunately, some libraries have missed symbolic-links."
+   echo "You can try to assign them manually (ln -s file symlink) ... for example:"
+   echo "    ln -s /usr/lib/libssl.so.1.0.2 /usr/lib/libssl.so.1.0.0"
+   echo "    ln -s /usr/lib/libcrypto.so.1.0.2 /usr/lib/libcrypto.so.1.0.0"
+   echo "$HR_LINE"
+   $TMP_DIR/$REQUESTED_BUILD --build-info
+   exit 1
+fi
 
 #### Retrieve Oscam online version   (from downloaded binary file)
-chmod a+x $TMP_DIR/$REQUESTED_BUILD
-if $TMP_DIR/$REQUESTED_BUILD --build-info 2>&1 | grep -q 'required by'; then
-    opkg update > /dev/null 2>&1
-    opkg install libc6 libcrypto1.0.2 libssl1.0.2 libusb-1.0-0
-fi
 OSCAM_ONLINE_VERSION=$( $TMP_DIR/$REQUESTED_BUILD --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}' )    # output result is, as example:  11552
 #OSCAM_ONLINE_VERSION=$( echo $IPK_FILENAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'  )                              # old method to retrieve online Oscam version
 [ -z "$OSCAM_ONLINE_VERSION" ] && { echo "Error! The online version cannot be recognized! Script canceled!"; exit 1; }
@@ -285,6 +312,6 @@ rm -rf $TMP_DIR
 
 
 
-echo "---------------------------"
+echo "$HR_LINE"
 
 exit 0
