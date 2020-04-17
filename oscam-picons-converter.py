@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 #################################
-###       s3n0 - 2019         ###
 ###  .PNG to .TPL converter   ###
+###    by s3n0 , 2019-2020    ###
 ###  https://github.com/s3n0  ###
 #################################
 
@@ -180,36 +180,40 @@ python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
     The algorithm processes all found PNG-picons belonging to Enigma2-SKIN.
 
     The TPL-picon name format consists of 'IC_<CAID>_<SID>.tpl' so therefore it's necessary to
-    create a table of all SIDs and CAIDs as the first.
+    create a table of all CAID:SID as the first.
 
     I also recommend using the CAID filter, i.e. argument '-c CAIDs' for argument '-a', to avoid very many
     TPL-picons belonging to all existing CAIDs in the Enigma !
 
 === COMMANDS:
-    
-    Method of creating table SID:CAIDs (choose with caution):
-    
--a  make a table of SIDs found in PNG picon names (SIDs obtained from file names) + user-defined CAIDs
-    so, do not search for any CAIDs - they must be specified by user, via the '-c CAIDs' argument
-    and also all SIDs will be used from the PNG-picons (file names) found in Enigma2 / SKIN
-    WARNING:   '-c CAIDs' is necessary if '-a' is used
-    NOTE:      '-1' and '-2' will be ignored if '-a' is used
+
+    Method of creating table SID:CAIDs (choose it carefully):
+    ---------------------------------------------------------
+-a  make a table of SIDs found in all picon names (SIDs obtained from all PNG file names)
+    in this case, no CAIDs will be detected / searched !
+    only user-defined CAIDs will be used !
+        '-c CAIDs' argument is necessary
+        '-1' and '-2' will be ignored
 
 -1  make a table from all available SID:CAIDs in 'oscam.srvid' file
+        '-c CAIDs' argument is not necessary, but can be used (as filter)
+        may be used in combination with '-2'
 
 -2  make a table from all available SID:CAIDs in 'oscam.srvid2' file
-    NOTE:  the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE,
-           which could also be included as TPL-picons (automatically in the generated table)
+        '-c CAIDs' argument is not necessary, but can be used (as filter)
+        may be used in combination with '-1'
+        NOTE: the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE,
+              which could also be included as TPL-picons, automatically in the generated table of CAIDs
 
     Filter:    (it's important in case of the argument '-a')
-
+    ---------------------------------------------------------
 -c <CAID[,CAID,...]>
-        user-defined CAIDs separated by a comma (which are the only ones to be considered)
-        NOTE:   if you do not specify the argument '-c' then all found CAIDs will be used in the case
-                of '-1' and '-2' arguments ! Beware of the large number of CAIDs (TPL files)!
-    
-    Additional options:
+        user-defined CAIDs separated by a comma (which are the only ones to be considered)...
+        if you do not specify the argument '-c' then all found CAIDs will be used in the case
+        of '-1' and '-2' arguments ! beware of the large number of CAIDs (TPL files) !!!
 
+    Additional options:
+    ---------------------------------------------------------
 -o <PATH>    path to oscam config dir, if the script did not find the Oscam configuration dir automatically
 -q           higher quality image processing with antialiasing filter (higher quality means a larger file size!)
 -d           delete the whole target TPL-directory before processing
@@ -219,12 +223,12 @@ python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
 python {0} -a -c 0624 -d /tmp/transparent-png-220x132 /etc/tuxbox/config/oscam/piconTPL
 python {0} -2 -c 0624,0D96,FFFE /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
 python {0} -1 -2 /tmp/piconPNG /tmp/piconsTPL
-python {0} -o /etc/tuxbox/config -q -1 /media/hdd/picon /media/hdd/piconTPL
+python {0} -1 -q -o /etc/tuxbox/config /media/hdd/picon /media/hdd/piconTPL
 
 === RECOMMENDED USE:
 
-python {0} -d -1 -2 -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
-python {0} -d -a -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+python {0} -d -1 -2 -c <CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+python {0} -d -a -c <CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
 
 """.format(script_path)   )
 
@@ -239,14 +243,15 @@ def prepare_arguments():
         if '-o' in sys_argv:
             DIR_OSCAMCFG = sys_argv[ sys_argv.index('-o') + 1 ]
         else:
-            folder_list = ['/etc/tuxbox/config/oscam', '/etc/tuxbox/config', '/etc/tuxbox/oscam', '/usr/keys/oscam', '/usr/local/etc', '']
-            DIR_OSCAMCFG = [x for x in folder_list if os_path.isfile(x + '/oscam.server')][0]
-            if DIR_OSCAMCFG == '':
+            folder_list = ['/etc/tuxbox/config', '/etc/tuxbox/oscam', '/etc/tuxbox/config/oscam', '/usr/keys/oscam', '/usr/local/etc']
+            DIR_OSCAMCFG = [d for d in folder_list if os_path.isfile(d + '/oscam.server')]
+            if DIR_OSCAMCFG:
+                DIR_OSCAMCFG = DIR_OSCAMCFG[0]
+                print('Oscam configuration directory found: %s' % DIR_OSCAMCFG)
+            else:
                 show_man_page()
                 print('ERROR ! The Oscam configration folder was not found ! Please use the "-o" argument.')
                 return False
-            else:
-                print('Oscam configuration directory found: %s' % DIR_OSCAMCFG)
         if '-1' in sys_argv and not os_path.isfile(DIR_OSCAMCFG + '/oscam.srvid'):
             print('ERROR ! The oscam.srvid file does not exist !')
             return False
@@ -260,7 +265,7 @@ def prepare_arguments():
         print('User-selected CAIDs that will be considered: %s' % ', '.join(CAIDS_FILTER) )
     else:
         CAIDS_FILTER = []
-        print('User-selected CAIDs: <blank/empty>  (all found CAIDs will be included !)')
+        print('User-selected CAIDs: <empty/blank>   (all found CAIDs will be included !)')
     
     DIR_TPL = sys_argv[-1]
     DIR_PNG = sys_argv[-2]
