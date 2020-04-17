@@ -158,7 +158,7 @@ def convert_png2tpl(sid_table):
 
 def table_size_checking(tbl):
     dict_length = sum( [len(x) for x in tbl.values()] )
-    print('Total number of CAIDs for certain SIDs in conversion table: %s' % dict_length)
+    print('Total number of all CAIDs:SIDs in retrieved table: %s' % dict_length)
     if dict_length > 2000:
         while True:
             answer = raw_input('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\nDo you really want to continue ?\n(y/n)\n>')
@@ -169,7 +169,7 @@ def table_size_checking(tbl):
     return True
 
 def show_man_page():
-    script_path = sys_argv[0] or "/path_to_script/script_file_name.py"
+    script_path = "/path_to_script/oscam-picons-converter.py" if len(sys_argv) == 0 or sys_argv[0] == "" else sys_argv[0]
     print("""
 python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
 
@@ -202,6 +202,7 @@ python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
 -2  make a table from all available SID:CAIDs in 'oscam.srvid2' file
         '-c CAIDs' argument is not necessary, but can be used (as filter)
         may be used in combination with '-1'
+        
         NOTE: the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE,
               which could also be included as TPL-picons, automatically in the generated table of CAIDs
 
@@ -225,10 +226,10 @@ python {0} -2 -c 0624,0D96,FFFE /usr/share/enigma2/picon /etc/tuxbox/config/osca
 python {0} -1 -2 /tmp/piconPNG /tmp/piconsTPL
 python {0} -1 -q -o /etc/tuxbox/config /media/hdd/picon /media/hdd/piconTPL
 
-=== RECOMMENDED USE:
+=== RECOMMENDED USAGE:
 
-python {0} -d -1 -2 -c <CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
-python {0} -d -a -c <CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+python {0} -d -1 -c <CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+python {0} -d -a -c <CAIDs> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
 
 """.format(script_path)   )
 
