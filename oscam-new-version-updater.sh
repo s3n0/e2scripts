@@ -209,7 +209,7 @@ check_compat
 #######################################
 
 
-#### Unfortunately, OpenPLi-7.2 uses older versions of some libraries (/lib/libc-2.25.so), so... I have to use older OEVER="4.1" folder to work the Oscam under OpenPLi-7.2:
+#### Unfortunately, OpenPLi-7.2 uses older versions of some libraries (/lib/libc-2.25.so), so... I have to use older OEVER="4.1" core to work the Oscam under OpenPLi-7.2:
 [ -f /etc/opkg/all-feed.conf ] && cat /etc/opkg/all-feed.conf | grep -q "openpli-7" && OEVER="4.1"
 
 #### Unfortunately, OpenATV-6.4 has a problem with the OE-Alliance core 4.4 (http://updates.mynonpublic.com/oea/4.4/mips32el/Packages.gz) is dead, so I'm using 4.3 core for downloading Oscam
