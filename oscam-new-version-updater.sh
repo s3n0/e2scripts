@@ -212,6 +212,10 @@ check_compat
 #### Unfortunately, OpenPLi-7.2 uses older versions of some libraries (/lib/libc-2.25.so), so... I have to use older OEVER="4.1" folder to work the Oscam under OpenPLi-7.2:
 [ -f /etc/opkg/all-feed.conf ] && cat /etc/opkg/all-feed.conf | grep -q "openpli-7" && OEVER="4.1"
 
+#### Unfortunately, OpenATV-6.4 has a problem with the OE-Alliance core 4.4 (http://updates.mynonpublic.com/oea/4.4/mips32el/Packages.gz) is dead, so I'm using 4.3 core for downloading Oscam
+[ -f /etc/opkg/all-feed.conf ] && cat /etc/opkg/all-feed.conf | grep -q "openatv-all[[:space:]]http://feeds2.mynonpublic.com/6.4/" && OEVER="4.3"
+
+
 #### Checking if the 7-zip archiver is installed on system
 if [ -f /usr/bin/7z ]; then
     BIN7Z=/usr/bin/7z
@@ -256,7 +260,7 @@ echo "$HR_LINE"
 
 #### Check the availability of some dependent libraries:
 if $TMP_DIR/$REQUESTED_BUILD --build-info 2>&1 | grep -q 'required by'; then
-   echo "Unfortunately, some dependent libraries are missed for downloaded Oscam binary file."
+   echo "Unfortunately, some dependent libraries are missed for the Oscam binary file."
    echo "You can try to install / to update them manually ... for example:"
    echo "    opkg update"                       # opkg update > /dev/null 2>&1
    echo "    opkg install libc6 libcrypto1.0.2 libssl1.0.2 libusb-1.0-0"
