@@ -31,7 +31,7 @@
 ## OSCAM_LOCAL_PATH="/usr/bin/oscam"
 ## [ -f $OSCAM_LOCAL_PATH ] || { echo "ERROR ! User-configured binary file $OSCAM_LOCAL_PATH not found !"; exit 1; }
 
-OSCAM_LOCAL_PATH=$(find /usr/bin -name oscam* | head -n 1)
+OSCAM_LOCAL_PATH=$(find /usr/bin -iname 'oscam*' | head -n 1)
 [ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "Oscam binary file was not found in folder '/usr/bin'. The default path and filename $OSCAM_LOCAL_PATH will be used to download and to add a new Oscam binary file."; } || echo "Recognized binary file: $OSCAM_LOCAL_PATH"
 
 ## OSCAM_LOCAL_PATH=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
