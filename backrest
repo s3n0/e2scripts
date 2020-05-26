@@ -26,7 +26,7 @@ LIST="
 /media/hdd/picon/
 /media/usb/picon/
 
-/usr/share/enigma2/MetrixHD/skinparts/infobar-mod_by_s3n0/
+/usr/share/enigma2/MetrixHD/skinparts/MetrixHD-infobar-mod-by-s3n0/
 
 /etc/tuxbox/*.xml
 /etc/auto.network
