@@ -34,7 +34,7 @@ LIST="
 
 /usr/script/
 
-$(find /usr/bin -name *cam*)
+/usr/bin/*cam*
 /etc/init.d/softcam*
 /etc/rc?.d/*softcam*
 /etc/tuxbox/config/
