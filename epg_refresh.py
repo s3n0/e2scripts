@@ -21,14 +21,18 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
 #### if you need more than one userbouquet, use the following syntax :
 #BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
 
+from datetime import datetime
 from time import sleep
 from urllib2 import urlopen
 
 ###############################################
 
-def zapChannel(channel = '""'):             # zap channel (using the Enigma2 Open-Webif)
-    if channel == ' ' or channel == '':
-        channel = '""'
+def writeLOG(msg):
+    print(msg)    
+    with open('/tmp/epg_refresh.log', 'a') as f:
+        f.write(msg + '\n')
+
+def zapChannel(channel = '0:0:0:0:0:0:0:0:0:0:'):       # zap channel (using the Enigma2 Open-Webif)
     response = urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
     web_content = response.read()
 
@@ -38,7 +42,7 @@ def enigmaInStandby():                      # checking standby mode (using the E
     if 'true' in web_content.lower():
         return True
     else:
-        print("Enigma2 is not in standby mode. The 'epg_refresh.py' script will not be executed.")
+        writeLOG("Enigma2 is not in standby mode. The 'epg_refresh.py' script will not be executed.")
         return False
 
 def saveEPG():                              # save EPG cache to disk - as the file "epg.dat" (using the Enigma2 Open-Webif)
@@ -49,6 +53,8 @@ def saveEPG():                              # save EPG cache to disk - as the fi
 ###############################################
 
 if __name__ == "__main__" and enigmaInStandby():
+    
+    writeLOG('%s %s' % ( datetime.now().strftime("%Y-%m-%d %H:%M:%S") ,  '=' * 50 )  )
     
     bouquet_SRC = []
     for fname in BOUQUET_FILES:
@@ -73,15 +79,15 @@ if __name__ == "__main__" and enigmaInStandby():
             if not SRC in blacklist_SRC:
                 tuned_SRC.append(SRC)
     
-    print('Number of channels/transponders to tune: %s' % len(tuned_SRC))
-    print('Zapping the neccessary channels/transponders...')
+    writeLOG('Number of channels/transponders to tune: %s' % len(tuned_SRC))
+    writeLOG('Zapping the neccessary channels/transponders...')
     
     for i, SRC in enumerate(tuned_SRC, 1):
         zapChannel(SRC)
-        print('{:03d} / {:03d} - {}'.format(i, len(tuned_SRC), SRC))
+        writeLOG('{:03d} / {:03d} - {}'.format(i, len(tuned_SRC), SRC))
         sleep(20)           # waiting 20 sec. for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
     
-    print('...done.')
+    writeLOG('...done.')
     zapChannel()            # shut down the tuner / stop watching DVB channel
     saveEPG()               # save EPG cache to disk, if we need to upload the file "epg.dat" to another set-top box or to some server on the internet
  
