@@ -30,7 +30,7 @@ from urllib2 import urlopen
 def writeLOG(msg):
     print(msg)    
     with open('/tmp/epg_refresh.log', 'a') as f:
-        f.write(msg + '\n')
+        f.write('[ %s ] %s\n' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), msg))
 
 def zapChannel(channel = '0:0:0:0:0:0:0:0:0:0:'):       # zap channel (using the Enigma2 Open-Webif)
     response = urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
@@ -54,7 +54,7 @@ def saveEPG():                              # save EPG cache to disk - as the fi
 
 if __name__ == "__main__" and enigmaInStandby():
     
-    writeLOG('%s %s' % ( datetime.now().strftime("%Y-%m-%d %H:%M:%S") ,  '=' * 50 )  )
+    writeLOG('=' * 50)
     
     bouquet_SRC = []
     for fname in BOUQUET_FILES:
