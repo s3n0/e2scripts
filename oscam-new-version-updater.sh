@@ -1,20 +1,25 @@
 #!/bin/bash
 
 
+
 #######################################
 # Oscam new version updater
 #######################################
-# 2019/10/21 script written by s3n0
+#
+# 2019/10/21 - script written by s3n0
 #
 # This script checks if there is a newer version of Oscam on the internet and if so,
-# then downloads and overwrites the old Oscam binary file on the local disk.
+# then downloads and overwrites the found Oscam binary file on the local disk.
 #
-# This script is designed to avoid having to add another 'feed' to your Enigma.
-# Unfortunately the '7zip' archiver is required since the 'ar' tool is problematic when splitting files from IPK packages.
+# This script is designed to avoid having to add another 'feed/source' to your Enigma.
+#
+# Unfortunately the '7zip' archiver is required since the 'ar' tool is problematic when splitting files (inside the IPK package).
 #
 # To run my script on your set-top box, directly from the github, use the following command:
 #       wget -qO- --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
+#
 #######################################
+#
 # This script uses "updates.mynonpublic.com" as an update source and also uses the Python source code,
 # from the script by @SpaceRat:
 #       http://updates.mynonpublic.com/oea/feed
@@ -22,7 +27,9 @@
 # The original 'feed' script was developed by @SpaceRat for the purpose of installing softcam-feed into Enigma/OpenATV,
 # but it also works in other Enigmas. Use the following command to install the feed:
 #       wget -O - -q http://updates.mynonpublic.com/oea/feed | bash
+#
 #######################################
+
 
 
 
@@ -36,6 +43,7 @@ OSCAM_LOCAL_PATH=$(find /usr/bin -iname 'oscam*' | head -n 1)
 
 ## OSCAM_LOCAL_PATH=$(ps --no-headers -f -C oscam | sed 's@.*\s\([\-\_\/a-zA-Z]*\)\s.*@\1@' | head -n 1)
 ## [ -z "$OSCAM_LOCAL_PATH" ] && { OSCAM_LOCAL_PATH="/usr/bin/oscam"; echo "No Oscam process name found. The default file name $OSCAM_LOCAL_PATH will be used to download and add a new Oscam."; } || echo "Oscam process $OSCAM_LOCAL_PATH found."
+
 
 
 
@@ -56,7 +64,10 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 
-HR_LINE="----------------------------------"
+
+IRDETO_ENTITLEMENTS="no"       # please choice your option "no" or "yes", for IRDETO satellite cards, due to necessary "entitlements" (receipt of first EMMs)
+IRDETO_CHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
+
 
 
 
@@ -64,11 +75,17 @@ HR_LINE="----------------------------------"
 TMP_DIR="/tmp/oscam_binary_update"
 
 
+HR_LINE="----------------------------------"
+
+
 
 
 
 #######################################
 #######################################
+#######################################
+
+
 
 #### Auto-configuring the Enigma version and the chipset / CPU architecture (with the help of Python):
 
@@ -80,6 +97,7 @@ TMP_DIR="/tmp/oscam_binary_update"
 
 
 BASE_FEED="http://updates.mynonpublic.com/oea"
+
 
 
 
@@ -207,6 +225,7 @@ check_compat
 
 #######################################
 #######################################
+#######################################
 
 
 #### Unfortunately, OpenPLi-7.2 uses older versions of some libraries (/lib/libc-2.25.so), so... I have to use older OEVER="4.1" core to work the Oscam under OpenPLi-7.2:
@@ -279,6 +298,11 @@ if $TMP_DIR/$REQUESTED_BUILD --build-info 2>&1 | grep -q 'shared libraries'; the
    exit 1
 fi
 
+#### Function to check the Enigma2 stand-by
+is_standby() {
+    wget -qO- "http://127.0.0.1/api/powerstate" | grep -iqE '"instandby"\s*:\s*true'
+}
+
 #### Retrieve Oscam online version   (from downloaded binary file)
 OSCAM_ONLINE_VERSION=$( $TMP_DIR/$REQUESTED_BUILD --build-info | grep -i 'version:' | grep -o '[0-9]\{5\}' )    # output result is, as example:  11552
 #OSCAM_ONLINE_VERSION=$( echo $IPK_FILENAME | sed -e 's/.*svn\([0-9]*\)-.*/\1/'  )                              # old method to retrieve online Oscam version
@@ -292,26 +316,53 @@ OSCAM_LOCAL_VERSION=$(  $OSCAM_LOCAL_PATH --build-info | grep -i 'version:' | gr
 echo -e "Oscam version on internet:\t$OSCAM_ONLINE_VERSION\nOscam version on local drive:\t$OSCAM_LOCAL_VERSION"
 if [ "$OSCAM_ONLINE_VERSION" -gt "$OSCAM_LOCAL_VERSION" ]
 then
+
     echo "A new version of Oscam has been found and will be updated."
     # wget -qO- "http://127.0.0.1/web/message?type=1&timeout=10&text=New+Oscam+version+found+($OSCAM_ONLINE_VERSION)%0ANew+version+will+updated+now." > /dev/null 2>&1     # show WebGUI info message
     #### Replace the oscam binary file with new one
     OSCAM_BIN_FNAME=${OSCAM_LOCAL_PATH##*/}
     if ps --version 2>&1 | grep -q -i "busybox"; then
-        OSCAM_CMD=$(ps | grep $OSCAM_BIN_FNAME | grep -v grep | head -n 1 | grep -o '/.*$')         # feature-poor `ps` command from BusyBox (for example in OpenPLi image)
+        OSCAM_CMD=$(ps | grep $OSCAM_BIN_FNAME | grep -v grep | head -n 1 | grep -o '/.*$')                     # feature-poor `ps` command from BusyBox (for example in OpenPLi image)
     else
-        OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')            # full-featured `ps` command from Linux OS (for example in OpenATV image)
+        OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')                        # full-featured `ps` command from Linux OS (for example in OpenATV image)
     fi
     [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" ; }
     mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
     chmod a+x $OSCAM_LOCAL_PATH
     [ -z "$OSCAM_CMD" ] || $OSCAM_CMD
+    
+    sleep 1
+    
+    if pidof $OSCAM_BIN_FNAME > /dev/null 2>&1; then
+        echo "The new Oscam is ready to use !"
+    else
+        echo "The new Oscam failed to start ! Exiting the update script !"
+        exit 1
+    fi
+    
+    #### helping for IRDETO cards to receive any EMMs --- it is to neccessary, to receive some entitlements after each Oscam restart
+    if is_standby && [ "$IRDETO_ENTITLEMENTS" = "yes" ]; then
+        echo "$HR_LINE"
+        echo "Turning on the tuner..."
+        echo "...zapping the user specified channel - $IRDETO_CHANNEL"
+        wget -qO- "http://127.0.0.1/api/zap?sRef=${IRDETO_CHANNEL}" > /dev/null 2>&1
+        echo "...waiting for a while, to receive any entitlements on your IRDETO satellite card"
+        sleep 30        # waiting 15 sec. for card initialisation + 15 sec. to receive any EMM
+        echo "...turning off the tuner (Enigma still in standby)"
+        wget -qO- "http://127.0.0.1/api/zap?sRef=0" > /dev/null 2>&1
+        echo "...done !"
+    fi
+
 else
+
     echo "Installed Oscam version is current. No need to update."
     # wget -qO- "http://127.0.0.1/web/message?type=1&timeout=10&text=Installed+Oscam+version+($OSCAM_LOCAL_VERSION)+is+current.%0ANo+need+to+update." > /dev/null 2>&1     # show WebGUI info message
+
 fi
 
 #### Remove all temporary files (sub-directory)
 rm -rf $TMP_DIR
+
 
 
 
