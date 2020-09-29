@@ -6,7 +6,7 @@
 # Oscam new version updater
 #######################################
 #
-# 2019/10/21 - script written by s3n0
+# 2019/10/21 - shell script written by s3n0
 #
 # This script checks if there is a newer version of Oscam on the internet and if so,
 # then downloads and overwrites the found Oscam binary file on the local disk.
@@ -65,14 +65,17 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 
-IRDETO_ENTITLEMENTS="no"       # please choice your option "no" or "yes", for IRDETO satellite cards, due to necessary "entitlements" (receipt of first EMMs)
+
+IRDETO_ENTITLEMENTS="no"       # please choice your option "no" or "yes", for IRDETO satellite cards, due to necessary "entitlements" (receipt of first EMMs) - the waiting time in the script is set to 30 seconds
 IRDETO_CHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
+
 
 
 
 
 # A temporary directory
 TMP_DIR="/tmp/oscam_binary_update"
+
 
 
 HR_LINE="----------------------------------"
@@ -95,6 +98,7 @@ HR_LINE="----------------------------------"
 # Wget example:      wget -O /tmp/Packages.gz "$BASE_FEED/$OEVER/$ARCH/Packages.gz"
 # Specific URL example:     "http://updates.mynonpublic.com/oea/4.3/{aarch64,sh4,mips32el,armv7ahf-neon,cortexa15hf-neon-vfpv4}/Packages.gz"
 
+[ -e /usr/bin/python3 ] && PY="python3" || PY="python"
 
 BASE_FEED="http://updates.mynonpublic.com/oea"
 
@@ -102,7 +106,7 @@ BASE_FEED="http://updates.mynonpublic.com/oea"
 
 
 get_oever() {
-    OEVER=$(python - <<END
+    OEVER=$($PY - <<END
 import sys
 sys.path.append("/usr/lib/enigma2/python")
 try:
@@ -144,7 +148,7 @@ END
 
 
 get_arch() {
-    ARCH=$(python - <<END
+    ARCH=$($PY - <<END
 import sys
 sys.path.append("/usr/lib/enigma2/python")
 try:
