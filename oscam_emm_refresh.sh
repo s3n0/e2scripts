@@ -46,7 +46,7 @@ LOG_MAXSIZE=25000                                   # max. file size [Bytes]
 
 #### function to check the Standby (e2/OpenWebif power-state)
 is_standby(){
-	[ "$(wget -q -O - $WEBIF_ENIGMA/web/powerstate | grep '</e2instandby>' | cut -f 1)" == "true" ]
+	[ "$(wget -q -O - $WEBIF_ENIGMA/web/powerstate | grep '</e2instandby>' | cut -f 1)" = "true" ]
 }
 
 #### reduction the log file size, if neccessary (delete first 20 lines)
