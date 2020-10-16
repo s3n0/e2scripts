@@ -29,6 +29,9 @@ The shell script can be called from within the HDMI-CEC plugin or it can be call
 - another example of reading a serial port input and displaying results on stdout (in hexadecimal, i.e. byte - one by one):
   - `od -x < /dev/ttyS0`
 
-A note
-======
-After restarting the set-top box, the shell script will be run via the code in "Standby.py" only after the second activation of standby mode (tested on OpenATV). I haven't found out yet why it is. So don't worry if the TV doesn't turn off after the set-top box is restarted. Try it again and then it will still work.
+Notes
+=====
+
+After restarting the set-top box, the shell-script will be run via the algorithm in "Standby.py" only after the second activation of standby (tested on OpenATV). I haven't found out yet why. So don't worry if the TV doesn't turn off after the set-top box is restarted (first standby activation, after rebooting the set top box). Try it again and then it will still work.
+
+If you are using a USB <> RS232 adapter, the port name can also be `/dev/ttyUSB[0123]` and in the case of ARM chipsets, if the serial interface is built in, can it be identified in the Linux system as `/dev/ttyAMA[0123]`.
