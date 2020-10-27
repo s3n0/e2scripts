@@ -34,6 +34,6 @@ Notes
 
 After rebooting the set-top box, immediately after the first standby activation, the user's shell-script (via the "Standby.py" algorithm) will not be run for the purpose of switching LG TV on / off. I haven't found out yet why (tested on OpenATV/Enigma only). So don't worry if the TV doesn't turn off after the set-top box is restarted (first standby activation, after rebooting the set top box). Try it again and then it will still work.
 
-If you are using a USB <> RS232 adapter, the port name can also be `/dev/ttyUSB[0123]`. 
+If you are using a USB <> RS232 adapter, you can also find the serial port here: `/dev/ttyUSB[0123]`
 
-If the serial interface is built-in for set-top-boxes with an ARM chipset, then the serial port can be `/dev/ttyAMA[0123]`.
+If the serial interface is built into a set-top box with an ARM chipset, then you can find the serial port here: `/dev/ttyAMA[0123]`
