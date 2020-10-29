@@ -3,6 +3,10 @@
 USR="oscam"
 PAS="xxxxxxxxxxxx"
 
+### the script first finds out, and reads from OscamApi all the clients, then...
+### if some connected clients have been found, it finds out how long the idle lasted in hours+minutes+seconds
+### and compares it with the value of 20 (seconds), but this is only valid for IRDETO, in which the key is refreshed every 10 seconds
+
 oscam_is_busy() {
     # CHAN_REQ_LIST=$(wget -q -O - "http://${USR}:${PAS}@127.0.0.1:8888/oscamapi.html?part=status" | sed -rn '/<request/,/request>/ {s/.*srvid="([0-9]*)".*/\1/p}')    ## a functional "oscamapi.html" is required, which is unfortunately not included in every Oscam build
     # TOTAL=0; for CHAN in $CHAN_REQ_LIST; do (( TOTAL += CHAN )); done
