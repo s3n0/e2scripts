@@ -16,7 +16,7 @@ oscam_is_busy() {
     
     # DELAY_CLIENT_LIST=$(wget -q -O - --no-check-certificate --no-cache --no-cookies "http://${USR}:${PAS}@127.0.0.1:8888/oscamapi.html?part=status" | sed -rn '/type="c"/,/client>/ {s/.*idle="([0-9]*)".*/\1/p}')    ## a functional "oscamapi.html" is required, which is unfortunately not included in every Oscam build
     
-    DELAY_CLIENT_LIST=$(wget -q -O - --no-check-certificate --no-cache --no-cookies "http://${USR}:${PAS}@127.0.0.1:8888" | sed -rn '/CLASS="c"/,/TR>/ {s/.*IDLE:\s*([0-9:]*)".*/\1/p}' | tr -d ':')    ## read all idle time from all active clients, but without a colon signs, for example: 000007
+    DELAY_CLIENT_LIST=$(wget -q -O - --no-check-certificate --no-cache --no-cookies "http://${USR}:${PAS}@127.0.0.1:8888" | sed -rn '/CLASS="c"/,/TR>/ {s/.*IDLE:\s*([0-9:]*)".*/\1/p}' | tr -d ':')    ## read all idle time from all active clients, but without a colon signs, for example: 000355 000002 000007
     
     for DELAY in $DELAY_CLIENT_LIST; do [ $DELAY -lt 20 ] && break; done    ## if at least one client accesses Oscam within 20 seconds, the function returns the value "0", otherwise the function returns "1"
 }
