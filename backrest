@@ -10,10 +10,11 @@
 
 
 #### user defined folder with your stored / archived backup files
-# BACKUP_DIR=""                                  # leave blank, i.e. empty folder -> means the current directory (in the Shell)
-# BACKUP_DIR="/media/hdd/backrest_folder/"
-# BACKUP_DIR="/media/mmc/backrest_folder/"
-BACKUP_DIR="/home/root/backrest_folder/"
+#BACKUP_DIR=""                                  # leave blank, i.e. empty folder -> means the current directory (in the Shell)
+#BACKUP_DIR="/media/hdd/backrest_folder/"
+#BACKUP_DIR="/home/root/backrest_folder/"
+#BACKUP_DIR="/media/mmc/backrest_folder/"
+BACKUP_DIR="/hdd/backrest_folder/"
 
 
 FILE_PREFIX="e2-backup"                         # Note: The timestamp is automatically added at the end of the file name and the file extension will to be ".tar.gz"
@@ -25,6 +26,8 @@ LIST="
 /usr/share/enigma2/picon/
 /media/hdd/picon/
 /media/usb/picon/
+/media/mmc/picon/
+/media/mmc/picon-tpl/
 
 /usr/share/enigma2/MetrixHD/skinparts/MetrixHD-infobar-mod-by-s3n0/
 
@@ -38,6 +41,7 @@ LIST="
 /etc/init.d/softcam*
 /etc/rc?.d/*softcam*
 /etc/tuxbox/config/
+/etc/CCcam.cfg
 /usr/keys/
 
 /usr/bin/udpxy
@@ -53,8 +57,6 @@ LIST=$(echo $LIST | tr "\n" " ")
 
 ####################################################
 ####################################################
-
-
 
 init_4_with_feedback() {
     echo "Stopping the Enigma..."
@@ -72,6 +74,19 @@ init_4_with_feedback() {
     else
         echo "...successfully stopped after $x seconds."
     fi
+}
+
+init_3_with_feedback() {
+    echo "Starting the Enigma..."
+    init 3
+    x=0
+    while [ "$x" -le 120 ] && [ -z "$(timeout 1 wget -q -O - http://127.0.0.1/web/powerstate)" ] ; do
+        x=$(( $x + 1 ))
+        sleep 1
+        echo "...$x seconds waiting"
+    done
+    sleep 5; x=$(( $x + 5 ))
+    echo "...successfully started after $x seconds."
 }
 
 do_backup() {
@@ -102,13 +117,10 @@ do_backup() {
     ls -l "${BACKUP_DIR}${FILE_PREFIX}"*
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
-        init 3
-        echo "Starting the Enigma..."
-        echo "...waiting 90 seconds for Enigma to start completely"
-        sleep 90
-        echo "...force the Enigma power to its original state: $([ $previous_power_state = 5 ] && echo 'turn the Enigma2 into Standby' || echo 'wake-up the Enigma2 from Standby')"
+        init_3_with_feedback
+        echo "Force the Enigma power to its original state: $([ $previous_power_state = 5 ] && echo 'turn the Enigma2 into Standby' || echo 'wake-up the Enigma2 from Standby')"
         wget -q -O - http://127.0.0.1/api/powerstate?newstate=$previous_power_state > /dev/null 2>&1
-        echo "...done."
+        echo "...OK."
         echo "-----------------------"
     fi
 }
