@@ -118,9 +118,8 @@ do_backup() {
     echo "-----------------------"
     if [ "$1" != "quickly" ]; then         # ignoring the init command to start or stop the Enigma2, if the user choice was '--backup-quickly' argument
         init_3_with_feedback
-        echo "Force the Enigma power to its original state: $([ $previous_power_state = 5 ] && echo 'turn the Enigma2 into Standby' || echo 'wake-up the Enigma2 from Standby')"
+        echo "Force the Enigma power to its original state : $([ $previous_power_state = 5 ] && echo 'turn the Enigma2 into Standby' || echo 'wake-up the Enigma2 from Standby')"
         wget -q -O - http://127.0.0.1/api/powerstate?newstate=$previous_power_state > /dev/null 2>&1
-        echo "...OK."
         echo "-----------------------"
     fi
 }
