@@ -5,8 +5,7 @@
 
 + **softcam**
    > - OSCam startup bash script '/etc/init.d/softcam' for Enigma2 based set-top-box
-   > - the script also verifies that Oscam has been successfully started / stopped
-   > - it also records its activity in a temporary LOG-file
+   > - it also records its activity to a temporary LOG-file
    > - more info can be found in the script
    > - if you need to use this script for CCCam, please use the following 'sed' command:
    ``` 
