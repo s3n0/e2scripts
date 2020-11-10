@@ -12,7 +12,7 @@
 # - be sure to set the file attributes (chmod 755 /usr/script/epg_refresh.py)
 # - the best way to use EPG refresh is to add a new task to the CRON scheduler
 # - for example, to run the python script every 2nd day, at 03:00, as the background process, use the following crontab line:
-#       00 03 */2 * *      /usr/bin/python /usr/script/epg_refresh.py &
+#       00 03 */2 * *      /usr/bin/python /usr/script/epg_refresh.py > /dev/null 2>&1
 ###############################################
 
 #### change the path to your own userbouquet file(s) containing the satellite channels for which you want to refresh EPG data :
@@ -21,16 +21,24 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
 #### if you need more than one userbouquet, use the following syntax :
 #BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
 
+LOG_FILE_PATH='/tmp/epg_refresh.log'
+
 from datetime import datetime
 from time import sleep
 from urllib2 import urlopen
+from os.path import getsize as os_path_getsize
 
 ###############################################
 
 def writeLOG(msg):
-    print(msg)    
-    with open('/tmp/epg_refresh.log', 'a') as f:
+    print(msg)
+    with open(LOG_FILE_PATH, 'a') as f:
         f.write('[ %s ] %s\n' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), msg))
+    if os_path_getsize(LOG_FILE_PATH) > 255000:
+        with open(LOG_FILE_PATH, 'r') as f:
+            cache = f.readlines()
+        with open(LOG_FILE_PATH, 'w') as f:
+            f.writelines( cache[ len(cache)/2 : ] )
 
 def zapChannel(channel = '0:0:0:0:0:0:0:0:0:0:'):       # zap channel (using the Enigma2 Open-Webif)
     response = urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
