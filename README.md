@@ -25,7 +25,7 @@
    > - the best way to use EPG refresh is to add a new task to the CRON scheduler ... be sure to set the file attributes (`chmod 755 /usr/script/epg_refresh.py`) ... for example, to run the python script every 2th day at 03:00, as the background process, use the following line:
    
    ```
-       0 3 */2 * *        /usr/bin/python /usr/script/epg_refresh.py &
+       00 03 */2 * *      /usr/bin/python /usr/script/epg_refresh.py > /dev/null 2>&1
    ```
 
 + **backrest**
