@@ -30,7 +30,7 @@
 
 + **backrest**
    > - simple bash script for backing up and restoring user-defined settings, files or folders in Enigma2
-   > - disadvantage is the need to manually edit this script after each new function is added to Enigma (plugins, binary files, scripts, etc.) for full backup or restore
+   > - disadvantage is the need to manually edit this script after each new feature is added to your Enigma (plugins, binary files, scripts, etc.) for full backup or restore
 
 + **picons-downloader.sh**
    > - simple bash script for download & extract picons from Google-Drive server, which are compressed with 7zip (i.e. 7zip archivator is required)
