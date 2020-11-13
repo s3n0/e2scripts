@@ -50,7 +50,7 @@ def enigmaInStandby():                      # checking standby mode (using the E
     if 'true' in web_content.lower():
         return True
     else:
-        writeLOG("Enigma2 is not in standby mode. The 'epg_refresh.py' script will not be executed.")
+        writeLOG("Enigma2 is not switched to standby mode. The script 'epg_refresh.py' will be canceled.")
         return False
 
 def saveEPG():                              # save EPG cache to disk - as the file "epg.dat" (using the Enigma2 Open-Webif)
@@ -60,9 +60,9 @@ def saveEPG():                              # save EPG cache to disk - as the fi
 ###############################################
 ###############################################
 
+writeLOG('=' * 50)
+
 if __name__ == "__main__" and enigmaInStandby():
-    
-    writeLOG('=' * 50)
     
     bouquet_SRC = []
     for fname in BOUQUET_FILES:
