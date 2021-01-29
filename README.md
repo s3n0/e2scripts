@@ -1,7 +1,7 @@
 ## Simple scripts for Enigma 2, focused on OpenATV and OpenPLi.
 
 + **LGTV-RS232 directory**
-   > - switching on and off the LG TV via RS-232 interface
+   > - switching On and Off the LG TV via RS-232 interface
 
 + **softcam**
    > - OSCam startup bash script '/etc/init.d/softcam' for Enigma2 based set-top-box
