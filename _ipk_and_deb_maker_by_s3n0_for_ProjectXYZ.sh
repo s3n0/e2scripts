@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # sh script for Enigma2 - the IPK package creation tool
-# 2018-2019, by s3n0
+# 2018-2021, by s3n0
 #
 # Simple creation of an IPK package without the use of OPKG-TOOLS.
 # It's just a simple archiving of files or folders and then merging the created files into one.
@@ -19,7 +19,8 @@
 plugin_dir=/usr/lib/enigma2/python/Plugins/Extensions/ProjectXYZ
 ipk_pckgname=enigma2-plugin-extensions-projectxyz
 
-VER=$(cat "$plugin_dir/version.txt")
+VER=$(cat "$plugin_dir/version.txt")                # VER="1.0.210130"
+
 ipk_filename=${ipk_pckgname}_${VER}_all.ipk
 ipk_targetfile=/tmp/${ipk_filename}
 
@@ -49,6 +50,7 @@ rm -rf ${project_dir}/CONTROL
 mkdir -p ${project_dir} ${project_dir}/CONTROL
 
 
+
 cat > ${project_dir}/CONTROL/control << EOF
 Package: ${ipk_pckgname}
 Version: ${VER}
@@ -69,7 +71,7 @@ cat > ${project_dir}/CONTROL/postinst << EOF
 echo "*********************************************************"
 echo "                  ProjectXYZ ${VER}                  "
 echo "                Enigma2 plugin/extensions                "
-echo "                   by s3n0 , 2016-2019                   "
+echo "                   by s3n0 , 2018-2021                   "
 echo "*********************************************************"
 echo " Successfully INSTALLED. You should restart Enigma2 now. "
 echo "*********************************************************"
@@ -83,7 +85,7 @@ rm -rf ${plugin_dir}
 echo "*********************************************************"
 echo "                  ProjectXYZ ${VER}                  "
 echo "                Enigma2 plugin/extensions                "
-echo "                   by s3n0 , 2016-2019                   "
+echo "                   by s3n0 , 2018-2021                   "
 echo "*********************************************************"
 echo "  Successfully REMOVED. You should restart Enigma2 now.  "
 echo "*********************************************************"
@@ -91,14 +93,10 @@ exit 0
 EOF
 
 
-chmod 755 ${project_dir}/CONTROL/*
+chmod a+x ${project_dir}/CONTROL/*
 
 
 
-
-#### remove all source files (Python source code):
-#### WARNING - make sure your source codes are backed up !
-rm -rf ${plugin_dir}/*.py
 
 #### translate locale language files from .PO to .MO format (Machine Object)
 #### if neccessary, install the locale translation tools:     opkg install gettext
@@ -107,11 +105,16 @@ for f in `find $plugin_dir/locale -name *.po`; do msgfmt -o ${f%.po}.mo $f; rm -
 
 
 
-#### prepare a copy of plugin_dir to project_dir
+#### prepare a copy of $plugin_dir to $project_dir
 mkdir -p ${project_dir}/${plugin_dir}
 cp -rp ${plugin_dir}/* ${project_dir}/${plugin_dir}
 
-#### create two archive files "control.tar.gz" and "data.tar.gz" + also the file "debian-binary" into build_dir
+#### remove all unnecessary files and folders:
+rm -rf ${project_dir}/${plugin_dir}/*.py            # remove all source-code python files
+#rm -rf ${project_dir}/${plugin_dir}/*.pyo           # remove all compiled python files
+#rm -rf ${project_dir}/${plugin_dir}/__pycache__
+
+#### create archive files "control.tar.gz" + "data.tar.gz" + also create the file "debian-binary" in $build_dir
 mkdir -p ${build_dir}
 tar -C ${project_dir} --exclude='CONTROL' -czf ${build_dir}/data.tar.gz .
 tar -C ${project_dir}/CONTROL -czf ${build_dir}/control.tar.gz .
@@ -131,6 +134,7 @@ cp -f ${ipk_targetfile} ${ipk_targetfile%.ipk}.deb
 sed -i 's/debian-binary\//debian-binary /g' ${ipk_targetfile%.ipk}.deb
 sed -i 's/control.tar.gz\//control.tar.gz /g' ${ipk_targetfile%.ipk}.deb
 sed -i 's/data.tar.gz\//data.tar.gz /g' ${ipk_targetfile%.ipk}.deb
+
 #replaceByte() {
 #    printf "$(printf '\\x%02X' $3)" | dd of="$1" bs=1 seek=$2 count=1 conv=notrunc &> /dev/null
 #} #### USAGE:  replaceByte "filename" offset byte
@@ -140,10 +144,9 @@ sed -i 's/data.tar.gz\//data.tar.gz /g' ${ipk_targetfile%.ipk}.deb
 
 
 
-#### cleaning all temporary directories
+#### remove all temporary directories
 rm -rf ${project_dir} ${build_dir}
 
 
 
 exit
-
