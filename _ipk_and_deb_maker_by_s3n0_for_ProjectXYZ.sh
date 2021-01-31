@@ -26,7 +26,7 @@ BUILD_DIR="/tmp/${RANDOM}"
 
 VER=$(cat "$PLUGIN_DIR/version.txt")        # VER="1.0.210130"
 
-IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: lower case and replace all spaces with "-"
+IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: lower case, replace all spaces with "-"
 IPK_FILENAME="${IPK_PCKGNAME}_${VER}_all.ipk"
 IPK_FINISHED="/tmp/${IPK_FILENAME}"
 
