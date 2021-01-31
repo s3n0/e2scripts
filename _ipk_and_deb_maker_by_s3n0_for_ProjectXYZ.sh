@@ -16,16 +16,17 @@
 
 #### specify the plugin folder, the plugin version, the package output path + package filename, etc. :
 
-PLUGIN_NAME="ProjectXYZ"
+PLUGIN_NAME="Project XYZ"
 
-PLUGIN_DIR="/usr/lib/enigma2/python/Plugins/Extensions/${PLUGIN_NAME}"
+PLUGIN_DIR="/usr/lib/enigma2/python/Plugins/Extensions/"`echo "${PLUGIN_NAME}" | tr " " "-"`    # PLUGIN_NAME: replace all white spaces with the character "-"
 PLUGIN_LANG_DIR="${PLUGIN_DIR}/locale"
+
 PROJECT_DIR="/tmp/${RANDOM}"
 BUILD_DIR="/tmp/${RANDOM}"
 
 VER=$(cat "$PLUGIN_DIR/version.txt")        # VER="1.0.210130"
 
-IPK_PCKGNAME="enigma2-plugin-extensions-${PLUGIN_NAME,,}"
+IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: convert to lower case + replace all white spaces with the character "-"
 IPK_FILENAME="${IPK_PCKGNAME}_${VER}_all.ipk"
 IPK_FINISHED="/tmp/${IPK_FILENAME}"
 
@@ -119,6 +120,11 @@ msgfmt --help > /dev/null 2>&1 \
 mkdir -p ${PROJECT_DIR}/${PLUGIN_DIR}
 cp -rp ${PLUGIN_DIR}/* ${PROJECT_DIR}/${PLUGIN_DIR}
 
+#### prepare a copy of $ANOTHER_DIR to $PROJECT_DIR
+# ANOTHER_DIR="/etc/iptv"
+# mkdir -p ${PROJECT_DIR}/${ANOTHER_DIR}
+# cp -rp ${ANOTHER_DIR}/* ${PROJECT_DIR}/${ANOTHER_DIR}
+
 #### remove all unnecessary files and folders:
 rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.py            # remove all source-code python files
 #rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.pyo           # remove all compiled python files
@@ -139,7 +145,7 @@ ar -r ${IPK_FINISHED} ./debian-binary ./control.tar.gz ./data.tar.gz
 
 
 
-#### make a copy from .ipk package to .deb package
+#### make a copy of the .ipk file, but with a .deb extension
 #### replace "/" by " " character from the end of filenames inside the "ar" archive
 cp -f ${IPK_FINISHED} ${IPK_FINISHED%.ipk}.deb
 sed -i 's/debian-binary\//debian-binary /g' ${IPK_FINISHED%.ipk}.deb
