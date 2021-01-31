@@ -52,6 +52,7 @@ IPK_FINISHED="/tmp/${IPK_FILENAME}"
 
 
 
+
 #### prepare the CONTROL folder and all neccessary shell scripts inside of this folder:
 rm -rf ${PROJECT_DIR}
 mkdir -p ${PROJECT_DIR} ${PROJECT_DIR}/CONTROL
@@ -62,23 +63,20 @@ cat > ${PROJECT_DIR}/CONTROL/control << EOF
 Package: ${IPK_PCKGNAME}
 Version: ${VER}
 Description: Plugin for testing purpose (Enigma2 plugin)
+Architecture: all
 Section: extra
 Priority: optional
 Maintainer: s3n0
-License: GPLv3
-Architecture: all
-OE: ${IPK_PCKGNAME}
-Homepage: N/A
-Depends:
-Source: N/A
+License: GPL
+Homepage: https://github.com/s3n0/
 EOF
+# For more info about other fields, see here: https://www.debian.org/doc/debian-policy/ch-controlfields.html ; https://www.systutorials.com/docs/linux/man/5-deb-control/ ; https://linux.die.net/man/5/deb-control
 
 cat > ${PROJECT_DIR}/CONTROL/postinst << EOF
 #!/bin/sh
 echo "*********************************************************"
 echo "                  ${PLUGIN_NAME} ${VER}                  "
 echo "                Enigma2 plugin/extensions                "
-echo "                   by s3n0 , 2018-2021                   "
 echo "*********************************************************"
 echo " Successfully INSTALLED. You should restart Enigma2 now. "
 echo "*********************************************************"
@@ -87,12 +85,11 @@ EOF
 
 cat > ${PROJECT_DIR}/CONTROL/postrm << EOF
 #!/bin/sh
-[ "\$1" != "upgrade" ] || exit 0 > /dev/null 2>&1               # prevent the OE2.5+ based Enigma2 for deleting files when the package is "upgrading"
+[ "\$1" != "upgrade" ] || exit 0 > /dev/null 2>&1              # prevent the OE2.5+ based Enigma2 for deleting files when the package is "upgrading"
 rm -rf ${PLUGIN_DIR}
 echo "*********************************************************"
 echo "                  ${PLUGIN_NAME} ${VER}                  "
 echo "                Enigma2 plugin/extensions                "
-echo "                   by s3n0 , 2018-2021                   "
 echo "*********************************************************"
 echo "  Successfully REMOVED. You should restart Enigma2 now.  "
 echo "*********************************************************"
@@ -101,7 +98,6 @@ EOF
 
 
 chmod a+x ${PROJECT_DIR}/CONTROL/*
-
 
 
 
