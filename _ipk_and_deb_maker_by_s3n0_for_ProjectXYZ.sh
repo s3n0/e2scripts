@@ -18,7 +18,7 @@
 
 PLUGIN_NAME="Project XYZ"
 
-PLUGIN_DIR="/usr/lib/enigma2/python/Plugins/Extensions/"`echo "${PLUGIN_NAME}" | tr " " "-"`    # PLUGIN_NAME: replace all white spaces with the character "-"
+PLUGIN_DIR="/usr/lib/enigma2/python/Plugins/Extensions/"`echo "${PLUGIN_NAME}" | tr -d " -"`    # PLUGIN_NAME: delete all white spaces, delete all "-" characters
 PLUGIN_LANG_DIR="${PLUGIN_DIR}/locale"
 
 PROJECT_DIR="/tmp/${RANDOM}"
@@ -26,7 +26,7 @@ BUILD_DIR="/tmp/${RANDOM}"
 
 VER=$(cat "$PLUGIN_DIR/version.txt")        # VER="1.0.210130"
 
-IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: convert to lower case + replace all white spaces with the character "-"
+IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: lower case, replace all white spaces with the character "-"
 IPK_FILENAME="${IPK_PCKGNAME}_${VER}_all.ipk"
 IPK_FINISHED="/tmp/${IPK_FILENAME}"
 
