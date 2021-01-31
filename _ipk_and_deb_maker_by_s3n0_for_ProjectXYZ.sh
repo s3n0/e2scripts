@@ -125,12 +125,12 @@ cp -rp ${PLUGIN_DIR}/* ${PROJECT_DIR}/${PLUGIN_DIR}
 # mkdir -p ${PROJECT_DIR}/${ANOTHER_DIR}
 # cp -rp ${ANOTHER_DIR}/* ${PROJECT_DIR}/${ANOTHER_DIR}
 
-#### remove all unnecessary files and folders:
+#### remove all unnecessary files and folders
 rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.py            # remove all source-code python files
 #rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.pyo           # remove all compiled python files
 #rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/__pycache__
 
-#### create archive files "control.tar.gz" + "data.tar.gz" + also create the file "debian-binary" in $BUILD_DIR
+#### create archive files "control.tar.gz" and "data.tar.gz" + create the text file "debian-binary" in $BUILD_DIR
 mkdir -p ${BUILD_DIR}
 tar -C ${PROJECT_DIR} --exclude='CONTROL' -czf ${BUILD_DIR}/data.tar.gz .
 tar -C ${PROJECT_DIR}/CONTROL -czf ${BUILD_DIR}/control.tar.gz .
