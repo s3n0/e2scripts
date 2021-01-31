@@ -87,7 +87,7 @@ EOF
 
 cat > ${PROJECT_DIR}/CONTROL/postrm << EOF
 #!/bin/sh
-[ "$1" != "upgrade" ] || exit 0 > /dev/null 2>&1               # prevent the OE2.5+ based Enigma2 for deleting files when the package is "upgrading"
+[ "\$1" != "upgrade" ] || exit 0 > /dev/null 2>&1               # prevent the OE2.5+ based Enigma2 for deleting files when the package is "upgrading"
 rm -rf ${PLUGIN_DIR}
 echo "*********************************************************"
 echo "                  ${PLUGIN_NAME} ${VER}                  "
