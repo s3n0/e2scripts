@@ -27,7 +27,7 @@ PROJECT_DIR="/tmp/${RANDOM}"
 BUILD_DIR="/tmp/${RANDOM}"
 
 VER=$(cat "$PLUGIN_DIR/version.txt")        # VER="1.0.0"
-ARCH="all"                                  # chipset / CPU architecture: all, mips32el, mipsel, armv7ahf-neon, cortexa15hf-neon-vfpv4, aarch64, ...etc.
+ARCH="all"                                  # chipset / CPU architecture dependency:  all, mips32el, mipsel, armv7ahf-neon, cortexa15hf-neon-vfpv4, aarch64, ...etc.
 
 IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: lower case, replace all spaces with "-"
 IPK_FILENAME="${IPK_PCKGNAME}_${VER}_${ARCH}.ipk"
