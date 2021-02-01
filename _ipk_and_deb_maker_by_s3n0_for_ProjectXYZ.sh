@@ -10,6 +10,8 @@
 #
 # The version of the plugin is taken from the "version.txt" file, which must always be present
 # in the same folder where the plugin is located. I also use it in the plugin's own algorithm.
+#
+# It is also important to edit the created "control" file below - in this script, according to the needs of your project / plugin !
 
 
 
@@ -24,10 +26,11 @@ PLUGIN_LANG_DIR="${PLUGIN_DIR}/locale"
 PROJECT_DIR="/tmp/${RANDOM}"
 BUILD_DIR="/tmp/${RANDOM}"
 
-VER=$(cat "$PLUGIN_DIR/version.txt")        # VER="1.0.210130"
+VER=$(cat "$PLUGIN_DIR/version.txt")        # VER="1.0.0"
+ARCH="all"                                  # all, mips32el, mipsel, armv7ahf-neon, cortexa15hf-neon-vfpv4, aarch64, ...etc.
 
 IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: lower case, replace all spaces with "-"
-IPK_FILENAME="${IPK_PCKGNAME}_${VER}_all.ipk"
+IPK_FILENAME="${IPK_PCKGNAME}_${VER}_${ARCH}.ipk"
 IPK_FINISHED="/tmp/${IPK_FILENAME}"
 
 
@@ -63,7 +66,7 @@ cat > ${PROJECT_DIR}/CONTROL/control << EOF
 Package: ${IPK_PCKGNAME}
 Version: ${VER}
 Description: Plugin for testing purpose (Enigma2 plugin)
-Architecture: all
+Architecture: ${ARCH}
 Section: extra
 Priority: optional
 Maintainer: s3n0
