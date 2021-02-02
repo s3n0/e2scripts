@@ -196,10 +196,10 @@ fRestart() {
 
 # CHECKING THE EXISTENCE OF THE BINARY/EXEC FILE
 
-if [ ! -f "$softcam_bin_dir/$softcam_bin_filename" ]; then
+if [ ! -x "$softcam_bin_dir/$softcam_bin_filename" ]; then
     fLog "ERROR! Executable binary file '$softcam_bin_dir/$softcam_bin_filename' does not exist!"
     fLog "$hrline"
-    exit 1
+    exit 5                       # error code 5 : program is not installed
 fi
 
 
