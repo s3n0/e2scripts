@@ -66,7 +66,7 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 
-IRDETO_ENTITLEMENTS="no"       # please choice your option "no" or "yes", for IRDETO satellite cards, due to necessary "entitlements" (receipt of first EMMs) - the waiting time in the script is set to 30 seconds
+IRDETO_ENTITLEMENTS="yes"       # please choice your option "no" or "yes", for IRDETO satellite cards, due to necessary "entitlements" (receipt of first EMMs) - the waiting time in the script is set to 30 seconds
 IRDETO_CHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
 
 
@@ -96,7 +96,7 @@ HR_LINE="----------------------------------"
 # ARCH="mips32el"                       # this value is determined automatically using the Python script below
 # BASE_FEED="http://updates.mynonpublic.com/oea"       # feed server with all Oscam packages (for OpenATV of course)
 # Wget example:      wget -O /tmp/Packages.gz "$BASE_FEED/$OEVER/$ARCH/Packages.gz"
-# Specific URL example:     "http://updates.mynonpublic.com/oea/4.3/{aarch64,sh4,mips32el,armv7ahf-neon,cortexa15hf-neon-vfpv4}/Packages.gz"
+# Specific URL example:     "http://updates.mynonpublic.com/oea/4.3/{mips32el,cortexa15hf-neon-vfpv4,cortexa9hf-neon,armv7ahf-neon,aarch64,sh4}/Packages.gz"
 
 [ -e /usr/bin/python3 ] && PY="python3" || PY="python"
 
