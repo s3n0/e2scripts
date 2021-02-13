@@ -40,7 +40,7 @@ FILE2=$(grep -l "Regionalen" `grep -l "Deutschland" $TMP_DIR/*.tv`)
 if [ -z "$FILE2" ]; then
     echo "DEUTSCHLAND userbouquet file was NOT found !"
 else
-    echo "DEUTSCHLAND userbouquet file found: ${FILE}"
+    echo "DEUTSCHLAND userbouquet file found: ${FILE2}"
     sed -i -e 's/NAME HD+ Deutschland/NAME SAT Deutschland (Vhannibal '$(date "+%Y-%m")')/I' $FILE2
     cp -f $FILE2 /etc/enigma2/userbouquet.sat-deutschland-vhannibal.tv
 fi
