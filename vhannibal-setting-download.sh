@@ -19,7 +19,8 @@ cd $TMP_DIR
 
 echo "Downloading and extracting the Vhannibal setting archive file."
 wget -O "${TMP_DIR}/setting.zip" --no-check-certificate "https://www.vhannibal.net/download_setting.php?id=13&action=download"
-# NOTE: find your own setting zip-package on the Vhannibal-Enigma2 website and edit the required "id=??" in the URL, according to your setting zip-package
+# NOTE: find your own setting zip-package on the Vhannibal-Enigma2 website https://www.vhannibal.net/enigma2.php
+#       and edit the required "id=??" in the URL, according to your setting zip/setting-package
 unzip -j "${TMP_DIR}/setting.zip" -d $TMP_DIR
 
 
