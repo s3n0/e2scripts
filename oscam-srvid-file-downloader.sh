@@ -7,22 +7,22 @@
 #############################################################################
 
 find_oscam_cfg_dir() {
-    DIR_LIST="""/etc/tuxbox/config
-                /etc/tuxbox/config/oscam
-                /var/tuxbox/config
-                /usr/keys
-                /var/keys
-                /var/etc/oscam
-                /var/etc
-                /var/oscam
-                /config/oscam"""
     RET_VAL=""
+    DIR_LIST="/etc/tuxbox/config
+              /etc/tuxbox/config/oscam
+              /var/tuxbox/config
+              /usr/keys
+              /var/keys
+              /var/etc/oscam
+              /var/etc
+              /var/oscam
+              /config/oscam"
     for FOLDER in $DIR_LIST; do
         [ -f "${FOLDER}/oscam.conf" ] && { RET_VAL="$FOLDER"; break; }
     done
     echo "$RET_VAL"
 }
-     
+
 URL="http://kos.twojeip.net/download.php?download[]=pack-hdplus&download[]=pack-mtv&download[]=pack-skylink&download[]=pack-austriasat&download[]=pack-orfdigital&download[]=pack-skygermany"
 #### # # # # # # # # # # # # #   downloading  :     pack-hdplus      +     pack-mtv      +     pack-skylink     +      pack-austriasat      +     pack-orfdigital      +     pack-skygermany
 #### You can find the correct package names (or full URL) directly on the website KOS.TWOJEIP.NET - in the address of the downloaded file
