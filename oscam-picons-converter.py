@@ -173,7 +173,7 @@ def table_size_checking(tbl):
 def show_man_page():
     script_path = "/path_to_script/oscam-picons-converter.py" if len(sys.argv) == 0 or sys.argv[0] == "" else sys.argv[0]
     print("""
-python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
+python {0} <COMMANDS> <SKIN-PICON-DIRECTORY>
 
 === BASIC INFO:
 
@@ -181,11 +181,11 @@ python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
 
     The algorithm processes all found PNG-picons belonging to Enigma2-SKIN.
 
-    The TPL-picon name format consists of 'IC_<CAID>_<SID>.tpl' so therefore it's necessary to
+    The TPL-picon name format consists of 'IC_<CAID>_<SID>.tpl' so therefore it is necessary to
     create a table of all CAID:SID as the first.
 
-    I also recommend using the CAID filter, i.e. argument '-c CAIDs' for argument '-a', to avoid very many
-    TPL-picons belonging to all existing CAIDs in the Enigma !
+    I also recommend using the CAID filter, i.e. argument '-c CAIDs' for argument '-a',
+    to avoid very many TPL-picons belonging to all existing CAIDs in the Enigma !
 
 === COMMANDS:
 
@@ -223,15 +223,14 @@ python {0} <COMMANDS> <SOURCE-PNG-DIR> <TARGET-TPL-DIR>
 
 === EXAMPLES:
 
-python {0} -a -c 0624 -d /tmp/transparent-png-220x132 /etc/tuxbox/config/oscam/piconTPL
-python {0} -2 -c 0624,0D96,FFFE /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
-python {0} -1 -2 /tmp/piconPNG /tmp/piconsTPL
-python {0} -1 -q -o /etc/tuxbox/config /media/hdd/picon /media/hdd/piconTPL
+python {0} -d -a -c 0624 /media/hdd/picon
+python {0} -2 -c 0624,0D96,FFFE /usr/share/enigma2/picon
+python {0} -1 -2 /media/mmc/picon
+python {0} -1 -q -o /etc/tuxbox/config /media/hdd/picon
 
 === RECOMMENDED USAGE:
 
-python {0} -d -1 -c <CAIDs_with_FFFE_included> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
-python {0} -d -a -c <CAIDs> /usr/share/enigma2/picon /etc/tuxbox/config/oscam/piconTPL
+python {0} -d -a -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon
 
 """.format(script_path)   )
 
@@ -243,23 +242,46 @@ def user_input(question = ''):          # this user std-in function is compatibl
 def prepare_arguments():    
     global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
     
-    if len(sys.argv) <= 2 or ('-a' in sys.argv and '-c' not in sys.argv):
+    if len(sys.argv) <= 1 or ('-a' in sys.argv and '-c' not in sys.argv):
         show_man_page()
         return False
     
-    if '-a' not in sys.argv:
-        if '-o' in sys.argv:
-            DIR_OSCAMCFG = sys.argv[ sys.argv.index('-o') + 1 ]
+    DIR_OSCAMCFG = ''
+    if '-o' in sys.argv:
+        DIR_OSCAMCFG = sys.argv[ sys.argv.index('-o') + 1 ]
+    else:
+        folder_list = [
+            '/etc/tuxbox/config',
+            '/etc/tuxbox/config/oscam',
+            '/var/tuxbox/config',
+            '/usr/keys',
+            '/var/keys',
+            '/var/etc/oscam',
+            '/var/etc',
+            '/var/oscam',
+            '/config/oscam' ]
+        DIR_OSCAMCFG = [d for d in folder_list if os.path.isfile(d + '/oscam.server')]
+        if DIR_OSCAMCFG:
+            DIR_OSCAMCFG = DIR_OSCAMCFG[0]
+            print('Oscam configuration directory found: %s' % DIR_OSCAMCFG)
         else:
-            folder_list = ['/etc/tuxbox/config', '/etc/tuxbox/oscam', '/etc/tuxbox/config/oscam', '/usr/keys/oscam', '/usr/local/etc']
-            DIR_OSCAMCFG = [d for d in folder_list if os.path.isfile(d + '/oscam.server')]
-            if DIR_OSCAMCFG:
-                DIR_OSCAMCFG = DIR_OSCAMCFG[0]
-                print('Oscam configuration directory found: %s' % DIR_OSCAMCFG)
-            else:
-                show_man_page()
-                print('ERROR ! The Oscam configration folder was not found ! Please use the "-o" argument.')
-                return False
+            show_man_page()
+            print('ERROR ! The Oscam configration folder was not found ! Please use the "-o" argument.')
+            return False
+    
+    DIR_TPL = ''
+    with open(DIR_OSCAMCFG + '/oscam.conf', 'r') as f:
+        oscam_conf = f.read().split('\n')
+    for line in oscam_conf:
+        if line.lower().startswith('httptpl'):
+            DIR_TPL = line.split('=')[1].strip()
+    if DIR_TPL == '':
+        print('ERROR ! The TPL-directory not found - in the %s file !' % DIR_OSCAMCFG + '/oscam.conf')
+        return False
+    else:
+        print('TPL-directory found (retrieved from "oscam.conf" file): %s' % DIR_TPL)
+    
+    if '-a' not in sys.argv:
         if '-1' in sys.argv and not os.path.isfile(DIR_OSCAMCFG + '/oscam.srvid'):
             print('ERROR ! The oscam.srvid file does not exist !')
             return False
@@ -275,11 +297,10 @@ def prepare_arguments():
         CAIDS_FILTER = []
         print('User-selected CAIDs: <empty/blank>   (all found CAIDs will be included !)')
     
-    DIR_TPL = sys.argv[-1]
-    DIR_PNG = sys.argv[-2]
+    DIR_PNG = sys.argv[-1]
     
     if not (os.path.isdir(DIR_TPL) and os.path.isdir(DIR_PNG)):
-        print('ERROR ! TPL or PNG directory does not exist !')
+        print('ERROR ! TPL directory "%s" or PNG directory "%s" does not exist !' % (DIR_TPL, DIR_PNG))
         return False
     
     return True
