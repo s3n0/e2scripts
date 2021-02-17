@@ -22,9 +22,9 @@ find_oscam_cfg_dir() {
     done
     echo "$RET_VAL"
 }
-
-URL="http://kos.twojeip.net/download.php?download[]=pack-hdplus&download[]=pack-skygermany&download[]=pack-skylink"
-#### # # # # # # # # # # # # #   downloading  :     pack-hdplus      +     pack-skygermany      +     pack-skylink
+     
+URL="http://kos.twojeip.net/download.php?download[]=pack-hdplus&download[]=pack-mtv&download[]=pack-skylink&download[]=pack-austriasat&download[]=pack-orfdigital&download[]=pack-skygermany"
+#### # # # # # # # # # # # # #   downloading  :     pack-hdplus      +     pack-mtv      +     pack-skylink     +      pack-austriasat      +     pack-orfdigital      +     pack-skygermany
 #### You can find the correct package names (or full URL) directly on the website KOS.TWOJEIP.NET - in the address of the downloaded file
 
 CFG_DIR=$(find_oscam_cfg_dir)
