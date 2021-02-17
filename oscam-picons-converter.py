@@ -1,24 +1,25 @@
 #!/usr/bin/env python
 
-#################################
-###  .PNG to .TPL converter   ###
-###    by s3n0 , 2019-2020    ###
-###  https://github.com/s3n0  ###
-#################################
+#####################################
+###    Oscam Picons Converter     ###
+###         .PNG to .TPL          ###
+###      by s3n0 , 2019-2021      ###
+###    https://github.com/s3n0    ###
+#####################################
 
 #############################################################################
-# simple python script for converting PNG to TPL picons (for Oscam-Webif)
+# Simple python-script for converting PNG to TPL picons (for Oscam-Webif)
 #############################################################################
-# USAGE:
+# GUIDE:
 # ---- Upload the script into the set-top-box, for example into the '/tmp'
-#      folder or download the script directly via the Shell:
+#      folder or download the script directly via the shell:
 #           wget -O /tmp/oscam-picons-converter.py --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-picons-converter.py
-# ---- Then start the script via command-line Shell:
-#           python /tmp/oscam-picons-converter.py <OPTIONS> <PNG-directory> <TPL-directory>
+# ---- Then start the script via command-line / shell:
+#           python /tmp/oscam-picons-converter.py <COMMANDS>
 # ---- Start the script without arguments for show the man-page:
 #           python /tmp/oscam-picons-converter.py
-# ---- Of course, the script can also be started directly from the internet (from github):
-#           wget -qO- --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-picons-converter.py | python -- - <OPTIONS> <PNG-directory> <TPL-directory>
+# ---- The script can also be started directly from the internet - from my github:
+#           wget -qO- --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-picons-converter.py | python -- - <COMMANDS>
 #############################################################################
 
 import os
@@ -168,70 +169,79 @@ def table_size_checking(tbl):
                 return True
             elif answer.lower() == 'n':
                 return False
+    print('')
     return True
 
 def show_man_page():
     script_path = "/path_to_script/oscam-picons-converter.py" if len(sys.argv) == 0 or sys.argv[0] == "" else sys.argv[0]
-    print("""
-python {0} <COMMANDS> <SKIN-PICON-DIRECTORY>
+    print("""=============================================================================
+python {0} <COMMANDS>
+=============================================================================
 
 === BASIC INFO:
 
-    Python script developed to convert PNG-picons (taken from Enigma2-SKIN) to TPL-picons (to Oscam-Webif format).
+    Python script developed to convert PNG-picons (taken from Enigma2 SKIN)
+    to TPL-picons (Oscam-Webif image files, i.e. 'web. template' file format).
 
     The algorithm processes all found PNG-picons belonging to Enigma2-SKIN.
 
-    The TPL-picon name format consists of 'IC_<CAID>_<SID>.tpl' so therefore it is necessary to
-    create a table of all CAID:SID as the first.
+    The TPL-picon name format consists of 'IC_<CAID>_<SID>.tpl' so therefore
+    it is necessary to create a table of all CAID:SID as the first.
 
-    I also recommend using the CAID filter, i.e. argument '-c CAIDs' for argument '-a',
+    I also recommend using the CAID filter, i.e. argument '-c CAIDs' in the case of argument '-a',
     to avoid very many TPL-picons belonging to all existing CAIDs in the Enigma !
 
 === COMMANDS:
 
     Method of creating table SID:CAIDs (choose it carefully):
-    ---------------------------------------------------------
--a  make a table of SIDs found in all picon names (SIDs obtained from all PNG file names)
+    ---------------------------------------------------------------
+    
+-a  make a table of SIDs found in SKIN-picon directory (SIDs obtained from all *.png files)
     in this case, no CAIDs will be detected / searched !
     only user-defined CAIDs will be used !
         '-c CAIDs' argument is necessary
         '-1' and '-2' will be ignored
 
--1  make a table from all available SID:CAIDs in 'oscam.srvid' file
-        '-c CAIDs' argument is not necessary, but can be used (as filter)
+-1  make a table from all available SID:CAIDs in the 'oscam.srvid' file
+        '-c CAIDs' argument is not necessary, but can be used (as a filter)
         may be used in combination with '-2'
 
--2  make a table from all available SID:CAIDs in 'oscam.srvid2' file
-        '-c CAIDs' argument is not necessary, but can be used (as filter)
+-2  make a table from all available SID:CAIDs in the 'oscam.srvid2' file
+        '-c CAIDs' argument is not necessary, but can be used (as a filter)
         may be used in combination with '-1'
         
-        NOTE: the 'oscam.srvid2' file can also contain FTA channels with CAID = FFFE,
-              which could also be included as TPL-picons, automatically in the generated table of CAIDs
+        A NOTE: the 'oscam.srvid2' file especially may also contain FTA channels with CAID = FFFE,
+                which could also be included as TPL-picons, automatically in the generated table of CAIDs
 
-    Filter:    (it's important in case of the argument '-a')
-    ---------------------------------------------------------
+    Filter of CAIDs (it's important in case of the argument '-a'):
+    ---------------------------------------------------------------
+    
 -c <CAID[,CAID,...]>
         user-defined CAIDs separated by a comma (which are the only ones to be considered)...
         if you do not specify the argument '-c' then all found CAIDs will be used in the case
         of '-1' and '-2' arguments ! beware of the large number of CAIDs (TPL files) !!!
-
+    
     Additional options:
-    ---------------------------------------------------------
--o <PATH>    path to oscam config dir, if the script did not find the Oscam configuration dir automatically
--q           higher quality image processing with antialiasing filter (higher quality means a larger file size!)
--d           delete the whole target TPL-directory before processing
+    ---------------------------------------------------------------
+    
+-o <PATH>   path to the Oscam cfg-directory, if the script did not find the Oscam cfg-directory automatically
+-p <PATH>   path to the SKIN-picon directory, if the default '/usr/share/enigma2/picon' directory was not found
+-q          higher quality TPL-image processing with antialiasing filter (higher quality means a larger .tpl file size!)
+-d          delete the whole TPL-directory before processing
 
 === EXAMPLES:
 
-python {0} -d -a -c 0624 /media/hdd/picon
-python {0} -2 -c 0624,0D96,FFFE /usr/share/enigma2/picon
-python {0} -1 -2 /media/mmc/picon
-python {0} -1 -q -o /etc/tuxbox/config /media/hdd/picon
+python {0} -a -c 0624 -p /media/hdd/picon
+python {0} -1 -c 0624,0D96,FFFE -p /mnt/autofs/nas/picon
+python {0} -1 -2 -q -p /media/mmc/picon
+python {0} -1 -q
+python {0} -2 -q -o /mnt/nas/oscamcfg -p /mnt/nas/picon
 
 === RECOMMENDED USAGE:
 
-python {0} -d -a -c <your_CAIDs_with_FFFE_included> /usr/share/enigma2/picon
+python {0} -d -a -c <your_CAIDs_with_FFFE_included> [-p <SKIN-PICON-DIRECTORY>]
 
+=============================================================================
 """.format(script_path)   )
 
 def user_input(question = ''):          # this user std-in function is compatible both Python 2 and Python 3 (better than function `raw_input` and/or `input`)
@@ -244,7 +254,10 @@ def prepare_arguments():
     
     if len(sys.argv) <= 1 or ('-a' in sys.argv and '-c' not in sys.argv):
         show_man_page()
+        print('ERROR ! Missing or wrong arguments !')
         return False
+    
+    print('Preparing arguments...')
     
     DIR_OSCAMCFG = ''
     if '-o' in sys.argv:
@@ -263,10 +276,10 @@ def prepare_arguments():
         DIR_OSCAMCFG = [d for d in folder_list if os.path.isfile(d + '/oscam.server')]
         if DIR_OSCAMCFG:
             DIR_OSCAMCFG = DIR_OSCAMCFG[0]
-            print('Oscam configuration directory found: %s' % DIR_OSCAMCFG)
+            print('Oscam cfg-directory found: %s' % DIR_OSCAMCFG)
         else:
             show_man_page()
-            print('ERROR ! The Oscam configration folder was not found ! Please use the "-o" argument.')
+            print('ERROR ! Oscam cfg-directory not found ! Please use the "-o" argument.')
             return False
     
     DIR_TPL = ''
@@ -279,7 +292,7 @@ def prepare_arguments():
         print('ERROR ! The TPL-directory not found - in the %s file !' % DIR_OSCAMCFG + '/oscam.conf')
         return False
     else:
-        print('TPL-directory found (retrieved from "oscam.conf" file): %s' % DIR_TPL)
+        print('TPL-directory found (from "oscam.conf"): %s' % DIR_TPL)
     
     if '-a' not in sys.argv:
         if '-1' in sys.argv and not os.path.isfile(DIR_OSCAMCFG + '/oscam.srvid'):
@@ -297,11 +310,21 @@ def prepare_arguments():
         CAIDS_FILTER = []
         print('User-selected CAIDs: <empty/blank>   (all found CAIDs will be included !)')
     
-    DIR_PNG = sys.argv[-1]
-    
-    if not (os.path.isdir(DIR_TPL) and os.path.isdir(DIR_PNG)):
-        print('ERROR ! TPL directory "%s" or PNG directory "%s" does not exist !' % (DIR_TPL, DIR_PNG))
+    if '-p' in sys.argv:
+        DIR_PNG = sys.argv[ sys.argv.index('-p') + 1 ]
+    else:
+        DIR_PNG = '/usr/share/enigma2/picon'
+    if glob.glob(DIR_PNG + '/*.png'):
+        print('PNG-directory (SKIN-picon directory) found: %s ' % DIR_PNG)
+    else:
+        print('ERROR ! PNG-files was not found in the SKIN-picon folder: %s ' % DIR_PNG)
         return False
+    
+    #if not (os.path.isdir(DIR_TPL) and os.path.isdir(DIR_PNG)):
+    #    print('ERROR ! TPL directory "%s" or PNG directory "%s" does not exist !' % (DIR_TPL, DIR_PNG))
+    #    return False
+    
+    print('...done.\n')
     
     return True
 
@@ -335,6 +358,5 @@ if __name__ == "__main__" and prepare_arguments():
         if table_size_checking(table):
             convert_png2tpl(table)
     
-    print('Good bye')
-
+    print('Good bye.')
 
