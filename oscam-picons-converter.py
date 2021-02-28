@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
+print("""
 #####################################
 ###    Oscam Picons Converter     ###
 ###         .PNG to .TPL          ###
 ###      by s3n0 , 2019-2021      ###
 ###    https://github.com/s3n0    ###
 #####################################
+""")
 
 #############################################################################
 # Simple python-script for converting PNG to TPL picons (for Oscam-Webif)
@@ -22,19 +24,17 @@
 #           wget -qO- --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-picons-converter.py | python -- - <COMMANDS>
 #############################################################################
 
-import os
-import sys
-import glob
-import re
+import sys, os, glob, re, base64
 
 from io import BytesIO
-import base64
 
-try:
-    from PIL import Image
-except:
-    os.system("opkg update && opkg install python-imaging")
-    from PIL import Image
+def import_PIL():           # Python Imaging Library (PIL) - is required to convert picons - therefore, it is necessary to verify whether this module is available in the Enigma2/Python distribution
+    global Image            # the imported 'Image' must be usable in the entire source code ... therefore, it must be declared as global
+    try:
+        from PIL import Image
+    except:
+        return False
+    return True
 
 #############################################################################
 
@@ -140,11 +140,13 @@ def convert_png2tpl(sid_table):
             for caid in sid_table[sid]:
                 img = Image.open(path_to_png)
                 if '-q' in sys.argv:
-                    img = img.resize( (100,60), Image.ANTIALIAS )
+                    if 'P' in img.getbands():           # it is not possible to use a conversion "filter" when resizing the image, in the case of "P" color mode (when a specific color palette is defined)
+                        img = img.convert(mode='RGB')   # so... we need to convert the color mode of the image to an RGB palette (which also means a larger image file on disk)
+                    img = img.resize((100,60), Image.ANTIALIAS)
                 else:
                     img.thumbnail((100,60))
                 buffer = BytesIO()
-                img.save(buffer, format = 'PNG')      # img.save('/tmp/temp.png', format = 'PNG')
+                img.save(buffer, format='PNG')          # FOR TESTING PURPOSES:   img.save('/tmp/temp_picon.png', format='PNG')
                 data_tmp = buffer.getvalue()
                 data_bytes = b'data:image/png;base64,' + base64.b64encode(data_tmp)
                 with open('{0}/IC_{1}_{2}.tpl'.format(DIR_TPL, caid, sid), 'wb') as f:                  # write bytes to file (so, the file must be opened in binary mode)
@@ -181,7 +183,7 @@ python {0} <COMMANDS>
 === BASIC INFO:
 
     Python script developed to convert PNG-picons (taken from Enigma2 SKIN)
-    to TPL-picons (Oscam-Webif image files, i.e. 'web. template' file format).
+    to TPL-picons (Oscam-Webif image files, i.e. 'Base64/template' file format).
 
     The algorithm processes all found PNG-picons belonging to Enigma2-SKIN.
 
@@ -229,6 +231,11 @@ python {0} <COMMANDS>
 -q          higher quality TPL-image processing with antialiasing filter (higher quality means a larger .tpl file size!)
 -d          delete the whole TPL-directory before processing
 
+=== RECOMMENDED USAGE:
+
+python {0} -d -a -c <your_CAIDs_with_FFFE_included>
+python {0} -d -a -c <your_CAIDs_with_FFFE_included> -p <SKIN-PICON-DIRECTORY>
+
 === EXAMPLES:
 
 python {0} -a -c 0624 -p /media/hdd/picon
@@ -236,10 +243,7 @@ python {0} -1 -c 0624,0D96,FFFE -p /mnt/autofs/nas/picon
 python {0} -1 -2 -q -p /media/mmc/picon
 python {0} -1 -q
 python {0} -2 -q -o /mnt/nas/oscamcfg -p /mnt/nas/picon
-
-=== RECOMMENDED USAGE:
-
-python {0} -d -a -c <your_CAIDs_with_FFFE_included> [-p <SKIN-PICON-DIRECTORY>]
+python {0} -d -q -a -c 0624,0D96,FFFE
 
 =============================================================================
 """.format(script_path)   )
@@ -251,6 +255,14 @@ def user_input(question = ''):          # this user std-in function is compatibl
 
 def prepare_arguments():    
     global CAIDS_FILTER, DIR_TPL, DIR_PNG, DIR_OSCAMCFG
+    
+    if not import_PIL():
+        print('WARNING ! The Python Image Library (PIL) is not installed.\nThe library is needed to convert PNG picons to TPL !\nPlease wait, trying to install it now ...')
+        if os.system('opkg update > /dev/null 2>&1 && opkg install python-imaging'):
+            print('... ERROR ! The Python Image Library (PIL) was not found on your system !')
+            return False
+        else:
+            print('... the Image function from the PIL library was successful installed.')
     
     if len(sys.argv) <= 1 or ('-a' in sys.argv and '-c' not in sys.argv):
         show_man_page()
