@@ -68,31 +68,31 @@ if __name__ == "__main__" and enigmaInStandby():
     for fname in BOUQUET_FILES:
         with open('/etc/enigma2/' + fname, 'r') as f:
             bouquet_data = f.read().upper().split('\n')
-            # remove all lines startswith '#NAME', '#SERVICE 1:64', '#DESCRIPTION'
-            # and return the values from index 9 to right i.e. without the prefix '#SERVICE ' and also without the URL link (http: ..... string) if does it exist
-            refs = [ ':'.join(s[9:].split(':')[0:10]) + ':' for s in bouquet_data if not (s.startswith('#NAME') or s.startswith('#SERVICE 1:64') or s.startswith('#DESCR'))  ]
-            bouquet_SRC += refs[:-1]       # the last entry ':' in the list variable must to be removed (created in the for-loop before)
+        # remove all lines startswith '#NAME', '#SERVICE 1:64', '#DESCRIPTION'
+        # and take the values from index 9 to right side, i.e. lines without the prefix '#SERVICE ' and also without the URL link (http: ..... string) if does it exist
+        refs = [ ':'.join(s[9:].split(':')[0:10]) + ':' for s in bouquet_data if not (s.startswith('#NAME') or s.startswith('#SERVICE 1:64') or s.startswith('#DESCR'))  ]
+        bouquet_SRC += refs[:-1]       # the last entry ':' in the list variable must to be removed (created in the for-loop before)
     
     with open('/etc/enigma2/blacklist', 'r') as f:
         blacklist_data = f.read().upper().split('\n')
         blacklist_SRC = [ ':'.join(k.split(':')[0:10]) + ':' for k in blacklist_data ][:-1]     # remove all http:// and other unwanted text from the end of lines
     
-    tuned_SRC = []
+    needs_SRC = []
     for SRC in bouquet_SRC:
         # --- bouquet format for ServRefCode = service_type : 0 : service_quality : ServiceID : TransponderID : NetworkID : Namespace : 0 : 0 : 0 :
-        # --- index of the ServRefCode =              0       1          2              3             4             5            6      7   8   9    ...
-        # --- real example = '1:0:16:3725:C8E:3:EB0000:0:0:0:'
+        # --- index of the ServRefCode (fields) =     0       1          2              3             4             5            6      7   8   9
+        # --- real example of the SRC variable  =  '1:0:16:3725:C8E:3:EB0000:0:0:0:'
         fields = SRC.split(':')
-        if not [ s for k in tuned_SRC if fields[4] +':'+ fields[5] in k ]:   # if *:TransponderID:NetworkID:* is already included in the tuned_SRC list, then continue to search of another value
-            if not SRC in blacklist_SRC:
-                tuned_SRC.append(SRC)
+        if ':%s:%s:%s:' % tuple(fields[4:7]) not in ''.join(needs_SRC):     # if *:TransponderID:NetworkID:NameSpace:* is not in the needs_SRC list, then add the item to needs_SRC list
+            if SRC not in blacklist_SRC:
+                needs_SRC.append(SRC)
     
-    writeLOG('Number of channels/transponders to tune: %s' % len(tuned_SRC))
+    writeLOG('Number of channels/transponders to tune: %s' % len(needs_SRC))
     writeLOG('Zapping the neccessary channels/transponders...')
     
-    for i, SRC in enumerate(tuned_SRC, 1):
+    for i, SRC in enumerate(needs_SRC, 1):
         zapChannel(SRC)
-        writeLOG('{:03d} / {:03d} - {}'.format(i, len(tuned_SRC), SRC))
+        writeLOG('{:03d} / {:03d} - {}'.format(i, len(needs_SRC), SRC))
         sleep(20)           # waiting 20 sec. for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
     
     writeLOG('...done.')
