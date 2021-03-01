@@ -34,7 +34,7 @@ def writeLOG(msg):
     print(msg)
     with open(LOG_FILE_PATH, 'a') as f:
         f.write('[ %s ] %s\n' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), msg))
-    if os_path_getsize(LOG_FILE_PATH) > 255000:
+    if os_path_getsize(LOG_FILE_PATH) > 255000:     # [Bytes] - maximum allowed file size
         with open(LOG_FILE_PATH, 'r') as f:
             cache = f.readlines()
         with open(LOG_FILE_PATH, 'w') as f:
