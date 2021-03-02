@@ -82,8 +82,8 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
 
 ### create temporary ".srvid" files:
-create_srvid_file "https://www.satelitnatv.sk/antik-sat/" "Antiksat" "0B00" 
 create_srvid_file "https://www.satelitnatv.sk/skylink-programy-frekvencie-parametre/" "Skylink" "0D96,0624"
+create_srvid_file "https://www.satelitnatv.sk/antik-sat/" "Antiksat" "0B00"
 create_srvid_file "https://www.satelitnatv.sk/freesat-by-upc-direct/" "FreeSAT" "0D97,0653,0B02"
 
 
