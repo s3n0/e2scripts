@@ -94,6 +94,7 @@ create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
 echo "$HEADER" > $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
 rm -f /tmp/oscam__*
+[ -f "$OSCAM_SRVID" ] && echo "Path to the generated 'oscam.srvid' file:  ${OSCAM_SRVID}"
 
 
 
