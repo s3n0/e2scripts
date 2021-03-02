@@ -89,7 +89,7 @@ create_srvid_file "https://www.satelitnatv.sk/freesat-by-upc-direct/" "FreeSAT" 
 
 
 ### backup the original file "oscam.srvid" to the "/tmp" dir + merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
-[ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
+[ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
 echo "$HEADER" > $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
 rm -f /tmp/oscam__*
