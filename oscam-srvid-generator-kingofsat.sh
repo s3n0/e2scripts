@@ -1,0 +1,157 @@
+#!/bin/bash
+
+HEADER="
+###############################################################################
+### - script written by s3n0, 2021-03-02, https://github.com/s3n0
+### - the script serves as a generator for the 'oscam.srvid' file
+### - based on data parsing from:       http://en.kingofsat.net/pack-XXXXXX.php
+### - the original script comes from:   http://forum.czsk.tv/viewtopic.php?t=73
+###############################################################################
+"
+
+###############################################################################
+
+find_oscam_cfg_dir()
+{
+    RET_VAL=""
+    DIR_LIST="/etc/tuxbox/config
+              /etc/tuxbox/config/oscam
+              /var/tuxbox/config
+              /usr/keys
+              /var/keys
+              /var/etc/oscam
+              /var/etc
+              /var/oscam
+              /config/oscam"
+    for FOLDER in $DIR_LIST; do
+        [ -f "${FOLDER}/oscam.conf" ] && { RET_VAL="$FOLDER"; break; }
+    done
+    [ -z "$RET_VAL" ] && echo "WARNING ! Oscam configuration directory was not found !"
+    echo "$RET_VAL"
+}
+
+###############################################################################
+
+create_srvid_file()
+{
+    # INPUT ARGUMENTS:
+    #    $1 = the URL of the package list of channels with their data, on a specific http://en.KingOfSat.net/pack-XXXXX.php website (see below)
+    #    $2 = CAIDs (separated by comma) what is necessary for the provider
+    #
+    # A NOTE:   "${1^}" provides the first-character-upper string = "Provider"    "${1^^}" provides the upper-case string = "PROVIDER"    "${1}" provides the string = "provider"    "${1,,}" provides the lower-case string = "provider"
+    
+    URL="http://en.kingofsat.net/pack-${1,,}.php"
+    
+    if wget -q -O /tmp/kos.html --no-check-certificate "$URL" > /dev/null 2>&1; then
+        echo "URL download successful:   ${URL}"
+        
+        awk -F '>' -v CAIDS="${2}" -v PROVIDER="${1^}" -e '
+            BEGIN { CHNAME = "invalid" }
+            /<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3) }
+            /class="s">[0-9]+/ {
+                SID = substr($2,1,length($2) - 4)
+                if (CHNAME == "invalid") next
+                printf "%s:%04X|%s|%s\n", CAIDS, SID, PROVIDER, CHNAME
+                CHNAME = "invalid"
+              }' /tmp/kos.html > "/tmp/oscam__${1,,}.srvid"
+        
+        echo -e "The new file was created:  /tmp/oscam__${1,,}.srvid\n"
+        rm -f /tmp/kos.html
+    else
+        echo "URL download failed !!! URL: ${URL}"
+    fi
+}
+
+###############################################################################
+
+OSCAM_CFGDIR=$(find_oscam_cfg_dir)
+
+#OSCAM_SRVID="/tmp/oscam_-_merged-kingofsat.srvid"
+OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
+
+
+
+### create temporary ".srvid" files:
+create_srvid_file "skylink" "0D96,0624"
+create_srvid_file "antiksat" "0B00"
+create_srvid_file "upc" "0D02,0D97,0B02,1815"
+create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
+#create_srvid_file "focussat" "0B02"
+#create_srvid_file "digitv" "1802,1880"
+#create_srvid_file "mtv" "0B00,0D00"
+#create_srvid_file "canaldigitalnordic" "0B00"
+#create_srvid_file "bbc" "0B00"
+#create_srvid_file "skydigital" "0963"
+#create_srvid_file "skyitalia" "0919,093B,09CD"
+#create_srvid_file "dolcetv" "092F"
+#create_srvid_file "hellohd" "0BAA,0000"
+
+
+
+### backup the original file "oscam.srvid" to the "/tmp" dir + merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
+[ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
+echo "$HEADER" > $OSCAM_SRVID
+cat /tmp/oscam__* >> $OSCAM_SRVID
+rm -f /tmp/oscam__*
+
+
+
+exit 0
+
+###############################################################################
+###############################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################################################
+###############################################################################
+#############################  THE FOLLOWING CODE IS FOR TESTING PURPOSE ONLY :
+###############################################################################
+###############################################################################
+
+
+
+PROVIDER="skylink"
+wget -q -O /tmp/kos.html "http://en.kingofsat.net/pack-${PROVIDER}.php"
+awk -F '>' -e '/<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3); printf "%s\n" CHNAME }' /tmp/kos.html     # list of all channel names, na riadkoch so stringom zacinajucim na <i> alebo class="A3"
+awk -F '>' -e '/class="s">[0-9]+/ { SID = substr($2,1,length($2) - 4); printf "%s\n" SID }' /tmp/kos.html         # list of all SIDs
+
+
+
+awk -F '>' -v CAIDS="0D96,0624" -v PROVIDER="skylink" -e '
+BEGIN { CHNAME = "invalid" }
+/<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3) }
+/class="s">[0-9]+/ {
+    SID = substr($2,1,length($2) - 4)
+    if (CHNAME == "invalid") next
+    printf "%s:%04X|%s|%s\n", CAIDS, SID, PROVIDER, CHNAME
+    CHNAME = "invalid"
+   }' /tmp/kos.html
+
+#printf "%s:%04X|%s|%s\n" CAIDS SID PROVIDER CHNAME
+#printf "%s:%04X|%s|%s\n", $CAIDS, SID, $PROVIDER, CHNAME
+#printf "%s|%s\n", SID, CHNAME
+#printf "0D96,0624:%s|Provider|%s\n", SID, CHNAME
+#printf "%s:%s|%s|%s\n", "0D96,0624", SID, "Some Provider", CHNAME
+#printf "%s:%04X|%s|%s\n", "0D96,0624", SID, "Some Provider", CHNAME
+#printf "%s:%s|%s|%s\n", CAIDS, SID, PROVIDER, CHNAME            # when using the -v CAIDS="0D96,0624" -v PROVIDER="skylink" arguments to pass some variable for the "awk" tool
+
+
+
