@@ -65,7 +65,7 @@ create_srvid_file()
 ###############################################################################
 
 OSCAM_CFGDIR=$(find_oscam_cfg_dir)
-[ -z "$OSCAM_CFGDIR" ] && OSCAM_CFGDIR="/tmp"     # if the oscam config dir was not found, then use "/tmp" dir, to avoid a possible error in the variable below
+[ -z "$OSCAM_CFGDIR" ] && OSCAM_CFGDIR="/tmp"       # if the oscam config dir was not found, then use "/tmp" dir, to avoid a possible error in the variable below
 
 #OSCAM_SRVID="/tmp/oscam_-_merged-kingofsat.srvid"
 OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
@@ -75,7 +75,7 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 ### create temporary ".srvid" files:
 create_srvid_file "skylink" "0D96,0624"
 create_srvid_file "antiksat" "0B00"
-create_srvid_file "orangesk" "0B00,0609"
+create_srvid_file "orangesk" "0B00,0609"            # some channels are shared to the AntikSat provider (package), so this one "orangesk" package is also needed for "antiksat" (as the CAID=0B00)
 create_srvid_file "upc" "0D02,0D97,0B02,1815"
 create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
 #create_srvid_file "focussat" "0B02"
