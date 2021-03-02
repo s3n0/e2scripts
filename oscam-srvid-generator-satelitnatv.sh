@@ -7,6 +7,9 @@ HEADER="
 ###  shell-script to parse data from the web page https://www.satelitnatv.sk  ###
 ###     and then generate the 'oscam__*.srvid' file(s) from parsed data       ###
 #################################################################################
+###  the mentioned website https://www.satelitnatv.sk unfortunately provides  ###
+###         only DVB-services from Slovakia and the Czech Republic            ###
+#################################################################################
 "
 
 #################################################################################
@@ -71,6 +74,7 @@ create_srvid_file()
 #################################################################################
 
 OSCAM_CFGDIR=$(find_oscam_cfg_dir)
+[ -z "$OSCAM_CFGDIR" ] && OSCAM_CFGDIR="/tmp"     # if the oscam config dir was not found, then use "/tmp" dir, to avoid a possible error in the variable below
 
 #OSCAM_SRVID="/tmp/oscam_-_merged-kingofsat.srvid"
 OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
