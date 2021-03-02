@@ -93,6 +93,7 @@ create_srvid_file "https://www.satelitnatv.sk/freesat-by-upc-direct/" "FreeSAT" 
 echo "$HEADER" > $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
 rm -f /tmp/oscam__*
+[ -f "$OSCAM_SRVID" ] && echo "Path to the generated 'oscam.srvid' file:  ${OSCAM_SRVID}"
 
 
 
