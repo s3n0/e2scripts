@@ -45,7 +45,7 @@ create_srvid_file()
     if wget -q -O /tmp/kos.html --no-check-certificate "$URL" > /dev/null 2>&1; then
         echo "URL download successful:   ${URL}"
         
-        awk -F '>' -v CAIDS="${2}" -v PROVIDER="${1^}" -e '
+        awk -F '>' -v CAIDS="${2}" -v PROVIDER="${1^^}" -e '
             BEGIN { CHNAME = "invalid" }
             /<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3) }
             /class="s">[0-9]+/ {
@@ -75,6 +75,7 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 ### create temporary ".srvid" files:
 create_srvid_file "skylink" "0D96,0624"
 create_srvid_file "antiksat" "0B00"
+create_srvid_file "orangesk" "0B00,0609"
 create_srvid_file "upc" "0D02,0D97,0B02,1815"
 create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
 #create_srvid_file "focussat" "0B02"
