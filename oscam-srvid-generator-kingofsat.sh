@@ -26,7 +26,7 @@ find_oscam_cfg_dir()
     for FOLDER in $DIR_LIST; do
         [ -f "${FOLDER}/oscam.conf" ] && { RET_VAL="$FOLDER"; break; }
     done
-    [ -z "$RET_VAL" ] && echo "WARNING ! Oscam configuration directory was not found !"
+    [ -z "$RET_VAL" ] && echo "WARNING ! Oscam configuration directory not found !"
     echo "$RET_VAL"
 }
 
@@ -58,14 +58,15 @@ create_srvid_file()
         echo -e "The new file was created:  /tmp/oscam__${1,,}.srvid\n"
         rm -f /tmp/kos.html
     else
-        echo "URL download failed !!! URL: ${URL}"
+        echo "URL download failed !!! URL:  ${URL}"
     fi
 }
 
 ###############################################################################
 
+### if the oscam config directory is not found, then use the "/tmp" directory, to avoid a possible error in the variable below:
 OSCAM_CFGDIR=$(find_oscam_cfg_dir)
-[ -z "$OSCAM_CFGDIR" ] && OSCAM_CFGDIR="/tmp"       # if the oscam config dir was not found, then use "/tmp" dir, to avoid a possible error in the variable below
+[ -z "$OSCAM_CFGDIR" ] && { echo "WARNING ! The output directory for the 'oscam.srvid' file was changed to '/tmp' !"; OSCAM_CFGDIR="/tmp"; }
 
 #OSCAM_SRVID="/tmp/oscam_-_merged-kingofsat.srvid"
 OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
