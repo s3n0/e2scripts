@@ -197,35 +197,39 @@ python {0} <COMMANDS>
 
     Method of creating table SID:CAIDs (choose it carefully):
     ---------------------------------------------------------------
-    
+
 -a  make a table of SIDs found in SKIN-picon directory (SIDs obtained from all *.png files)
     in this case, no CAIDs will be detected / searched !
     only user-defined CAIDs will be used !
-        '-c CAIDs' argument is necessary
-        '-1' and '-2' will be ignored
+        '-c CAIDs' argument is necessary, to specify the user's own CAIDs
+        '-1' and '-2' argument will be ignored
 
 -1  make a table from all available SID:CAIDs in the 'oscam.srvid' file
-        '-c CAIDs' argument is not necessary, but can be used (as a filter)
+        '-c CAIDs' argument is not necessary, but it may be used (as a filter)
         may be used in combination with '-2'
 
 -2  make a table from all available SID:CAIDs in the 'oscam.srvid2' file
-        '-c CAIDs' argument is not necessary, but can be used (as a filter)
+        '-c CAIDs' argument is not necessary, but it may be used (as a filter)
         may be used in combination with '-1'
         
         A NOTE: the 'oscam.srvid2' file especially may also contain FTA channels with CAID = FFFE,
                 which could also be included as TPL-picons, automatically in the generated table of CAIDs
 
-    Filter of CAIDs (it's important in case of the argument '-a'):
+    Filtering or determining of CAIDs (it's important in case of the argument '-a'):
     ---------------------------------------------------------------
-    
+
 -c <CAID[,CAID,...]>
-        user-defined CAIDs separated by a comma (which are the only ones to be considered)...
-        if you do not specify the argument '-c' then all found CAIDs will be used in the case
-        of '-1' and '-2' arguments ! beware of the large number of CAIDs (TPL files) !!!
-    
+        user-defined CAIDs separated by a comma... specifying user-defined CAIDs
+    --OR--
+        selecting the only required CAIDs what will retrieved from '.srvid' and / or '.srvid2' files
+        
+    --WARNING--
+        if you do not specify the argument '-c' in the case of '-1' and '-2' arguments,
+        then all found CAIDs will be used ! beware of the large number of CAIDs (TPL files) !!!
+
     Additional options:
     ---------------------------------------------------------------
-    
+
 -o <PATH>   path to the Oscam cfg-directory, if the script did not find the Oscam cfg-directory automatically
 -p <PATH>   path to the SKIN-picon directory, if the default '/usr/share/enigma2/picon' directory was not found
 -q          higher quality TPL-image processing with antialiasing filter (higher quality means a larger .tpl file size!)
