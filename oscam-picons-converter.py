@@ -308,7 +308,16 @@ def prepare_arguments():
         print('ERROR ! The TPL-directory not found - in the %s file !' % DIR_OSCAMCFG + '/oscam.conf')
         return False
     else:
-        print('TPL-directory found (from "oscam.conf"): %s' % DIR_TPL)
+        print('TPL-directory path was found in the "oscam.conf" configuration file: %s' % DIR_TPL)
+        if not os.path.isdir(DIR_TPL):
+            print('TPL-directory does not exist ! It will now be created !')
+            try:
+                os.mkdir(DIR_TPL)
+            except OSError:
+                print ('ERROR ! Creation of the directory failed: ' % DIR_TPL)
+                return False
+            else:
+                print ('Successfully created the directory: %s' % DIR_TPL)
     
     if '-a' not in sys.argv:
         if '-1' in sys.argv and not os.path.isfile(DIR_OSCAMCFG + '/oscam.srvid'):
