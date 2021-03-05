@@ -17,21 +17,14 @@ HEADER="
 find_oscam_cfg_dir()
 {
     RET_VAL=""
-    DIR_LIST="/etc/tuxbox/config
-              /etc/tuxbox/config/oscam
-              /var/tuxbox/config
-              /usr/keys
-              /var/keys
-              /var/etc/oscam
-              /var/etc
-              /var/oscam
-              /config/oscam"
+    DIR_LIST="/etc /var /usr /config"
     for FOLDER in $DIR_LIST; do
-        [ -f "${FOLDER}/oscam.conf" ] && { RET_VAL="$FOLDER"; break; }
+        FILEPATH=$(find "${FOLDER}" -iname "oscam.conf" | head -n 1)
+        [ -f "$FILEPATH" ] && { RET_VAL="${FILEPATH%/*.conf}"; break; }
     done
 
     if [ -z "$RET_VAL" ]; then
-        OSCAM_BIN="$(find /usr/bin -iname 'oscam*' | head -n 1)"
+        OSCAM_BIN=$(find /usr/bin -iname 'oscam*' | head -n 1)
         if [ -z "$OSCAM_BIN" ]; then
             echo -e "ERROR !\nOscam binary file was not found in folder '/usr/bin'.\nAlso, do not find the Oscam configuration directory.\nThe script will be terminated."
             exit 1
