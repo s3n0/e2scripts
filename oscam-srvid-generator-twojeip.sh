@@ -1,10 +1,12 @@
 #!/bin/bash
 
+HEADER="
 #################################################################################
 ### script written by s3n0, 2021-02-17, https://github.com/s3n0
-### script is designed to automatically update the "oscam.srvid" file
-### as the 'srvid' generator is used the online web page:  HTTP://KOS.TWOJEIP.NET
+### script is designed to automatically update the 'oscam.srvid' file
+### as the 'srvid' generator is used the online web-page:  HTTP://KOS.TWOJEIP.NET
 #################################################################################
+"
 
 find_oscam_cfg_dir() {
     RET_VAL=""
@@ -22,6 +24,8 @@ find_oscam_cfg_dir() {
     done
     echo "$RET_VAL"
 }
+
+echo "$HEADER"
 
 URL="http://kos.twojeip.net/download.php?download[]=pack-hdplus&download[]=pack-mtv&download[]=pack-skylink&download[]=pack-austriasat&download[]=pack-orfdigital&download[]=pack-skygermany"
 #### # # # # # # # # # # # # #   downloading  :     pack-hdplus      +     pack-mtv      +     pack-skylink     +      pack-austriasat      +     pack-orfdigital      +     pack-skygermany
