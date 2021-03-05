@@ -29,6 +29,17 @@ find_oscam_cfg_dir()
     for FOLDER in $DIR_LIST; do
         [ -f "${FOLDER}/oscam.conf" ] && { RET_VAL="$FOLDER"; break; }
     done
+
+    if [ -z "$RET_VAL" ]; then
+        OSCAM_BIN=$(find /usr/bin -iname 'oscam*' | head -n 1)
+        if [ -z "$OSCAM_BIN" ]; then
+            echo -e "ERROR !\nOscam binary file was not found in folder '/usr/bin'.\nAlso, do not find the Oscam configuration directory.\nThe script will be terminated."
+            exit 1
+        else
+            RET_VAL=$($OSCAM_BIN -V | grep -i 'configdir' | awk '{print $2}')
+            RET_VAL="${RET_VAL%?}"
+    fi
+
     [ -z "$RET_VAL" ] && echo "WARNING ! Oscam configuration directory not found !"
     echo "$RET_VAL"
 }
@@ -109,3 +120,4 @@ exit 0
 
 #################################################################################
 #################################################################################
+
