@@ -83,6 +83,7 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
 
 ### create temporary ".srvid" files:
+echo "$HEADER"
 
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/skylink-sk-19e/" "Skylink" "0D96,0624"
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/freesat-sk/" "FreeSAT" "0D97,0653,0B02"
@@ -97,6 +98,7 @@ create_srvid_file "https://www.satelitnatv.sk/frekvencie/antik-sat-sk/" "AntikSA
 ### backup the original file "oscam.srvid" to the "/tmp" dir + merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
 [ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
 echo "$HEADER" > $OSCAM_SRVID
+echo -e "### File creation date: $(date '+%Y-%m-%d %H:%M:%S')\n" >> $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
 rm -f /tmp/oscam__*
 [ -f "$OSCAM_SRVID" ] && echo "Path to the generated 'oscam.srvid' file:  ${OSCAM_SRVID}"
@@ -107,53 +109,3 @@ exit 0
 
 #################################################################################
 #################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#################################################################################
-#################################################################################
-###############################  THE FOLLOWING CODE IS FOR TESTING PURPOSE ONLY :
-#################################################################################
-#################################################################################
-
-
-#wget -q -O "/tmp/skylink-programy-frekvencie-parametre.html" --no-check-certificate "https://www.satelitnatv.sk/skylink-programy-frekvencie-parametre/"
-wget -q -O "/tmp/antik-sat.html" --no-check-certificate "https://www.satelitnatv.sk/antik-sat/"
-
-### Example of the HTML code, from antik-sat subpage:
-###
-###     <td><img src="/obrazky/obr/kode.png" alt="PAY TV"> <strong><a href=/antik-sat-sk-program/?id=406002003>Markiza HD</a></strong> (TV)</td>  
-###
-### BTW, all the numbers are in decimal format, so we need convert it later to hex format:  02003 dec  ====>  07D3 hex
-
-
-sed -n '/antik-sat-sk-program/,/>/p' /tmp/antik-sat.html                                                        #   <td><img src="/obrazky/obr/kode.png" alt="PAY TV"> <strong><a href=/antik-sat-sk-program/?id=406002003>Markiza HD</a></strong> (TV)</td>
-sed -n 's/.*antik-sat-sk-program\(.*\)>.*/\1/p' /tmp/antik-sat.html                                             # /?id=406002003>Markiza HD</a></strong> (TV)</td      # pokrok, funguje ciastocne
-sed -n 's/.*antik-sat-sk-program\/?id=\(.*\)>\(.*\)<.*/\1 \2/p' /tmp/antik-sat.html                             # 406002003>Markiza HD</a></strong  (TV)               # pokrok, funguje ciastocne - cistejsi vystup
-sed -n 's/.*antik-sat-sk-program\/?id=\(.*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html                         # 406002003 Markiza HD
-sed -n 's/.*antik-sat-sk-program\/?id=\([0-9]*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html                     # 406002003 Markiza HD
-sed -n 's/.*antik-sat-sk-program\/?id=[0-9]*\([0-9]\{5\}\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html           # 02003 Markiza HD
-sed -n 's/.*<strong><a href=\/.*\/?id=[0-9]\{4\}\([0-9]*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html           # 02003 Markiza HD      # this is more clean sed regex match
-
-
-CAIDS="0B00"
-PROVID="Antiksat"
-sed -n "s/.*antik-sat-sk-program\/?id=[0-9]*\([0-9]\{5\}\)>\(.*\)<\/a>.*/$CAIDS:\1|$PROVID|\2/p" /tmp/antik-sat.html     # 0B00:02003|Antiksat|Markiza HD
-
-
