@@ -38,6 +38,7 @@ find_oscam_cfg_dir()
         else
             RET_VAL="$(${OSCAM_BIN} -V | grep -i 'configdir' | awk '{print $2}')"
             RET_VAL="${RET_VAL%?}"
+        fi
     fi
 
     [ -z "$RET_VAL" ] && echo "WARNING ! Oscam configuration directory not found !"
