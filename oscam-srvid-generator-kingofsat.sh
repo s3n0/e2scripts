@@ -74,11 +74,14 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
 
 ### create temporary ".srvid" files:
+echo "$HEADER"
+
 create_srvid_file "skylink" "0D96,0624"
 create_srvid_file "antiksat" "0B00"
 create_srvid_file "orangesk" "0B00,0609"            # some channels are shared to the AntikSat provider (package), so this one "orangesk" package is also needed for "antiksat" (as the CAID=0B00)
 create_srvid_file "upc" "0D02,0D97,0B02,1815"
 create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
+
 #create_srvid_file "focussat" "0B02"
 #create_srvid_file "digitv" "1802,1880"
 #create_srvid_file "mtv" "0B00,0D00"
@@ -94,6 +97,7 @@ create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
 ### backup the original file "oscam.srvid" to the "/tmp" dir + merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
 [ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
 echo "$HEADER" > $OSCAM_SRVID
+echo -e "### File creation date: $(date '+%Y-%m-%d %H:%M:%S')\n" >> $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
 rm -f /tmp/oscam__*
 [ -f "$OSCAM_SRVID" ] && echo "Path to the generated 'oscam.srvid' file:  ${OSCAM_SRVID}"
@@ -104,58 +108,3 @@ exit 0
 
 ###############################################################################
 ###############################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###############################################################################
-###############################################################################
-#############################  THE FOLLOWING CODE IS FOR TESTING PURPOSE ONLY :
-###############################################################################
-###############################################################################
-
-
-
-PROVIDER="skylink"
-wget -q -O /tmp/kos.html "http://en.kingofsat.net/pack-${PROVIDER}.php"
-awk -F '>' -e '/<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3); printf "%s\n" CHNAME }' /tmp/kos.html     # list of all channel names, na riadkoch so stringom zacinajucim na <i> alebo class="A3"
-awk -F '>' -e '/class="s">[0-9]+/ { SID = substr($2,1,length($2) - 4); printf "%s\n" SID }' /tmp/kos.html         # list of all SIDs
-
-
-
-awk -F '>' -v CAIDS="0D96,0624" -v PROVIDER="skylink" -e '
-BEGIN { CHNAME = "invalid" }
-/<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3) }
-/class="s">[0-9]+/ {
-    SID = substr($2,1,length($2) - 4)
-    if (CHNAME == "invalid") next
-    printf "%s:%04X|%s|%s\n", CAIDS, SID, PROVIDER, CHNAME
-    CHNAME = "invalid"
-   }' /tmp/kos.html
-
-#printf "%s:%04X|%s|%s\n" CAIDS SID PROVIDER CHNAME
-#printf "%s:%04X|%s|%s\n", $CAIDS, SID, $PROVIDER, CHNAME
-#printf "%s|%s\n", SID, CHNAME
-#printf "0D96,0624:%s|Provider|%s\n", SID, CHNAME
-#printf "%s:%s|%s|%s\n", "0D96,0624", SID, "Some Provider", CHNAME
-#printf "%s:%04X|%s|%s\n", "0D96,0624", SID, "Some Provider", CHNAME
-#printf "%s:%s|%s|%s\n", CAIDS, SID, PROVIDER, CHNAME            # when using the -v CAIDS="0D96,0624" -v PROVIDER="skylink" arguments to pass some variable for the "awk" tool
-
-
-
