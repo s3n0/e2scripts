@@ -31,12 +31,12 @@ find_oscam_cfg_dir()
     done
 
     if [ -z "$RET_VAL" ]; then
-        OSCAM_BIN=$(find /usr/bin -iname 'oscam*' | head -n 1)
+        OSCAM_BIN="$(find /usr/bin -iname 'oscam*' | head -n 1)"
         if [ -z "$OSCAM_BIN" ]; then
             echo -e "ERROR !\nOscam binary file was not found in folder '/usr/bin'.\nAlso, do not find the Oscam configuration directory.\nThe script will be terminated."
             exit 1
         else
-            RET_VAL=$($OSCAM_BIN -V | grep -i 'configdir' | awk '{print $2}')
+            RET_VAL="$(${OSCAM_BIN} -V | grep -i 'configdir' | awk '{print $2}')"
             RET_VAL="${RET_VAL%?}"
     fi
 
@@ -120,4 +120,53 @@ exit 0
 
 #################################################################################
 #################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################################################
+#################################################################################
+###############################  THE FOLLOWING CODE IS FOR TESTING PURPOSE ONLY :
+#################################################################################
+#################################################################################
+
+
+#wget -q -O "/tmp/skylink-programy-frekvencie-parametre.html" --no-check-certificate "https://www.satelitnatv.sk/skylink-programy-frekvencie-parametre/"
+wget -q -O "/tmp/antik-sat.html" --no-check-certificate "https://www.satelitnatv.sk/antik-sat/"
+
+### Example of the HTML code, from antik-sat subpage:
+###
+###     <td><img src="/obrazky/obr/kode.png" alt="PAY TV"> <strong><a href=/antik-sat-sk-program/?id=406002003>Markiza HD</a></strong> (TV)</td>  
+###
+### BTW, all the numbers are in decimal format, so we need convert it later to hex format:  02003 dec  ====>  07D3 hex
+
+
+sed -n '/antik-sat-sk-program/,/>/p' /tmp/antik-sat.html                                                        #   <td><img src="/obrazky/obr/kode.png" alt="PAY TV"> <strong><a href=/antik-sat-sk-program/?id=406002003>Markiza HD</a></strong> (TV)</td>
+sed -n 's/.*antik-sat-sk-program\(.*\)>.*/\1/p' /tmp/antik-sat.html                                             # /?id=406002003>Markiza HD</a></strong> (TV)</td      # pokrok, funguje ciastocne
+sed -n 's/.*antik-sat-sk-program\/?id=\(.*\)>\(.*\)<.*/\1 \2/p' /tmp/antik-sat.html                             # 406002003>Markiza HD</a></strong  (TV)               # pokrok, funguje ciastocne - cistejsi vystup
+sed -n 's/.*antik-sat-sk-program\/?id=\(.*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html                         # 406002003 Markiza HD
+sed -n 's/.*antik-sat-sk-program\/?id=\([0-9]*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html                     # 406002003 Markiza HD
+sed -n 's/.*antik-sat-sk-program\/?id=[0-9]*\([0-9]\{5\}\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html           # 02003 Markiza HD
+sed -n 's/.*<strong><a href=\/.*\/?id=[0-9]\{4\}\([0-9]*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/antik-sat.html           # 02003 Markiza HD      # this is more clean sed regex match
+
+
+CAIDS="0B00"
+PROVID="Antiksat"
+sed -n "s/.*antik-sat-sk-program\/?id=[0-9]*\([0-9]\{5\}\)>\(.*\)<\/a>.*/$CAIDS:\1|$PROVID|\2/p" /tmp/antik-sat.html     # 0B00:02003|Antiksat|Markiza HD
+
 
