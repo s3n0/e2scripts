@@ -77,6 +77,8 @@ create_srvid_file()
 
 #################################################################################
 
+echo "$HEADER"
+
 ### if the oscam config directory is not found, then use the "/tmp" directory, to avoid a possible error in the variable below:
 OSCAM_CFGDIR=$(find_oscam_cfg_dir)
 [ -z "$OSCAM_CFGDIR" ] && { echo "WARNING ! The output directory for the 'oscam.srvid' file was changed to '/tmp' !"; OSCAM_CFGDIR="/tmp"; }
@@ -87,8 +89,6 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
 
 ### create temporary ".srvid" files:
-echo "$HEADER"
-
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/skylink-sk-19e/" "Skylink" "0D96,0624"
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/freesat-sk/" "FreeSAT" "0D97,0653,0B02"
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/antik-sat-sk/" "AntikSAT" "0B00"
@@ -113,4 +113,3 @@ exit 0
 
 #################################################################################
 #################################################################################
-
