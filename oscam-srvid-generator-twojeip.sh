@@ -23,8 +23,7 @@ find_oscam_cfg_dir()
             echo -e "ERROR !\nOscam binary file was not found in folder '/usr/bin'.\nAlso, do not find the Oscam configuration directory.\nThe script will be terminated."
             exit 1
         else
-            RET_VAL="$(${OSCAM_BIN} -V | grep -i 'configdir' | awk '{print $2}')"
-            RET_VAL="${RET_VAL%?}"
+            RET_VAL="$($OSCAM_BIN -V | grep -i 'configdir' | awk '{print substr($2,0,length($2)-1)}')"
         fi
     fi
 
