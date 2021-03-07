@@ -68,6 +68,8 @@ create_srvid_file()
 
 ###############################################################################
 
+echo "$HEADER"
+
 ### if the oscam config directory is not found, then use the "/tmp" directory, to avoid a possible error in the variable below:
 OSCAM_CFGDIR=$(find_oscam_cfg_dir)
 [ -z "$OSCAM_CFGDIR" ] && { echo "WARNING ! The output directory for the 'oscam.srvid' file was changed to '/tmp' !"; OSCAM_CFGDIR="/tmp"; }
@@ -78,8 +80,6 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
 
 ### create temporary ".srvid" files:
-echo "$HEADER"
-
 create_srvid_file "skylink" "0D96,0624"
 create_srvid_file "antiksat" "0B00"
 create_srvid_file "orangesk" "0B00,0609"            # some channels are shared to the AntikSat provider (package), so this one "orangesk" package is also needed for "antiksat" (as the CAID=0B00)
