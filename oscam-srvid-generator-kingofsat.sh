@@ -14,18 +14,23 @@ HEADER="
 find_oscam_cfg_dir()
 {
     RET_VAL=""
-    DIR_LIST="/etc/tuxbox/config
-              /etc/tuxbox/config/oscam
-              /var/tuxbox/config
-              /usr/keys
-              /var/keys
-              /var/etc/oscam
-              /var/etc
-              /var/oscam
-              /config/oscam"
+    DIR_LIST="/etc /var /usr /config"
     for FOLDER in $DIR_LIST; do
-        [ -f "${FOLDER}/oscam.conf" ] && { RET_VAL="$FOLDER"; break; }
+        FILEPATH=$(find "${FOLDER}" -iname "oscam.conf" | head -n 1)
+        [ -f "$FILEPATH" ] && { RET_VAL="${FILEPATH%/*.conf}"; break; }
     done
+
+    if [ -z "$RET_VAL" ]; then
+        OSCAM_BIN=$(find /usr/bin -iname 'oscam*' | head -n 1)
+        if [ -z "$OSCAM_BIN" ]; then
+            echo -e "ERROR !\nOscam binary file was not found in folder '/usr/bin'.\nAlso, do not find the Oscam configuration directory.\nThe script will be terminated."
+            exit 1
+        else
+            RET_VAL="$(${OSCAM_BIN} -V | grep -i 'configdir' | awk '{print $2}')"
+            RET_VAL="${RET_VAL%?}"
+        fi
+    fi
+
     [ -z "$RET_VAL" ] && echo "WARNING ! Oscam configuration directory not found !"
     echo "$RET_VAL"
 }
@@ -108,3 +113,58 @@ exit 0
 
 ###############################################################################
 ###############################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################################################
+###############################################################################
+#############################  THE FOLLOWING CODE IS FOR TESTING PURPOSE ONLY :
+###############################################################################
+###############################################################################
+
+
+
+PROVIDER="skylink"
+wget -q -O /tmp/kos.html "http://en.kingofsat.net/pack-${PROVIDER}.php"
+awk -F '>' -e '/<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3); printf "%s\n" CHNAME }' /tmp/kos.html     # list of all channel names, na riadkoch so stringom zacinajucim na <i> alebo class="A3"
+awk -F '>' -e '/class="s">[0-9]+/ { SID = substr($2,1,length($2) - 4); printf "%s\n" SID }' /tmp/kos.html         # list of all SIDs
+
+
+
+awk -F '>' -v CAIDS="0D96,0624" -v PROVIDER="skylink" -e '
+BEGIN { CHNAME = "invalid" }
+/<i>|class="A3"/ { CHNAME = substr($2,1,length($2) - 3) }
+/class="s">[0-9]+/ {
+    SID = substr($2,1,length($2) - 4)
+    if (CHNAME == "invalid") next
+    printf "%s:%04X|%s|%s\n", CAIDS, SID, PROVIDER, CHNAME
+    CHNAME = "invalid"
+   }' /tmp/kos.html
+
+#printf "%s:%04X|%s|%s\n" CAIDS SID PROVIDER CHNAME
+#printf "%s:%04X|%s|%s\n", $CAIDS, SID, $PROVIDER, CHNAME
+#printf "%s|%s\n", SID, CHNAME
+#printf "0D96,0624:%s|Provider|%s\n", SID, CHNAME
+#printf "%s:%s|%s|%s\n", "0D96,0624", SID, "Some Provider", CHNAME
+#printf "%s:%04X|%s|%s\n", "0D96,0624", SID, "Some Provider", CHNAME
+#printf "%s:%s|%s|%s\n", CAIDS, SID, PROVIDER, CHNAME            # when using the -v CAIDS="0D96,0624" -v PROVIDER="skylink" arguments to pass some variable for the "awk" tool
+
+
+
