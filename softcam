@@ -30,7 +30,7 @@
 # #######################  HOW-TO  #########################
 #
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#      OpenATV 6.3  &  OpenPLi 7.2  (or similar Enigma) :
+#      OpenATV 6.x  &  OpenPLi 7.x  (or similar Enigma) :
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #
 # 1)   Download the softcam script directly from my github profile + renaming filename from "softcam" to "softcam.oscam" + set the execution rights:
