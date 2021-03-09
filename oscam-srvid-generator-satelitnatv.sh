@@ -5,10 +5,10 @@ HEADER="
 ###     shell-script written by s3n0, 2021-03-02, https://github.com/s3n0     ###
 #################################################################################
 ###  shell-script to parse data from the web page https://www.satelitnatv.sk  ###
-###     and then generate the 'oscam__*.srvid' file(s) from parsed data       ###
+###         and then generate the 'oscam.srvid' file from parsed data         ###
 #################################################################################
-###  the mentioned website https://www.satelitnatv.sk unfortunately provides  ###
-###         only DVB-services from Slovakia and the Czech Republic            ###
+###  !!! the mentioned web-site www.satelitnatv.sk unfortunately provides !!! ###
+###  !!!    only DVB-services from Slovakia and the Czech Republic        !!! ###
 #################################################################################
 "
 
