@@ -86,9 +86,8 @@ OSCAM_CFGDIR=$(find_oscam_cfg_dir)
 #OSCAM_SRVID="/tmp/oscam_-_merged-kingofsat.srvid"
 OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
+### create temporary ".srvid" files
 
-
-### create temporary ".srvid" files:
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/skylink-sk-19e/" "Skylink" "0D96,0624"
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/freesat-sk/" "FreeSAT" "0D97,0653,0B02"
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/antik-sat-sk/" "AntikSAT" "0B00"
@@ -97,10 +96,10 @@ create_srvid_file "https://www.satelitnatv.sk/frekvencie/antik-sat-sk/" "AntikSA
 #create_srvid_file "https://www.satelitnatv.sk/antik-sat/" "Antiksat" "0B00"
 #create_srvid_file "https://www.satelitnatv.sk/freesat-by-upc-direct/" "FreeSAT" "0D97,0653,0B02"
 
-
-
-### backup the original file "oscam.srvid" to the "/tmp" dir + merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
+### backup the original file "oscam.srvid" to the "/tmp" dir
 [ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
+
+### merge all generated ".srvid" files into one file + write this new file to the Oscam config-dir:
 echo "$HEADER" > $OSCAM_SRVID
 echo -e "### File creation date: $(date '+%Y-%m-%d %H:%M:%S')\n" >> $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
