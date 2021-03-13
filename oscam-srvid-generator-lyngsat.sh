@@ -81,7 +81,7 @@ create_srvid_file()
         # if the CHANNEL name was found at the $LINE:
         if grep -qv 'align' <<< $LINE; then
             CHN=$(echo $LINE | grep -oE 'html">.*' | cut -d '>' -f 2 | cut -d '<' -f 1)
-            RESULT="${RESULT}${CHN}\n"
+            [ -n "$CHN" -a -n "$SID" ] && RESULT="${RESULT}${CHN}\n" || SID=""          # only if $CHN variable contains some data --and-- also if $SID contained before any data -> then to add a new item to the $RESULT
         fi
     done <<< "$LIST"
     
