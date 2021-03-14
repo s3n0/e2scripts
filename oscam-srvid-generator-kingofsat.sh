@@ -41,7 +41,9 @@ create_srvid_file()
     #    $1 = the URL of the package list of channels with their data, on a specific http://en.KingOfSat.net/pack-XXXXX.php website (see below)
     #    $2 = CAIDs (separated by comma) what is necessary for the provider
     #
-    # A NOTE:   "${1^}" provides the first-character-upper string = "Provider"    "${1^^}" provides the upper-case string = "PROVIDER"    "${1}" provides the string = "provider"    "${1,,}" provides the lower-case string = "provider"
+    # EXAMPLE:      create_srvid_file "skylink" "0D96,0624"
+    #
+    # NOTE:         "${1^}" provides the first-character-upper string = "Provider"     "${1^^}" provides the upper-case string = "PROVIDER"     "${1}" provides the string = "provider"     "${1,,}" provides the lower-case string = "provider"
     
     URL="http://en.kingofsat.net/pack-${1,,}.php"
     
@@ -111,3 +113,4 @@ exit 0
 
 #################################################################################
 #################################################################################
+
