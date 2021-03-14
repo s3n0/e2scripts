@@ -43,7 +43,9 @@ create_srvid_file()
     #    $2 = CAIDs (separated by comma) what is necessary for the provider
     #    $3 = DVB provider name
     #
-    # A NOTE:   "${1^}" provides the string with only first upper character = "Provider"    "${1^^}" provides the upper-case string = "PROVIDER"    "${1}" provides the string = "provider"    "${1,,}" provides the lower-case string = "provider"
+    # EXAMPLE:     create_srvid_file "Sky-Deutschland" "1833,1834,1702,1722,09C4,09AF" "SKY DE"
+    #
+    # NOTE:        "${1^}" provides the string with only first upper character = "Provider"     "${1^^}" provides the upper-case string = "PROVIDER"     "${1}" provides the string = "provider"     "${1,,}" provides the lower-case string = "provider"
     
     URL="https://www.lyngsat.com/packages/${1}.html"
     
@@ -81,11 +83,12 @@ create_srvid_file()
         # if the CHANNEL name was found at the $LINE:
         if grep -qv 'align' <<< $LINE; then
             CHN=$(echo $LINE | grep -oE 'html">.*' | cut -d '>' -f 2 | cut -d '<' -f 1)
-            [ -n "$CHN" -a -n "$SID" ] && RESULT="${RESULT}${CHN}\n" || SID=""          # only if $CHN variable contains some data --and-- also if $SID contained before any data -> then to add a new item to the $RESULT
+            [ -n "$SID" -a -n "$CHN" ] && RESULT="${RESULT}${CHN}\n"          # only if $CHN variable contains some data --and-- also if $SID contained before any data -> then to add a new item to the $RESULT
+            SID=""
         fi
-    done <<< "$LIST"
+    done <<< "$LIST"                                        # the '.srvid' file format is, for example :   "CAID1,CAID2,CAID3:SID|PROVIDER-NAME|CHANNEL-NAME"
     
-    # the '.srvid' file format is, for example :  "CAID1,CAID2,CAID3:SID|PROVIDER-NAME|CHANNEL-NAME"
+    # write $RESULT to a temporary file (also taking into account newline codes)
     echo -e "$RESULT" > "/tmp/oscam__${1}.srvid"
 }
 
