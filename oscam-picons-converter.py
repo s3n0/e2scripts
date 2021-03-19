@@ -13,8 +13,8 @@ print("""
 # Simple python-script for converting PNG to TPL picons (for Oscam-Webif)
 #############################################################################
 # GUIDE:
-# ---- Upload the script into the set-top-box, for example into the '/tmp'
-#      folder or download the script directly via the shell:
+# ---- Upload the script into the set-top-box, for example into the '/tmp' folder
+#      or download the script directly via the shell:
 #           wget -O /tmp/oscam-picons-converter.py --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/oscam-picons-converter.py
 # ---- Then start the script via command-line / shell:
 #           python /tmp/oscam-picons-converter.py <COMMANDS>
@@ -40,7 +40,7 @@ def import_PIL():           # Python Imaging Library (PIL) - is required to conv
 
 def table_from_srvid(caidsFilter = []):
     global DIR_OSCAMCFG
-    print('Making a table from .srvid file...')
+    print('Making a SID:CAIDs table from "oscam.srvid" file...')
     with open(DIR_OSCAMCFG + '/oscam.srvid', 'r') as f:
         data = re.findall(r'([0-9a-fA-F@\,\:]+)\|.*', f.read()  )       # the result will [ '0D02,1815,0D97,0653:760d' , '0D96@000004@000008,1815,0966@005123,0653:766a' , '0D02,1815,0D97,0653:0000' ,  ..... ]
     d = {}
@@ -51,7 +51,7 @@ def table_from_srvid(caidsFilter = []):
         caids, sid = line.upper().split(':')                            # split the whole part via ":" character
         caidsToAdd = list(set(caids.split(',')))
         if caidsFilter:
-            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )  # checking CAIDs by user defined CAIDS_FILTER
+            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )  # remove all CAIDs except user-defined CAIDs
         if caidsToAdd:
             #d.setdefault(sid, []).append(caidsToAdd)
             if sid in d.keys():
@@ -66,7 +66,7 @@ def table_from_srvid(caidsFilter = []):
 
 def table_from_srvid2(caidsFilter = []):
     global DIR_OSCAMCFG
-    print('Making a table from .srvid2 file...')
+    print('Making a SID:CAIDs table from "oscam.srvid2" file...')
     with open(DIR_OSCAMCFG + '/oscam.srvid2', 'r') as f:
         data = f.read().splitlines()
     d = {}
@@ -80,7 +80,7 @@ def table_from_srvid2(caidsFilter = []):
         caids = re.sub('@[0-9a-fA-F]+', '', caids)                      # remove all strings such as "@0000A1CF" from the line
         caidsToAdd = list(set(caids.split(',')))
         if caidsFilter:    
-            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )  # checking CAIDs by user defined CAIDS_FILTER
+            caidsToAdd = list( set(caidsToAdd)  &  set(caidsFilter)  )  # remove all CAIDs except user-defined CAIDs
         if caidsToAdd:
             #d.setdefault(sid, []).append(caidsToAdd)
             if sid in d.keys():
@@ -93,12 +93,12 @@ def table_from_srvid2(caidsFilter = []):
     print('...done.\n')
     return d                    # { '1807': ['0D03', '0D70', '0D96', '0624'], '00CD': ['0B00', '09AF'], '00CA': ['1833', '1834', '1702', '1722', '09C4', '09AF'], '00CB': ['0B00', '09AF'], ..... }
 
-def table_from_png_only(caidsFilter = []):
+def table_from_png_files(caidsFilter = []):
     """
-    To make the TPL picons from PNG files for only certain CAIDs (in the user configured value = CAIDS_FILTER)
+    To make the SID:CAIDs table for only certain CAIDs (in the user configured value = CAIDS_FILTER)
     """
     global DIR_PNG
-    print('Making a table from all PNG files, with user defined CAIDs...')
+    print('Making a SID table from all *.PNG files (SKIN-picons) + adding the user-determined CAIDs...')
     d = {}
     for path_to_png in glob.glob(DIR_PNG + '/*0_0_0.png'):
         sref   = path_to_png.split('/')[-1].split('.')[0].upper().split('_')
@@ -107,26 +107,38 @@ def table_from_png_only(caidsFilter = []):
     print('...done.\n')
     return d
 
-#def table_from_png_and_lamedb(caidsFilter = []):
-#    """
-#    This function is experimental only, it's for a testing purpose only
-#    To make the TPL picons from PNG files for user selected CAIDs + filtered with the 'lamedb' database file
-#    """
-#    global DIR_PNG
-#    with open('/etc/enigma2/lamedb', 'r') as f:
-#        lamedb = f.read().upper().splitlines()
-#    d = {}
-#    for path_to_png in glob.glob(DIR_PNG + '/*0_0_0.png'):
-#        sref  = path_to_png.split('/')[-1].split('.')[0].upper().split('_')
-#        sid   = sref[3].rjust(4,'0')
-#        match = ':'.join((sid, sref[6].rjust(8,'0'), sref[4].rjust(4,'0'), sref[5].rjust(4,'0'), str(int(sref[2],16)), '0', '0'))
-#        idx   = [ i for i,e in enumerate(lamedb) if match in e ]
-#        if idx:
-#            idx = idx[0]
-#            caids = list(set(  lamedb[idx+2].replace('C:','').split(',')[1:]  )   &   set(caidsFilter)  )
-#            if caids:
-#                d[sid] = caids
-#    return d
+def table_from_lamedb(caidsFilter = []):
+    """
+    To make the SID:CAIDs table from the '/etc/enigma2/lamedb' Enigma2-database file
+    WARNINGs:
+    The algorithm do not include the DVB-provider and SAT-TP frequency, so in this case it is ignored ! 
+    So, if there are the same CAID for more Providers, it may cause a trouble !
+    """
+    PROVIDERS = sys.argv[sys.argv.index('-l') + 1].split(',')
+    global DIR_PNG
+    print('Making a SID table from the "lamedb" file and available *.PNG files + adding the user-determined CAIDs...')
+    with open('/etc/enigma2/lamedb', 'r') as f:
+        lamedb = f.read()
+    if lamedb.count('services') == 2:
+        lamedb = lamedb.split('services')[2]
+    elif lamedb.count('SERVICES') == 2:
+        lamedb = lamedb.split('SERVICES')[2]
+    lamedb = lamedb.splitlines()
+    d = {}
+    for path_to_png in glob.glob(DIR_PNG + '/*0_0_0.png'):
+        sref = path_to_png.split('/')[-1].split('.')[0].upper().split('_')
+        sid  = sref[3].rjust(4,'0')
+        match = ':'.join((sid, sref[6].rjust(8,'0'), sref[4].rjust(4,'0'), sref[5].rjust(4,'0'), str(int(sref[2],16)), '0', '0'))
+        #match = ':'.join(( sid, sref[6].rjust(8,'0'), sref[4].rjust(4,'0'), sref[5].rjust(4,'0') ))
+        idx = [ i for i, s in enumerate(lamedb) if match in s.upper() ]
+        if idx:                 # if the service reference was found in the 'lamedb' file, then checking a existence of the DVB provider name...
+            idx = idx[0]
+            for provider in PROVIDERS:
+                if lamedb[idx+2].startswith('p:%s' % provider.strip()):
+                    d[sid] = caidsFilter
+                    break
+    print('...done.\n')
+    return d
 
 #############################################################################
 
@@ -180,29 +192,30 @@ def show_man_page():
 python {0} <COMMANDS>
 =============================================================================
 
-=== BASIC INFO:
+=== ABOUT:
 
-    Python script developed to convert PNG-picons (taken from Enigma2 SKIN)
+    Python script developed to convert PNG-picons (taken from Enigma2-SKIN)
     to TPL-picons (Oscam-Webif image files, i.e. 'Base64/template' file format).
 
     The algorithm processes all found PNG-picons belonging to Enigma2-SKIN.
+    This means that all necessary .PNG files must exist in the SKIN picon directory.
 
-    The TPL-picon name format consists of 'IC_<CAID>_<SID>.tpl' so therefore
+    The TPL-picon file name consists of 'IC_<CAID>_<SID>.tpl' so therefore
     it is necessary to create a table of all CAID:SID as the first.
 
     I also recommend using the CAID filter, i.e. argument '-c CAIDs' in the case of argument '-a',
-    to avoid very many TPL-picons belonging to all existing CAIDs in the Enigma !
+    to avoid very many TPL-picons belonging to all existing CAIDs in the Enigma2.
 
 === COMMANDS:
 
     Method of creating table SID:CAIDs (choose it carefully):
-    ---------------------------------------------------------------
+    ---------------------------------------------------------
 
--a  make a table of SIDs found in SKIN-picon directory (SIDs obtained from all *.png files)
-    in this case, no CAIDs will be detected / searched !
-    only user-defined CAIDs will be used !
-        '-c CAIDs' argument is necessary, to specify the user's own CAIDs
-        '-1' and '-2' argument will be ignored
+-a  make a table of SIDs obtained from all '*.PNG' files (from SKIN-picon directory),
+    in this case there are no CAIDs,
+    so the user-determined CAIDs will be added
+        '-c CAIDs' argument is necessary ! to specify the user's own CAIDs !
+        '-1' and '-2' arguments will be ignored here
 
 -1  make a table from all available SID:CAIDs in the 'oscam.srvid' file
         '-c CAIDs' argument is not necessary, but it may be used (as a filter)
@@ -212,23 +225,31 @@ python {0} <COMMANDS>
         '-c CAIDs' argument is not necessary, but it may be used (as a filter)
         may be used in combination with '-1'
         
-        A NOTE: the 'oscam.srvid2' file especially may also contain FTA channels with CAID = FFFE,
-                which could also be included as TPL-picons, automatically in the generated table of CAIDs
+        A NOTE:  the 'oscam.srvid2' file especially may also contain FTA channels with CAID = FFFE,
+                 which could also be included as TPL-picons, automatically in the generated table of CAIDs
 
-    Filtering or determining of CAIDs (it's important in case of the argument '-a'):
-    ---------------------------------------------------------------
+-l <"PROVIDER NAME 1[, PROVIDER NAME 2, ...]">
+    make a table of SIDs obtained from all '*.PNG' files (from SKIN-picon directory),
+    but according to the DVB-provider name, found in the `lamedb` file
+        "PROVIDER-NAME" = the name(s) of your DVB-provider in quotation marks (example: 'SKY DE'; 'M7 Group'; 'Polsat'; etc.)
+        '-c CAIDs' argument is necessary ! to specify the user's own CAIDs ! 
+                   because the `lamedb` file, unfortunately, does not always contain CAIDs
+        '-1' and '-2' arguments will be ignored here
+
+    Filtering or determining of CAIDs (it's important in case of the argument '-a' and '-l'):
+    -----------------------------------------------------------------------------------------
 
 -c <CAID[,CAID,...]>
-        user-defined CAIDs separated by a comma... specifying user-defined CAIDs
+        user-determined CAIDs separated by a comma (specifying user-defined CAIDs)
     --OR--
-        selecting the only required CAIDs what will retrieved from '.srvid' and / or '.srvid2' files
+        filtered CAIDs - selecting the only required CAIDs what will retrieved from '.srvid' and/or '.srvid2' file
         
     --WARNING--
         if you do not specify the argument '-c' in the case of '-1' and '-2' arguments,
-        then all found CAIDs will be used ! beware of the large number of CAIDs (TPL files) !!!
+        then all found CAIDs will be used ! beware of the large number of CAIDs (TPL files) !
 
-    Additional options:
-    ---------------------------------------------------------------
+    Optional arguments:
+    -------------------
 
 -o <PATH>   path to the Oscam cfg-directory, if the script did not find the Oscam cfg-directory automatically
 -p <PATH>   path to the SKIN-picon directory, if the default '/usr/share/enigma2/picon' directory was not found
@@ -237,22 +258,24 @@ python {0} <COMMANDS>
 
 === RECOMMENDED USAGE:
 
-python {0} -d -a -c <your_CAIDs_with_FFFE_included>
-python {0} -d -a -c <your_CAIDs_with_FFFE_included> -p <SKIN-PICON-DIRECTORY>
+python {0} -d -a -c <all_your_CAIDs_with_FFFE_included>
+python {0} -d -a -c <all_your_CAIDs_with_FFFE_included> -p <SKIN-PICON-DIRECTORY>
 
 === EXAMPLES:
 
 python {0} -a -c 0624 -p /media/hdd/picon
+python {0} -a -c 0624,0D96,FFFE -d
 python {0} -1 -c 0624,0D96,FFFE -p /mnt/autofs/nas/picon
 python {0} -1 -2 -q -p /media/mmc/picon
-python {0} -1 -q
+python {0} -1 -d
 python {0} -2 -q -o /mnt/nas/oscamcfg -p /mnt/nas/picon
 python {0} -d -q -a -c 0624,0D96,FFFE
+python {0} -l "M7 Group, Towercom" -c 0624,0D96,FFFE
 
 =============================================================================
-""".format(script_path)   )
+""".format(script_path) )
 
-def user_input(question = ''):          # this user std-in function is compatible both Python 2 and Python 3 (better than function `raw_input` and/or `input`)
+def user_input(question = ''):          # this user std-in function is compatible both Python 2 and Python 3 (better than function `raw_input` and / or `input`)
     print(question)
     s = sys.stdin.readline()
     return s.rstrip('\n')
@@ -289,7 +312,7 @@ def prepare_arguments():
             '/var/etc',
             '/var/oscam',
             '/config/oscam' ]
-        DIR_OSCAMCFG = [d for d in folder_list if os.path.isfile(d + '/oscam.server')]
+        DIR_OSCAMCFG = [d for d in folder_list if os.path.isfile(d + '/oscam.conf')]
         if DIR_OSCAMCFG:
             DIR_OSCAMCFG = DIR_OSCAMCFG[0]
             print('Oscam cfg-directory found: %s' % DIR_OSCAMCFG)
@@ -305,7 +328,7 @@ def prepare_arguments():
         if line.lower().startswith('httptpl'):
             DIR_TPL = line.split('=')[1].strip()
     if DIR_TPL == '':
-        print('ERROR ! The TPL-directory not found - in the %s file !' % DIR_OSCAMCFG + '/oscam.conf')
+        print('ERROR ! The TPL-directory not found - in the "%s" file !' % (DIR_OSCAMCFG + '/oscam.conf'))
         return False
     else:
         print('TPL-directory path was found in the "oscam.conf" configuration file: %s' % DIR_TPL)
@@ -319,13 +342,16 @@ def prepare_arguments():
             else:
                 print ('Successfully created the directory: %s' % DIR_TPL)
     
-    if '-a' not in sys.argv:
+    if ('-a' not in sys.argv) and ('-l' not in sys.argv):
         if '-1' in sys.argv and not os.path.isfile(DIR_OSCAMCFG + '/oscam.srvid'):
             print('ERROR ! The oscam.srvid file does not exist !')
             return False
         if '-2' in sys.argv and not os.path.isfile(DIR_OSCAMCFG + '/oscam.srvid2'):
             print('ERROR ! The oscam.srvid2 file does not exist !')
             return False
+    
+    if '-l' in sys.argv:
+        print('User-selected PROVIDER NAME for "lamedb" file that will be considered: %s' % sys.argv[sys.argv.index('-l')+1] )
     
     if '-c' in sys.argv:
         clist = sys.argv[ sys.argv.index('-c') + 1 ].upper().split(',')
@@ -379,7 +405,12 @@ if __name__ == "__main__" and prepare_arguments():
             convert_png2tpl(table)
     
     if '-a' in sys.argv:
-        table = table_from_png_only(CAIDS_FILTER)
+        table = table_from_png_files(CAIDS_FILTER)
+        if table_size_checking(table):
+            convert_png2tpl(table)
+    
+    if '-l' in sys.argv:
+        table = table_from_lamedb(CAIDS_FILTER)
         if table_size_checking(table):
             convert_png2tpl(table)
     
