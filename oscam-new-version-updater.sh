@@ -66,7 +66,7 @@ REQUESTED_BUILD="oscam-trunk"
 
 
 
-IRDETO_ENTITLEMENTS="yes"       # please choice your option "no" or "yes", for IRDETO satellite cards, due to necessary "entitlements" (receipt of first EMMs) - the waiting time in the script is set to 30 seconds
+IRDETO_ENTITLEMENTS="no"       # please choice your option "no" or "yes", for IRDETO satellite cards, due to necessary "entitlements" (receipt of first EMMs) - the waiting time in the script is set to 30 seconds
 IRDETO_CHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
 
 
@@ -302,9 +302,13 @@ if $TMP_DIR/$REQUESTED_BUILD --build-info 2>&1 | grep -q 'shared libraries'; the
    exit 1
 fi
 
-#### Function to check the Enigma2 stand-by
+#### Function to check the Enigma2 Standby
 is_standby() {
-    wget -qO- "http://127.0.0.1/api/powerstate" | grep -iqE '"instandby"\s*:\s*true'
+    #[ "$(wget -qO- http://127.0.0.1/web/powerstate | grep -i '</e2instandby>' | cut -f 1)" = "true" ]
+    #[ "$(wget -qO- http://127.0.0.1/web/powerstate | grep -i '</e2instandby>' | awk '{print $1}')" = "true" ]
+    #wget -qO- "http://127.0.0.1/api/powerstate" | grep -iqE '"instandby"\s*:\s*true'
+    #wget -qO- http://127.0.0.1/web/powerstate | grep -qi 'true'
+    wget -qO- http://127.0.0.1/api/powerstate | grep -qi 'instandby.*true'
 }
 
 #### Retrieve Oscam online version   (from downloaded binary file)
