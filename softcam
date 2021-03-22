@@ -91,9 +91,9 @@ BINFILENAME="oscam"                             # BINFILENAME="CCcam"
 # SOFTCAM ARGUMENTS:                            # Note: The "-c" argument for OSCam and the "-C" argument for CCcam specify the path to the softcam configuration directory
 ARGS="-b -r 2 -c /etc/tuxbox/config/oscam"      # example of arguments for the CCcam softcam:    ARGS="-stl -C /etc/CCcam.cfg"
 #
-# LOG-FILE FOR THE SOFTCAM HANDLING:
+# LOG FILE FOR THE SOFTCAM HANDLING:
 LOGFILE="/tmp/${BINFILENAME}_handling.log"
-LOGFILESIZE=45000                               # max. file size [Bytes]
+LOGSIZE=45000                                   # limit maximum file size [Bytes]
 #
 # AUXILIARY VARIABLES:
 HRLINE="------------------------------------------------------------"
@@ -109,19 +109,19 @@ MANPAGE="USAGE:    /etc/init.d/softcam <start|stop|restart|version|status>"
 fLog()
 {
     if [ "$1" = "$HRLINE" ]; then
-        logmsg="$1"
+        MSG="$1"
     else
-        logmsg=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line (header line)
+        MSG=`date '+%Y-%m-%d %H:%M:%S'`" $1"    # add a timestamp if it's not a separator line (header line)
     fi
     
-    #echo "$logmsg" > /dev/null                          ### null device   <---  log will disabled (do nothing)
-    #echo "$logmsg" >> $LOGFILE                  ### file
-    #echo "$logmsg" >> $LOGFILE 2>&1             ### file + stderr
-    #echo "$logmsg" | tee -a $LOGFILE            ### file + stdout(display)
-    echo "$logmsg" 2>&1 | tee -a $LOGFILE       ### file + stdout(display) + stderr
+    #echo "$MSG" > /dev/null                     ### null device   <---  log will disabled (do nothing)
+    #echo "$MSG" >> $LOGFILE                     ### file
+    #echo "$MSG" >> $LOGFILE 2>&1                ### file + stderr
+    #echo "$MSG" | tee -a $LOGFILE               ### file + stdout(display)
+    echo "$MSG" 2>&1 | tee -a $LOGFILE          ### file + stdout(display) + stderr
     
     #### reduction the log filesize, if neccessary (delete first 50 lines):
-    if [ -f "$LOGFILE" ] && [ $(wc -c <"$LOGFILE") -gt $LOGFILESIZE ]; then sed -i -e 1,50d "$LOGFILE"; fi
+    if [ -f "$LOGFILE" ] && [ $(wc -c <"$LOGFILE") -gt $LOGSIZE ]; then sed -i -e 1,50d "$LOGFILE"; fi
 }
 
 fStop()
