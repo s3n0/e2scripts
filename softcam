@@ -2,26 +2,17 @@
 
 
 
-
-# 2018/07/16:
-# - created shell-script:  /etc/init.d/softcam
-
-# 2019/06/15
-# - remake the logging concept (logging output via function)
-# - some cosmetic improvements
-
-# 2019/06/23
-# - some changes in start/stop/restart functions
-
-# 2020/02/19
-# - improved and complete instructions how-to install the Softcam
-
-# 2020/08/30
-# - no longer use the SIGTERM (No.15) signal, but only SIGKILL (No.9), as some Oscam builds ignore the regular stop by the SIGTERM (No.15) signal
-# - removed 'stdout' redirection to 'null' device at softcam execution/starting command-line
-
-# 2020/11/10
-# - improved installation instructions (OScam / CCcam)
+# HISTORY OF CHANGES:
+#
+# 2018/07/16 - created shell-script:  /etc/init.d/softcam
+# 2019/06/15 - remake the logging concept (logging output via function)
+#            - some cosmetic improvements
+# 2019/06/23 - some changes in start/stop/restart functions
+# 2020/02/19 - improved and complete instructions how-to install the Softcam
+# 2020/08/30 - no longer use the SIGTERM (No.15) signal, but only SIGKILL (No.9), as some Oscam builds ignore the regular stop by the SIGTERM (No.15) signal
+#            - removed 'stdout' redirection to 'null' device at softcam execution/starting command-line
+# 2020/11/10 - improved installation instructions (OScam / CCcam)
+# 2021/03/22 - simplified (abbreviated) script source code
 
 
 
@@ -33,17 +24,17 @@
 #      OpenATV 6.x  &  OpenPLi 7.x  (or similar Enigma) :
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #
-# 1)   Download the softcam script directly from my github profile + renaming filename from "softcam" to "softcam.oscam" + set the execution rights:
+# 1)   Download the "softcam" script file directly from my github profile + add the file extension ".oscam" + set the execution rights/attributes:
 #         wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.oscam
 #
-#      If you plan to modify and use this script for CCcam, then the correct file extension is cccam:
-#         wget -O /etc/init.d/softcam.cccam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.cccam
+#      If you plan to modify and use this script for CCcam, then the correct file extension is ".cccam" or ".CCcam":
+#         wget -O /etc/init.d/softcam.CCcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.CCcam
 #
-# 2)   Copy your OScam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection),
-#      or for CCcam, copy the configuration files to the "/etc" folder, where the main configuration file is "/etc/CCcam.cfg"
+# 2)   For the OSCam, copy your configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
+#      For the CCcam, copy your configuration files into the "/etc" folder, where the main configuration file is "/etc/CCcam.cfg"
 #
 # 3)   Download and prepare a particular softcam binary file.
-#      For example with helping of the following bash script, you can download the Oscam binary file:
+#      For example, download the OSCam binary file, with helping of the following shell-script:
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
 # 4)   Restart the set-top box via the GUI-MENU or via the Shell (applies to older OpenATV / OpenPLi Enigmas):
@@ -56,27 +47,29 @@
 #      All other or unknown Enigma distributions :
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #
-# 1)   Download the softcam script directly from my github profile + set the execution rights:
+# 1)   Download the "softcam" script file directly from my github profile + set the execution rights/attributes:
 #         wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam
 #
-# 2)   If the "/etc/init.d/softcam" script auto-start feature is not implemented in your Enigma2 then you must additionally create a symbolic link... you have two options to choose from:
+# 2)   If the "/etc/init.d/softcam" script auto-start feature is not implemented in your Enigma2 (in Python algorithm) then you must additionally create a symbolic link,
+#      thus you have two options to choose from:
 #
-# 2-A) You can use the automated tool:
+# 2.A) You can use the automated tool:
 #      For add (install) the startup sym-links to all default run-levels:
 #         update-rc.d softcam defaults 90
 #      For remove (uninstall) startup sym-links from all run-levels use the following command:
 #         update-rc.d -f softcam remove
 #
-# 2-B) If the automated tool does not work or is not installed, use the manual creation of a symbolic link:
+# 2.B) If the automated tool does not work or is not installed, use the manual creation of a symbolic link:
 #      For add (install) the startup sym-links to run-level No.3 (Enigma2 default run-level):
 #         ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam
 #      For remove (uninstall) the symbolic link you can simply delete this link:
 #         rm -f /etc/rc3.d/S90softcam
 #
-# 3)   Copy your Oscam configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
+# 3)   For the OSCam, copy your configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
+#      For the CCcam, copy your configuration files into the "/etc" folder - where the main configuration file is "/etc/CCcam.cfg"
 #
 # 4)   Download and prepare a softcam binary file.
-#      For example with helping of the following bash script, you can download the Oscam binary file:
+#      For example, download the OSCam binary file, with helping of the following shell-script:
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
 # 5)   Then restart the set-top box via the GUI-MENU or via the Shell:
@@ -87,144 +80,146 @@
 
 
 
-
-
 # ######################  USER SETUP  ######################
-# ----------------------------------------------------------
-# ----------------------------------------------------------
+#
 # SOFTCAM BINARY DIRECTORY:
-softcam_bin_dir="/usr/bin"
-# ----------------------------------------------------------
+BINDIR="/usr/bin"
+#
 # SOFTCAM PROCESS NAME (BINARY FILE NAME):
-softcam_bin_filename="oscam"                                # softcam_bin_filename="CCcam"
-# ----------------------------------------------------------
-# SOFTCAM ARGUMENTS:   (a note:  argument "-c" for OSCam or "-C" for CCcam determines a configuration directory, for more info: "/usr/bin/oscam --help")
-softcam_args="-b -r 2 -c /etc/tuxbox/config/oscam"          # softcam_args="-C /etc/CCcam.cfg"
-# ----------------------------------------------------------
-# WAITING TIME TO KILL THE SOFTCAM PROCESS
-softcam_kill_waiting=3
-# ----------------------------------------------------------
-# LOG FILE FOR THE SOFTCAM HANDLING:
-softcam_logfile="/tmp/${softcam_bin_filename}_handling.log"
-softcam_logfile_sizemax=45000       # max. file size [Bytes]
-# ----------------------------------------------------------
+BINFILENAME="oscam"                             # BINFILENAME="CCcam"
+#
+# SOFTCAM ARGUMENTS:                            # Note: The "-c" argument for OSCam and the "-C" argument for CCcam specify the path to the softcam configuration directory
+ARGS="-b -r 2 -c /etc/tuxbox/config/oscam"      # example of arguments for the CCcam softcam:    ARGS="-stl -C /etc/CCcam.cfg"
+#
+# LOG-FILE FOR THE SOFTCAM HANDLING:
+LOGFILE="/tmp/${BINFILENAME}_handling.log"
+LOGFILESIZE=45000                               # max. file size [Bytes]
+#
 # AUXILIARY VARIABLES:
-hrline="------------------------------------------------------------"
-helptext="USAGE:      /etc/init.d/softcam <ARGUMENT>
-ARGUMENT:  start......the process will be started only if it's not running
-           restart....the process will be stopped only if it's running & then will be started
-           stop.......stop and unload the $softcam_bin_filename service from memory"
-# ----------------------------------------------------------
-# ----------------------------------------------------------
+HRLINE="------------------------------------------------------------"
+MANPAGE="USAGE:    /etc/init.d/softcam <start|stop|restart|version|status>"
+#
 # ###############  END OF THE USER SETUP  ##################
 
 
 
 
+# #####################  FUNCTIONS  ########################
 
-
-# FUNCTIONS ************************************************
-
-fLog() {
-    if [ "$1" = "$hrline" ]; then
+fLog()
+{
+    if [ "$1" = "$HRLINE" ]; then
         logmsg="$1"
     else
         logmsg=`date '+%Y-%m-%d %H:%M:%S'`" $1"          # add a timestamp if it's not a separator line (header line)
     fi
     
     #echo "$logmsg" > /dev/null                          ### null device   <---  log will disabled (do nothing)
-    #echo "$logmsg" >> $softcam_logfile                  ### file
-    #echo "$logmsg" >> $softcam_logfile 2>&1             ### file + stderr
-    #echo "$logmsg" | tee -a $softcam_logfile            ### file + stdout(display)
-    echo "$logmsg" 2>&1 | tee -a $softcam_logfile       ### file + stdout(display) + stderr
+    #echo "$logmsg" >> $LOGFILE                  ### file
+    #echo "$logmsg" >> $LOGFILE 2>&1             ### file + stderr
+    #echo "$logmsg" | tee -a $LOGFILE            ### file + stdout(display)
+    echo "$logmsg" 2>&1 | tee -a $LOGFILE       ### file + stdout(display) + stderr
     
-    #### reduction the log filesize, if neccessary (delete first 20 lines):
-    if [ -f "$softcam_logfile" ] && [ $(wc -c <"$softcam_logfile") -gt $softcam_logfile_sizemax ]; then sed -i -e 1,20d "$softcam_logfile"; fi
+    #### reduction the log filesize, if neccessary (delete first 50 lines):
+    if [ -f "$LOGFILE" ] && [ $(wc -c <"$LOGFILE") -gt $LOGFILESIZE ]; then sed -i -e 1,50d "$LOGFILE"; fi
 }
 
-fStop() {
+fStop()
+{
+    fLog "Stopping '$1'..."
     if ! pidof $1 > /dev/null; then
-        fLog "No $1 process is running."
+        fLog "...no '$1' process is running."
     else
-        fLog "Stopping $1..."
         fLog "...sending the SIGKILL signal to the service '$1' / PID '$(pidof $1)'"
         killall -9 $1 > /dev/null
         sleep 0.5s       # changed from 1s to 0.5s, as the '/lib/python/Screens/SoftcamSetup.py' (OpenATV github) restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3 - 0.6 secs
-        i=1
-        while [ $i -le $softcam_kill_waiting ]; do
-            if pidof $1 > /dev/null; then
-                fLog "...waiting for termination: $i of max. $softcam_kill_waiting seconds"
-                sleep 1
-            else
-                fLog "...$1 was successfully terminated using the SIGKILL signal."
-                break
-            fi
-            i=$(( i + 1 ))
-        done
         if pidof $1 > /dev/null; then
-            fLog "...$1 was not killed by the SIGKILL signal ! Probably a system error ?!"
+            fLog "...'$1' was not killed by the SIGKILL signal. Probably a system error ?!"
             exit 1
         fi
     fi
 }
 
-fStart() {
-    fLog "Starting $1..."
+fStart()
+{
+    fLog "Starting '$1'..."
     if pidof $1 > /dev/null; then
-        fLog "...$1 process has already started and is still running."
+        fLog "...'$1' process has already started and is still running."
     else
-        fLog "...command to execute:   $softcam_bin_dir/$1 $softcam_args"
-        $softcam_bin_dir/$1 $softcam_args
+        fLog "...command-line used to start the process:   $BINDIR/$1 $ARGS"
+        $BINDIR/$1 $ARGS
         sleep 0.8s
         if pidof $1 > /dev/null; then
-            fLog "...$1 was successfully started."
+            fLog "...'$1' was successfully started."
         else
-            fLog "ERROR! $1 start failed!"
+            fLog "ERROR! '$1' start failed!"
+            exit 1
         fi
     fi
 }
 
-fRestart() {
+fRestart()
+{
     if pidof $1 > /dev/null; then fStop $1; fi              # the process will be stopped/killed only if it's running
     fStart $1
 }
 
 
-
-
+# ##########################################################
+# ##########################################################
+# ##########################################################
 
 
 # CHECKING THE EXISTENCE OF THE BINARY/EXEC FILE
 
-if [ ! -x "$softcam_bin_dir/$softcam_bin_filename" ]; then
-    fLog "ERROR! Executable binary file '$softcam_bin_dir/$softcam_bin_filename' does not exist!"
-    fLog "$hrline"
-    exit 5                       # error code 5 : program is not installed
+if [ ! -x "$BINDIR/$BINFILENAME" ]; then
+    fLog "ERROR! Executable binary file '$BINDIR/$BINFILENAME' does not exist!"
+    fLog "$HRLINE"
+    exit 5                      # exit code 5 = program is not installed
 fi
 
-
-# CALL FUNCTIONS ACCORDING TO INPUT ARGUMENTS OF BASH SCRIPT **************************
+# CALL FUNCTIONS ACCORDING TO INPUT ARGUMENTS OF THE SHELL SCRIPT **************************
 
 case "$1" in
     start)
-        fStart "$softcam_bin_filename"
-        fLog "$hrline"
+        fStart "$BINFILENAME"
+        fLog "$HRLINE"
         ;;
     stop)
-        fStop "$softcam_bin_filename"
-        fLog "$hrline"
+        fStop "$BINFILENAME"
+        fLog "$HRLINE"
         ;;
     restart|reload|force-reload)
-        fRestart "$softcam_bin_filename"
-        fLog "$hrline"
+        fRestart "$BINFILENAME"
+        fLog "$HRLINE"
+        ;;
+    status)
+        echo -n "$BINFILENAME "
+        if pidof $BINFILENAME > /dev/null; then
+            echo "running"
+            exit 0
+        else
+            echo "stopped"
+            exit 1
+        fi
+        ;;
+    version|info)
+        case `echo "$BINFILENAME" | tr "[:upper:]" "[:lower:]"` in                #  `echo "$BINFILENAME" | awk '{print tolower($0)}'`
+            "oscam"*) VER=$($BINDIR/$BINFILENAME -V | grep 'Version\|IPv6' | sed 's/Version:[ ]*//' | sed 's/IPv6.*yes/with IPv6/g' | sed 's/IPv6.*no/IPv4-only/g' | sed ':a;N;$!ba;s/\n/ /g') ;;
+            "cccam"*) VER=$(cat $BINDIR/$BINFILENAME | grep -E 'CCcam[[:space:]][0-9.-]+') ;;
+            *) VER="sorry, version / info detection in script, for ${BINFILENAME}, has not been implemented yet" ;;
+        esac
+        [ -z "$VER" ] && VER="version / info for ${BINFILENAME} could not be determined"
+        echo "$VER"
         ;;
     *)
-        fLog "UNKNOWN OR MISSING PARAMETER !"
-        echo "$helptext" >$(tty)
-        fLog "$hrline"
+        fLog "Unknown or missing arguments !"
+        echo "$MANPAGE" >$(tty)
+        fLog "$HRLINE"
         exit 1
         ;;
 esac
 
 
 exit 0
+
