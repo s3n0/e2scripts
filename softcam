@@ -89,7 +89,7 @@ BINDIR="/usr/bin"
 BINFILENAME="oscam"                             # BINFILENAME="CCcam"
 #
 # SOFTCAM ARGUMENTS:                            # Note: The "-c" argument for OSCam and the "-C" argument for CCcam specify the path to the softcam configuration directory
-ARGS="-b -r 2 -c /etc/tuxbox/config/oscam"      # example of arguments for the CCcam softcam:    ARGS="-stl -C /etc/CCcam.cfg"
+ARGS="-b -r 2 -c /etc/tuxbox/config/oscam"      # ARGS="-stl -C /etc/CCcam.cfg"
 #
 # LOG FILE FOR THE SOFTCAM HANDLING:
 LOGFILE="/tmp/${BINFILENAME}_handling.log"
@@ -147,7 +147,7 @@ fStart()
         fLog "...'$1' process has already started and is still running."
     else
         fLog "...command-line used to start the process:   $BINDIR/$1 $ARGS"
-        $BINDIR/$1 $ARGS
+        $BINDIR/$1 $ARGS                                    # for CCcam please use this command:   $BINDIR/$1 $ARGS > /dev/null &
         sleep 0.8s
         if pidof $1 > /dev/null; then
             fLog "...'$1' was successfully started."
@@ -206,7 +206,7 @@ case "$1" in
     version|info)
         case `echo "$BINFILENAME" | tr "[:upper:]" "[:lower:]"` in                #  `echo "$BINFILENAME" | awk '{print tolower($0)}'`
             "oscam"*) VER=$($BINDIR/$BINFILENAME -V | grep 'Version\|IPv6' | sed 's/Version:[ ]*//' | sed 's/IPv6.*yes/with IPv6/g' | sed 's/IPv6.*no/IPv4-only/g' | sed ':a;N;$!ba;s/\n/ /g') ;;
-            "cccam"*) VER=$(cat $BINDIR/$BINFILENAME | grep -E 'CCcam[[:space:]][0-9.-]+') ;;
+            "cccam"*) VER=$(strings $BINDIR/$BINFILENAME | grep -E 'CCcam[[:space:]][0-9/./-]+') ;;
             *) VER="sorry, version / info detection in script, for ${BINFILENAME}, has not been implemented yet" ;;
         esac
         [ -z "$VER" ] && VER="version / info for ${BINFILENAME} could not be determined"
