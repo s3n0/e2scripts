@@ -147,7 +147,7 @@ fStart()
         fLog "...'$1' process has already started and is still running."
     else
         fLog "...command-line used to start the process:   $BINDIR/$1 $ARGS"
-        $BINDIR/$1 $ARGS                                    # for CCcam please use this command:   $BINDIR/$1 $ARGS > /dev/null &
+        $BINDIR/$1 $ARGS                                    # for CCcam please use this command:   $BINDIR/$1 $ARGS > /dev/null 2>&1 &
         sleep 0.8s
         if pidof $1 > /dev/null; then
             fLog "...'$1' was successfully started."
