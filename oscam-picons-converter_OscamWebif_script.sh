@@ -1,7 +1,8 @@
 #!/bin/sh
 
 PYSCRIPT="/usr/script/oscam-picons-converter.py"
-PARAMS="-d -q -1 -c 0624,0D96"
+#PARAMS="-d -q -1 -c 0624,0D96,FFFE"
+PARAMS="-d -a -c 0624,0D96,FFFE"               # 0624,0D96 = Skylink sat-provider, FFFE = Free-To-Air channels
 
 /usr/bin/python $PYSCRIPT $PARAMS > /tmp/oscam-picons-converter.log 2>&1 &
 
