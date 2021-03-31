@@ -135,10 +135,12 @@ fStop()
     else
         fLog "...sending the SIGKILL signal to the service '$1' / PID '$(pidof $1)'"
         killall -9 $1 > /dev/null
-        sleep 0.5s       # changed from 1s to 0.5s, as the '/lib/python/Screens/SoftcamSetup.py' (OpenATV github) restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3 - 0.6 secs
+        sleep 0.5s       # changed from 1s to 0.5s, as the '/lib/python/Screens/SoftcamSetup.py' (OpenATV github) restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3 - 0.7 secs
         if pidof $1 > /dev/null; then
             fLog "...'$1' was not killed by the SIGKILL signal. Probably a system error ?!"
             exit 1
+        else
+            fLog "...'$1' was successfully killed."
         fi
     fi
 }
