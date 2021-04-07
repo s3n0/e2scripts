@@ -2,6 +2,7 @@
 
 
 
+
 # HISTORY OF CHANGES:
 #
 # 2018/07/16 - created shell-script:  /etc/init.d/softcam
@@ -13,7 +14,7 @@
 #            - removed 'stdout' redirection to 'null' device at softcam execution/starting command-line
 # 2020/11/10 - improved installation instructions (OSCam / CCcam)
 # 2021/03/24 - simplified (abbreviated) script source code
-
+# 2021/04/07 - updated return error codes for "argument status" as well as for "exit status"
 
 
 
@@ -132,12 +133,15 @@ fStop()
     fLog "Stopping '$1'..."
     if ! pidof $1 > /dev/null; then
         fLog "...no '$1' process is running."
+        fLog "$HRLINE"
+        exit 7      # 1=generic or unspecified error (current practice) ; 2=invalid or excess argument(s) ; 3=unimplemented feature (for example, "reload") ; 4=user had insufficient privilege ; 5=program is not installed ; 6=program is not configured ; 7=program is not running
     else
         fLog "...sending the SIGKILL signal to the service '$1' / PID '$(pidof $1)'"
         killall -9 $1 > /dev/null
-        sleep 0.5s       # changed from 1s to 0.5s, as the '/lib/python/Screens/SoftcamSetup.py' (OpenATV github) restarts the softcam script too quickly with the 'stop' argument and 1s later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3 - 0.7 secs
+        sleep 0.5s       # changed from 1s to 0.5s, as the '/lib/python/Screens/SoftcamSetup.py' (OpenATV github) restarts the softcam script too quickly with the 'stop' argument and 1 sec. later it immediately starts the script again with the argument 'start' i.e. without using the 'restart' argument ! unfortunately my softcam script is testing as the first normal softcam stopping, which can take about 0.3 - 0.7 secs
         if pidof $1 > /dev/null; then
-            fLog "...'$1' was not killed by the SIGKILL signal. Probably a system error ?!"
+            fLog "...'$1' was not killed by the SIGKILL signal. The process is still running. Probably a system error ?!"
+            fLog "$HRLINE"
             exit 1
         else
             fLog "...'$1' was successfully killed."
@@ -165,7 +169,7 @@ fStart()
 
 fRestart()
 {
-    if pidof $1 > /dev/null; then fStop $1; fi              # the process will be stopped/killed only if it's running
+    if pidof $1 > /dev/null; then fStop $1; fi              # the process will be stopped / killed only if it's running
     fStart $1
 }
 
@@ -191,8 +195,9 @@ fGetVer()
 if [ ! -x "$BINDIR/$BINFILENAME" ]; then
     fLog "ERROR! Executable binary file '$BINDIR/$BINFILENAME' does not exist!"
     fLog "$HRLINE"
-    exit 5                      # exit code 5 = program is not installed
+    exit 5          # 1=generic or unspecified error (current practice) ; 2=invalid or excess argument(s) ; 3=unimplemented feature (for example, "reload") ; 4=user had insufficient privilege ; 5=program is not installed ; 6=program is not configured ; 7=program is not running
 fi
+
 
 # CALL FUNCTIONS ACCORDING TO INPUT ARGUMENTS OF THE SHELL SCRIPT **************************
 
@@ -212,8 +217,8 @@ case "$1" in
     status)
         echo -n "$BINFILENAME "
         if pidof $BINFILENAME > /dev/null
-          then echo "running"; exit 0
-          else echo "stopped"; exit 1
+           then echo "running"; exit 0     # 0 = program is running -or- service is OK ; 1 = program is dead and /var/run pid file exists ; 2 = program is dead and /var/lock lock file exists ;
+           else echo "stopped"; exit 3     # 3 = program is not running ; 4 = program or service status is unknown ; 5-99 = reserved for future LSB use ; 100-254 = reserved
         fi
         ;;
     version|info)
@@ -223,7 +228,7 @@ case "$1" in
         fLog "Unknown or missing arguments !"
         echo "$MANPAGE" >$(tty)
         fLog "$HRLINE"
-        exit 1
+        exit 2      # 1=generic or unspecified error (current practice) ; 2=invalid or excess argument(s) ; 3=unimplemented feature (for example, "reload") ; 4=user had insufficient privilege ; 5=program is not installed ; 6=program is not configured ; 7=program is not running
         ;;
 esac
 
