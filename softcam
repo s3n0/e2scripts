@@ -198,7 +198,6 @@ if [ ! -x "$BINDIR/$BINFILENAME" ]; then
     exit 5          # 1=generic or unspecified error (current practice) ; 2=invalid or excess argument(s) ; 3=unimplemented feature (for example, "reload") ; 4=user had insufficient privilege ; 5=program is not installed ; 6=program is not configured ; 7=program is not running
 fi
 
-
 # CALL FUNCTIONS ACCORDING TO INPUT ARGUMENTS OF THE SHELL SCRIPT **************************
 
 case "$1" in
