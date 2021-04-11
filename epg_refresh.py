@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 ###############################################
-# EPG Refresh
-# by s3n0, 2019-08-24
+# EPG Refresh - python script for Enigma2
+# written by s3n0, 2019-08-24
 ###############################################
-# - simple python-script for Enigma2 based set-top-box, for refresh EPG data on all DVB channels
-# - the script will find all the necessary transponders what you need to zapping
-# - transponders are selected from the userbouquet and zap only once
+# - simple python-script for Enigma2 based set-top-box, for refresh EPG data
+# - the script will find the necessary transponders depending on the available channels in the userbouquet files
+# - then the script gradually zaps these transponders (only some channels), to read EPG data from DVB stream
 ###############################################
 # - be sure to set the file attributes (chmod 755 /usr/script/epg_refresh.py)
 # - the best way to use EPG refresh is to add a new task to the CRON scheduler
@@ -21,7 +21,9 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
 #### if you need more than one userbouquet, use the following syntax :
 #BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
 
-LOG_FILE_PATH='/tmp/epg_refresh.log'
+LOG_FILE_PATH = '/tmp/epg_refresh.log'
+
+DELAY_TIME = 10             # waiting time after zapping each channel (transponder)
 
 from datetime import datetime
 from time import sleep
@@ -60,7 +62,8 @@ def saveEPG():                              # save EPG cache to disk - as the fi
 ###############################################
 ###############################################
 
-writeLOG('=' * 50)
+writeLOG(' ')
+writeLOG('==== BEGINNING OF THE SCRIPT ' + '=' * 44)
 
 if __name__ == "__main__" and enigmaInStandby():
     
@@ -93,9 +96,10 @@ if __name__ == "__main__" and enigmaInStandby():
     for i, SRC in enumerate(needs_SRC, 1):
         zapChannel(SRC)
         writeLOG('{:03d} / {:03d} - {}'.format(i, len(needs_SRC), SRC))
-        sleep(20)           # waiting 20 sec. for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
+        sleep(DELAY_TIME)   # waiting a few of seconds - for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
     
     writeLOG('...done.')
     zapChannel()            # shut down the tuner / stop watching DVB channel
     saveEPG()               # save EPG cache to disk, if we need to upload the file "epg.dat" to another set-top box or to some server on the internet
- 
+
+writeLOG('==== END OF THE SCRIPT ' + '=' * 50)
