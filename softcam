@@ -100,8 +100,8 @@ LOGFILE="/tmp/${BINFILENAME}_handling.log"
 LOGSIZE=45000                                   # limit maximum file size [Bytes]
 #
 # AUXILIARY VARIABLES:
-HRLINE="------------------------------------------------------------"
-MANPAGE="USAGE:    /etc/init.d/softcam <start|stop|restart|version|status>"
+HRLINE="--------------------------------------------------------------------------"
+MANPAGE="Usage:      ${0} <start|stop|restart|version|status>"
 #
 # ###############  END OF THE USER SETUP  ##################
 
