@@ -4,7 +4,7 @@
 #     httpscript = /usr/script
 # Then you need to place the script in this folder, including the script for converting to OscamWebif picon format.
 # Both shell-scripts must have execution attributes assigned to them ... for example:
-#     chmod a+x /usr/script/oscam-picons*.sh
+#     chmod a+x /usr/script/oscam-picons*
 # You can set the parameters for picon conversion according to yourself, i.e. $SCR_PARAMS variable.
 # The script is run in OscamWebif via the 'Script' menu.
 
