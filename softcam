@@ -34,8 +34,10 @@
 # 2)   For the OSCam, copy your configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
 #      For the CCcam, copy your configuration files into the "/etc" folder, where the main configuration file is "/etc/CCcam.cfg"
 #
-# 3)   Download and prepare a particular softcam binary file.
-#      For example, download the OSCam binary file, with helping of the following shell-script:
+# 4)   Download a specific softcam binary file and upload it to the set-top box - usually to the "/usr/bin" folder.
+#      Set its executable attributes: 
+#         chmod a+x /usr/bin/softcam-name
+#      You can also use the following online shell script to download the OSCam binary file (I recommend it only for OpenATV):
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
 # 4)   Restart the set-top box via the GUI-MENU or via the Shell (applies to older OpenATV / OpenPLi Enigmas):
@@ -51,16 +53,16 @@
 # 1)   Download the "softcam" script file directly from my github profile + set the execution rights/attributes:
 #         wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam
 #
-# 2)   If the "/etc/init.d/softcam" script auto-start feature is not implemented in your Enigma2 (in Python algorithm) then you must additionally create a symbolic link,
-#      thus you have two options to choose from:
+# 2)   Probably, the "/etc/init.d/softcam" script auto-start feature is not implemented in your Enigma2 GUI (in Python algorithm),
+#      so you must additionally create a symbolic link, and thus you have two options to choose from:
 #
-# 2-A) You can use the automated tool:
+#   A) You can use the automated system tool:
 #      For add (install) the startup sym-links to all default run-levels:
 #         update-rc.d softcam defaults 90
 #      For remove (uninstall) startup sym-links from all run-levels use the following command:
 #         update-rc.d -f softcam remove
 #
-# 2-B) If the automated tool does not work or is not installed, use the manual creation of a symbolic link:
+#   B) If the automated system tool does not work or is not installed, use the manual creation of a symbolic link:
 #      For add (install) the startup sym-links to run-level No.3 (Enigma2 default run-level):
 #         ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam
 #      For remove (uninstall) the symbolic link you can simply delete this link:
@@ -69,8 +71,10 @@
 # 3)   For the OSCam, copy your configuration files into the "/etc/tuxbox/config/oscam" folder (using the FTP connection)
 #      For the CCcam, copy your configuration files into the "/etc" folder - where the main configuration file is "/etc/CCcam.cfg"
 #
-# 4)   Download and prepare a softcam binary file.
-#      For example, download the OSCam binary file, with helping of the following shell-script:
+# 4)   Download a specific softcam binary file and upload it to the set-top box - usually to the "/usr/bin" folder.
+#      Set its executable attributes: 
+#         chmod a+x /usr/bin/softcam-name
+#      You can also use the following online shell script to download the OSCam binary file (I recommend it only for OpenATV):
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
 # 5)   Then restart the set-top box via the GUI-MENU or via the Shell:
