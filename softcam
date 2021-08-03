@@ -103,6 +103,9 @@ CMDEXEC="${BINDIR}/${BINFILENAME} ${ARGS}"      # for CCcam:   CMDEXEC="${BINDIR
 LOGFILE="/tmp/${BINFILENAME}_handling.log"
 LOGSIZE=45000                                   # limit maximum file size [Bytes]
 #
+# CHANNEL (SERVICE REFERENCE CODE) FOR AUTOUPDATE OF PREPAID TV-PACKAGES (ENTITLEMENTS):
+AUCHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
+#
 # AUXILIARY VARIABLES:
 HRLINE="--------------------------------------------------------------------------"
 MANPAGE="Usage:      ${0} <start|stop|restart|version|status>"
@@ -188,6 +191,11 @@ fGetVer()
     echo "$VER"
 }
 
+E2inStandby()
+{
+    wget -q -O - http://127.0.0.1/api/powerstate | grep -qi 'instandby.*true'       # check if Enigma2 is in standby mode
+}
+
 
 # ##########################################################
 # ##########################################################
@@ -201,6 +209,7 @@ if [ ! -x "$BINDIR/$BINFILENAME" ]; then
     fLog "$HRLINE"
     exit 5          # 1=generic or unspecified error (current practice) ; 2=invalid or excess argument(s) ; 3=unimplemented feature (for example, "reload") ; 4=user had insufficient privilege ; 5=program is not installed ; 6=program is not configured ; 7=program is not running
 fi
+
 
 # CALL FUNCTIONS ACCORDING TO INPUT ARGUMENTS OF THE SHELL SCRIPT **************************
 
@@ -220,12 +229,21 @@ case "$1" in
     status)
         echo -n "$BINFILENAME "
         if pidof $BINFILENAME > /dev/null
-           then echo "running"; exit 0     # 0 = program is running -or- service is OK ; 1 = program is dead and /var/run pid file exists ; 2 = program is dead and /var/lock lock file exists ;
-           else echo "stopped"; exit 3     # 3 = program is not running ; 4 = program or service status is unknown ; 5-99 = reserved for future LSB use ; 100-254 = reserved
+           then echo "running"; exit 0     # 0 = program is running -or- service is OK ;  1 = program is dead and /var/run pid file exists ;  2 = program is dead and /var/lock lock file exists ;
+           else echo "stopped"; exit 3     # 3 = program is not running ;  4 = program or service status is unknown ;  5-99 = reserved for future LSB use ;  100-254 = reserved
         fi
         ;;
     version|info)
         fGetVer
+        ;;
+    au|autoupdate)
+        if E2inStandby; then
+            wget -qO- "http://127.0.0.1/api/zap?sRef=${AUCHANNEL}" > /dev/null 2>&1
+            fLog "Zap the channel ${AUCHANNEL}"
+            MSG=`date '+%Y-%m-%d %H:%M:%S'`" Zap the channel 0"
+            CMD="sleep 20; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; echo ${MSG} >> ${LOGFILE};"
+            eval "${CMD}" &>/dev/null & disown;
+        fi
         ;;
     *)
         fLog "Unknown or missing arguments !"
