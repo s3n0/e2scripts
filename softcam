@@ -108,7 +108,11 @@ AUCHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
 #
 # AUXILIARY VARIABLES:
 HRLINE="--------------------------------------------------------------------------"
-MANPAGE="Usage:      ${0} <start|stop|restart|version|status>"
+SCRIPTARGS="$(cat ${0} | grep -wE '[[:space:]]+[a-z\|\-]+)' | tr ')' ' ')"
+MANPAGE="PROPER USE OF THE SCRIPT:
+    ${0} <ARGUMENT>
+POSSIBLE ARGUMENTS:
+${SCRIPTARGS}"
 #
 # ###############  END OF THE USER SETUP  ##################
 
