@@ -244,9 +244,12 @@ case "$1" in
         if E2inStandby; then
             wget -qO- "http://127.0.0.1/api/zap?sRef=${AUCHANNEL}" > /dev/null 2>&1
             fLog "Zap the channel ${AUCHANNEL}"
-            MSG=`date '+%Y-%m-%d %H:%M:%S'`" Zap the channel 0"
-            CMD="sleep 20; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; echo ${MSG} >> ${LOGFILE};"
+            TMPMSG=`date '+%Y-%m-%d %H:%M:%S'`" Zap the channel 0"
+            CMD="sleep 20; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; echo ${TMPMSG} >> ${LOGFILE};"
             eval "${CMD}" &>/dev/null & disown;
+        else
+            TMPMSG=`date '+%Y-%m-%d %H:%M:%S'`" The AutoUpdate script function cannot be performed. Enigma2 is currently in use. Enigma2 is not in standby mode."
+            fLog "${TMPMSG}"
         fi
         ;;
     *)
