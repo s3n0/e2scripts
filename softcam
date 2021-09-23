@@ -245,13 +245,13 @@ case "$1" in
     au|autoupdate)
         if E2inStandby; then
             wget -qO- "http://127.0.0.1/api/zap?sRef=${AUCHANNEL}" > /dev/null 2>&1
-            fLog "Zap the tuner to the ${AUCHANNEL} channel/SRC. After ${AUTIME} seconds, the tuner will turn off."
+            fLog "Zap the tuner to the '${AUCHANNEL}' channel/SRC. After ${AUTIME} seconds, the tuner will turn off."
             TMPMSG=`date '+%Y-%m-%d %H:%M:%S'`" The tuner has been turned off (zapped to the null channel/SRC)."
             CMD="sleep ${AUTIME}; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; echo '${TMPMSG}' >> ${LOGFILE}; echo '${HRLINE}' >> ${LOGFILE};"
             eval "${CMD}" &>/dev/null & disown;
         else
             TMPMSG=`date '+%Y-%m-%d %H:%M:%S'`" The AutoUpdate/AU script function cannot be performed. Enigma2 is currently in use. Enigma2 is not in standby mode."
-            fLog "${TMPMSG}"
+            fLog "$TMPMSG"
             fLog "$HRLINE"
         fi
         ;;
