@@ -108,7 +108,7 @@ LOGSIZE=45000                                   # limit maximum file size [Bytes
 # A NOTE:  Auto-Updating via EMM packets is required after a Softcam restart for some encryption cards, for example when the card is operating in IRDETO mode.
 AUCHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
 AUTIME=30
-AUONSTART="yes"                                 # "no" / "yes" - run the AutoUpdate script-function after every daemon/softcam start
+AUONSTART="no"                                  # "no" / "yes" - run the AutoUpdate script-function after every daemon/softcam start
 #
 # AUXILIARY VARIABLES:
 HRLINE="--------------------------------------------------------------------------"
