@@ -95,10 +95,10 @@ BINDIR="/usr/bin"
 BINFILENAME="oscam"                             # for CCcam:   BINFILENAME="CCcam"
 #
 # SOFTCAM ARGUMENTS:
-ARGS="-b -r 2"                                  # for CCcam:   ARGS="-stl"
+BINARGS="-b -r 2"                               # for CCcam:   BINARGS="-stl"
 #
-# SOFTCAM COMMAND TO EXECUTE IT:
-CMDEXEC="${BINDIR}/${BINFILENAME} ${ARGS}"      # for CCcam:   CMDEXEC="${BINDIR}/${BINFILENAME} ${ARGS} > /dev/null 2>&1 &"
+# SOFTCAM EXECUTION COMMAND LINE:
+CMDEXEC="${BINDIR}/${BINFILENAME} ${BINARGS}"   # for CCcam:   CMDEXEC="${BINDIR}/${BINFILENAME} ${BINARGS} > /dev/null 2>&1 &"
 #
 # LOG FILE FOR THE SOFTCAM HANDLING:
 LOGFILE="/tmp/${BINFILENAME}_handling.log"
@@ -110,13 +110,12 @@ AUCHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"
 AUTIME=30
 AUONSTART="no"                                  # "no" / "yes" - run the AutoUpdate script-function after every daemon/softcam start
 #
-# AUXILIARY VARIABLES:
+# AUXILIARY SCRIPT VARIABLES:
 HRLINE="--------------------------------------------------------------------------"
-SCRIPTARGS="$(cat ${0} | grep -wE '[[:space:]]+[a-z\|\-]+)' | tr -d ')')"
 MANPAGE="PROPER USE OF THE SCRIPT:
     ${0} <ARGUMENT>
 POSSIBLE ARGUMENTS:
-${SCRIPTARGS}"
+$(cat ${0} | grep -wE '[[:space:]]+[a-z\|\-]+)' | tr -d ')')"
 #
 # ###############  END OF THE USER SETUP  ##################
 
