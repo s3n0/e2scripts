@@ -129,7 +129,7 @@ fLog()
     if [ "$1" = "$HRLINE" ]; then
         MSG="$1"
     else
-        MSG=`date '+%Y-%m-%d %H:%M:%S'`" $1"    # add a timestamp if it's not a separator line (header line)
+        MSG="$(date '+%Y-%m-%d %H:%M:%S') $1"    # add a timestamp if it's not a separator line (header line)
     fi
     
     #echo "$MSG" > /dev/null                     ### null device   <---  log will disabled (do nothing)
@@ -216,7 +216,7 @@ E2inStandby()
 if [ ! -x "$BINDIR/$BINFILENAME" ]; then
     fLog "ERROR! Executable binary file '$BINDIR/$BINFILENAME' does not exist!"
     fLog "$HRLINE"
-    exit 5          # 1=generic or unspecified error (current practice) ; 2=invalid or excess argument(s) ; 3=unimplemented feature (for example, "reload") ; 4=user had insufficient privilege ; 5=program is not installed ; 6=program is not configured ; 7=program is not running
+    exit 5          # 1=generic or unspecified error (current practice) ; 2=invalid or excess argument(s) ; 3=unimplemented feature (for example "reload") ; 4=user had insufficient privilege ; 5=program is not installed ; 6=program is not configured ; 7=program is not running
 fi
 
 
@@ -249,11 +249,11 @@ case "$1" in
         if E2inStandby; then
             wget -qO- "http://127.0.0.1/api/zap?sRef=${AUCHANNEL}" > /dev/null 2>&1
             fLog "Zap the tuner to the '${AUCHANNEL}' channel/SRC. The tuner will turn off automatically after ${AUTIME} seconds."
-            TMPMSG=`date '+%Y-%m-%d %H:%M:%S'`" The tuner has been turned off (zapped to the null channel/SRC)."
-            CMD="sleep ${AUTIME}; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; echo '${TMPMSG}' >> ${LOGFILE}; echo '${HRLINE}' >> ${LOGFILE};"
+        #   CMD="sleep ${AUTIME}; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; printf '%(%Y-%m-%d %H:%M:%S)T The tuner has been turned off (zapped to the null channel/SRC).\n' >> ${LOGFILE}; echo '${HRLINE}' >> ${LOGFILE};"
+            CMD="sleep ${AUTIME}; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; date '+%Y-%m-%d %H:%M:%S' | tr -d '\n' >> ${LOGFILE}; echo -e ' The tuner has been turned off (zapped to the null channel/SRC).\n${HRLINE}' >> ${LOGFILE};"
             eval "${CMD}" &>/dev/null & disown;
         else
-            TMPMSG=`date '+%Y-%m-%d %H:%M:%S'`" The AutoUpdate/AU script function cannot be performed. Enigma2 is currently in use. Enigma2 is not in standby mode."
+            TMPMSG="$(date '+%Y-%m-%d %H:%M:%S') The AutoUpdate/AU script function cannot be performed. Enigma2 is currently in use. Enigma2 is not in standby mode."
             fLog "$TMPMSG"
             fLog "$HRLINE"
         fi
