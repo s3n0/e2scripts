@@ -253,7 +253,7 @@ case "$1" in
             CMD="sleep ${AUTIME}; /usr/bin/wget -qO- 'http://127.0.0.1/api/zap?sRef=0' > /dev/null 2>&1; date '+%Y-%m-%d %H:%M:%S' | tr -d '\n' >> ${LOGFILE}; echo -e ' The tuner has been turned off (zapped to the null channel/SRC).\n${HRLINE}' >> ${LOGFILE};"
             eval "${CMD}" &>/dev/null & disown;
         else
-            TMPMSG="$(date '+%Y-%m-%d %H:%M:%S') The AutoUpdate/AU script function cannot be performed. Enigma2 is currently in use. Enigma2 is not in standby mode."
+            TMPMSG="$(date '+%Y-%m-%d %H:%M:%S') The AutoUpdate/AU script function cannot be performed. Enigma2 is not in standby mode or Enigma2 is still not running (when the Linux system is just booting)."
             fLog "$TMPMSG"
             fLog "$HRLINE"
         fi
