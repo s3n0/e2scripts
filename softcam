@@ -41,10 +41,10 @@
 #      You can also use the following online shell script to download the OSCam binary file (I recommend it only for OpenATV):
 #         wget -q -O - --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscam-new-version-updater.sh" | bash
 #
-# 4)   Restart the set-top box via the GUI-MENU or via the Shell (applies to older OpenATV / OpenPLi Enigmas):
+# 5)   Restart the set-top box via the GUI-MENU or via the Shell (applies to older OpenATV / OpenPLi Enigmas):
 #         reboot
 #
-# 5)   Select and activate the particular softcam via the GUI-MENU:
+# 6)   Select and activate the particular softcam via the GUI-MENU:
 #         MENU -> Info Panel -> Softcam Panel -> select your softcam (OSCam or CCcam) by pressing the left/right buttons and then activate it with the green button
 #
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
