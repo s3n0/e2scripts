@@ -177,14 +177,20 @@ def table_size_checking(tbl):
     dict_length = sum( [len(x) for x in tbl.values()] )
     print('Total number of all CAIDs:SIDs in retrieved table: %s' % dict_length)
     if dict_length > 3000:
-        while True:
-            answer = user_input('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\nDo you really want to continue ?\n(y/n)\n>')
-            if answer.lower() == 'y':
-                return True
-            elif answer.lower() == 'n':
-                return False
-    print('')
+        print('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\n')
     return True
+#def table_size_checking(tbl):
+#    dict_length = sum( [len(x) for x in tbl.values()] )
+#    print('Total number of all CAIDs:SIDs in retrieved table: %s' % dict_length)
+#    if dict_length > 3000:
+#        while True:
+#            answer = user_input('Warning !\nTotal number of all SrvIDs is too high !\nA lot of TPL-picons will be created !\nDo you really want to continue ?\n(y/n)\n>')
+#            if answer.lower() == 'y':
+#                return True
+#            elif answer.lower() == 'n':
+#                return False
+#    print('')
+#    return True
 
 def show_man_page():
     script_path = "/path_to_script/oscam-picons-converter.py" if len(sys.argv) == 0 or sys.argv[0] == "" else sys.argv[0]
