@@ -81,7 +81,7 @@ OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
 
 ### create temporary ".srvid" files:
-create_srvid_file "skylink" "0D96,0624"
+create_srvid_file "skylink" "0D96,0624,FFFE"
 create_srvid_file "antiksat" "0B00"
 create_srvid_file "orangesk" "0B00,0609"            # some channels are shared to the AntikSat provider (package), so this one "orangesk" package is also needed for "antiksat" (as the CAID=0B00)
 create_srvid_file "upc" "0D02,0D97,0B02,1815"
@@ -99,13 +99,19 @@ create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
 
 
 
-### backup the original file "oscam.srvid" to the "/tmp" dir + merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
-[ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
+### backup the original file "oscam.srvid" to the "/tmp" dir:
+fileSRC="${OSCAM_CFGDIR}/oscam.srvid"
+fileDST="/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"
+[ -n "$OSCAM_CFGDIR" ] && mv "$fileSRC" "$fileDST"           # backup the old 'oscam.srvid' file
+echo -e "The original file was backed up: ${fileSRC} >>> ${fileDST}\n"
+
+### merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
 echo "$HEADER" > $OSCAM_SRVID
 echo -e "### File creation date: $(date '+%Y-%m-%d %H:%M:%S')\n" >> $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
 rm -f /tmp/oscam__*
-[ -f "$OSCAM_SRVID" ] && echo "Path to the generated 'oscam.srvid' file:  ${OSCAM_SRVID}"
+[ -f "$OSCAM_SRVID" ] && echo "All generated '.srvid' files have been merged into one and moved to the directory:  ${OSCAM_SRVID}"
+
 
 
 
@@ -113,4 +119,3 @@ exit 0
 
 #################################################################################
 #################################################################################
-
