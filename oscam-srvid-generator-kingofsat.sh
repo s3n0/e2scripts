@@ -102,8 +102,7 @@ create_srvid_file "skygermany" "1833,1834,1702,1722,09C4,09AF"
 ### backup the original file "oscam.srvid" to the "/tmp" dir:
 fileSRC="${OSCAM_CFGDIR}/oscam.srvid"
 fileDST="/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"
-[ -n "$OSCAM_CFGDIR" ] && mv "$fileSRC" "$fileDST"           # backup the old 'oscam.srvid' file
-echo -e "The original file was backed up: ${fileSRC} >>> ${fileDST}\n"
+[ -f "$fileSRC" ] && { mv "$fileSRC" "$fileDST"; echo -e "The original file was backed up: ${fileSRC} >>> ${fileDST}\n"; }      # backup the old 'oscam.srvid' file
 
 ### merge all generated ".srvid" files into one file + move this new file to the Oscam config-dir:
 echo "$HEADER" > $OSCAM_SRVID
