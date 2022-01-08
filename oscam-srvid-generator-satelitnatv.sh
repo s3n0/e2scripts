@@ -53,7 +53,8 @@ create_srvid_file()
         exit 1
     fi
     
-    LIST=$(cat /tmp/satelitnatv.html | sed -n 's/.*<strong><a href=\/.*\/?id=[0-9]\{4\}\([0-9]*\)>\(.*\)<\/a>.*/\1 \2/p')        # one line example, from the $LIST variable:    02003 Markiza HD
+    sed -i 's/<tr>/\n/g' /tmp/satelitnatv.html                                                                                      # change all "<tr>" TAGs to new-line characters
+    LIST=$(sed -n 's/.*<strong><a href=\/.*\/?id=[0-9]\{4\}\([0-9]*\)>\(.*\)<\/a><\/strong>.*/\1 \2/p' /tmp/satelitnatv.html)       # one line example, from the $LIST variable:    14129 Markiza HD
     
     FILE_NAME=`echo "${1##*.sk}" | tr -d "/"`                           # FILE_NAME=`echo "${1}" | cut -d "/" -f 4`
     FILE_OUTPUT="/tmp/oscam__${FILE_NAME}.srvid"
@@ -96,15 +97,19 @@ create_srvid_file "https://www.satelitnatv.sk/frekvencie/antik-sat-sk/" "AntikSA
 #create_srvid_file "https://www.satelitnatv.sk/antik-sat/" "Antiksat" "0B00"
 #create_srvid_file "https://www.satelitnatv.sk/freesat-by-upc-direct/" "FreeSAT" "0D97,0653,0B02"
 
-### backup the original file "oscam.srvid" to the "/tmp" dir
-[ -n "$OSCAM_CFGDIR" ] && mv "${OSCAM_CFGDIR}/oscam.srvid" "/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"         # backup the older 'oscam.srvid' file
+
+
+### backup the original file "oscam.srvid" to the "/tmp" dir:
+fileSRC="${OSCAM_CFGDIR}/oscam.srvid"
+fileDST="/tmp/oscam_-_backup_$(date '+%Y-%m-%d_%H-%M-%S').srvid"
+[ -f "$fileSRC" ] && { mv "$fileSRC" "$fileDST"; echo -e "The original file was backed up: ${fileSRC} >>> ${fileDST}\n"; }      # backup the old 'oscam.srvid' file
 
 ### merge all generated ".srvid" files into one file + write this new file to the Oscam config-dir:
 echo "$HEADER" > $OSCAM_SRVID
 echo -e "### File creation date: $(date '+%Y-%m-%d %H:%M:%S')\n" >> $OSCAM_SRVID
 cat /tmp/oscam__* >> $OSCAM_SRVID
 rm -f /tmp/oscam__*
-[ -f "$OSCAM_SRVID" ] && echo "Path to the generated 'oscam.srvid' file:  ${OSCAM_SRVID}"
+[ -f "$OSCAM_SRVID" ] && echo "All generated '.srvid' files have been merged into one and moved to the directory:  ${OSCAM_SRVID}"
 
 
 
