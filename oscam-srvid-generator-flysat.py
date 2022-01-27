@@ -12,9 +12,9 @@ header = """
 output_file = '/tmp/oscam.srvid'
 
 packages = {
-  'https://www.flysat.com/en/package/antiksat-1/eutelsat-16a'      :   '0B00' ,
-  'https://www.flysat.com/en/package/skylink-1/astra-3b'           :   '0D96,0624' ,
-  'https://www.flysat.com/en/package/sky-deutschland-2/astra-19'   :   '1833,1834,1702,1722,09C4,09AF' ,
+  'https://flysat.com/en/package/antiksat-1/eutelsat-16a'      :   '0B00' ,
+  'https://flysat.com/en/package/skylink-1/astra-3b'           :   '0D96,0624' ,
+  'https://flysat.com/en/package/sky-deutschland-2/astra-19'   :   '1833,1834,1702,1722,09C4,09AF' ,
 }
 
 # packages = { 
@@ -72,27 +72,38 @@ if __name__ == '__main__':
     
     result = []
     for pckg in packages:
+        
         webpage = htmlContent(pckg)
+        
         if webpage:
             print('Web page download successful - package: %s' % pckg)
             
+            pckg_name = pckg.split('/')[5]                                          # - output example:   ['https:', '', 'www.flysat.com', 'en', 'package', 'skylink-1', 'astra-3b']
+            if pckg_name[-2:] in ('-1', '-2', '-3', '-4'):
+                pckg_name = pckg_name[:-2]
+            
+            #bkp_file = '/tmp/FlySat_-_%s.html' % pckg_name
+            #with open(bkp_file, 'w') as f:
+            #    f.write(webpage)
+            #    print('Web page was stored in a file:  %s' % bkp_file)
+            
             i = 2000
             
-            while i < len(webpage)-1000:
+            while i < len(webpage) - 1000:
                 
                 # retrieve the channel name
-                i = webpage.find('<a href="https://www.flysat.com/en/channel/', i)
+                i = webpage.find('flysat.com/en/channel/', i)
                 if i == -1:
                     break # to break the while loop
                 i = webpage.find('<b>', i) + 3
-                CHN = webpage[ i  :  webpage.find('</b>', i) ]
+                CHN = webpage[ i : webpage.find('</b>', i) ].strip()
                 CHN = htmlParser.unescape(CHN)                                      # CHN = CHN.replace('&amp;', '&')
                 
                 # if the channel name is censored, then retrieve the inner string part between <!-- and -->  +  delete blank characters at the begin/end of string
                 #if '<!--' in CHN:
                 #    CHN = CHN[ CHN.find('<!--') + 4  :  CHN.find('-->') ].strip()
                 # !!! !!! !!! unfortunately, the FlySat database no longer contains the original channel name, which is included in the blacklist (18+), but only contains the censored name - as an asterisk ("*"), i.e. without TAGs "<!--" and "-->"
-                if CHN.strip() == '*':
+                if CHN == '*':
                     CHN = '**CENSORED**'
                 
                 # retrieve all SIDs - next from the channel name
@@ -111,9 +122,6 @@ if __name__ == '__main__':
                 # a small step to forward
                 i += 20
                 
-                pckg_name = pckg.split('/')[5]                                      # - output example:   ['https:', '', 'www.flysat.com', 'en', 'package', 'skylink-1', 'astra-3b']
-                if pckg_name[-2 : ] in ('-1', '-2', '-3', '-4'):
-                    pckg_name = pckg_name[ : -2]
                 #print('MYDEBUGLOGLINE --- CHN=%s ; SIDS=%s ; i=%s ; pckg=%s' % (CHN, SIDS, i, pckg_name) )
                 
                 # add the otput to the 'result' variable
