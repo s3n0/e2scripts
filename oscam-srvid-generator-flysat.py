@@ -12,10 +12,10 @@ header = """
 output_file = '/tmp/oscam.srvid'
 
 packages = {
-   'https://flysat.com/en/package/antiksat-1/eutelsat-16a'      :   '0B00' ,
-   'https://flysat.com/en/package/skylink-1/astra-3b'           :   '0D96,0624' ,
-   'https://flysat.com/en/package/sky-deutschland-2/astra-19'   :   '1833,1834,1702,1722,09C4,09AF' ,
-   'https://flysat.com/en/package/maxtv-sat-1/eutelsat-16a'     :   '1830' ,
+    'https://flysat.com/en/package/skylink-1/astra-3b'           :   '0D96,0624' ,
+    'https://flysat.com/en/package/sky-deutschland-2/astra-19'   :   '1833,1834,1702,1722,09C4,09AF' ,
+#   'https://flysat.com/en/package/antiksat-1/eutelsat-16a'      :   '0B00' ,
+#   'https://flysat.com/en/package/maxtv-sat-1/eutelsat-16a'     :   '1830' ,
 }
 
 # packages = { 
@@ -57,6 +57,7 @@ from datetime import datetime
 #############################################################################
 
 def htmlContent(url):
+    print('Downloading web page: %s' % pckg)
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0'}
     try:
         req = urllib2.Request(url, data=None, headers=headers)
@@ -65,6 +66,7 @@ def htmlContent(url):
     except:
         print('ERROR ! Failed to request and download the web-site: %s' % url)
         data = ''
+    print('...done.')
     return data
 
 #############################################################################
@@ -77,11 +79,11 @@ if __name__ == '__main__':
         webpage = htmlContent(pckg)
         
         if webpage:
-            print('Web page download successful - package: %s\nProcessing data, please wait...' % pckg)
-            
             pckg_name = pckg.split('/')[5]                                          # - output example:   ['https:', '', 'www.flysat.com', 'en', 'package', 'skylink-1', 'astra-3b']
             if pckg_name[-2:] in ('-1', '-2', '-3', '-4'):
                 pckg_name = pckg_name[:-2]
+            
+            print('Processing "%s" package, please wait...' % pckg_name)
             
             #bkp_file = '/tmp/FlySat_-_%s.html' % pckg_name
             #with open(bkp_file, 'w') as f:
@@ -130,7 +132,7 @@ if __name__ == '__main__':
                     # # # # # # #      CAID(s)      :    SID    |      PROVIDER NAME      |    CHANNEL NAME 
                     result.append(packages[pckg] + ':' + SID + '|' + pckg_name.upper() + '|' + CHN)
             
-            print('...done.\n')
+            print('...done.')
         else:
             print('Web page download FAILED !!! - package: %s' % pckg)
     
@@ -139,7 +141,7 @@ if __name__ == '__main__':
         # delete (rewrite) a file / save the 'result' variable into a file
         with open(output_file, 'w') as f:
             f.write(data)
-            print('File "%s" was saved.\n' % output_file)
+            print('File "%s" was stored.' % output_file)
     
     print('Good bye.')
 
