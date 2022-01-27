@@ -12,9 +12,10 @@ header = """
 output_file = '/tmp/oscam.srvid'
 
 packages = {
-  'https://flysat.com/en/package/antiksat-1/eutelsat-16a'      :   '0B00' ,
-  'https://flysat.com/en/package/skylink-1/astra-3b'           :   '0D96,0624' ,
-  'https://flysat.com/en/package/sky-deutschland-2/astra-19'   :   '1833,1834,1702,1722,09C4,09AF' ,
+   'https://flysat.com/en/package/antiksat-1/eutelsat-16a'      :   '0B00' ,
+   'https://flysat.com/en/package/skylink-1/astra-3b'           :   '0D96,0624' ,
+   'https://flysat.com/en/package/sky-deutschland-2/astra-19'   :   '1833,1834,1702,1722,09C4,09AF' ,
+   'https://flysat.com/en/package/maxtv-sat-1/eutelsat-16a'     :   '1830' ,
 }
 
 # packages = { 
@@ -76,7 +77,7 @@ if __name__ == '__main__':
         webpage = htmlContent(pckg)
         
         if webpage:
-            print('Web page download successful - package: %s' % pckg)
+            print('Web page download successful - package: %s\nProcessing data, please wait...' % pckg)
             
             pckg_name = pckg.split('/')[5]                                          # - output example:   ['https:', '', 'www.flysat.com', 'en', 'package', 'skylink-1', 'astra-3b']
             if pckg_name[-2:] in ('-1', '-2', '-3', '-4'):
@@ -92,7 +93,7 @@ if __name__ == '__main__':
             while i < len(webpage) - 1000:
                 
                 # retrieve the channel name
-                i = webpage.find('flysat.com/en/channel/', i)
+                i = webpage.find('30px', i)                                         # match_str   =   '30px'  /  'height:30px'   /   'height: 30px'   /   'flysat.com/en/channel/'
                 if i == -1:
                     break # to break the while loop
                 i = webpage.find('<b>', i) + 3
@@ -128,6 +129,8 @@ if __name__ == '__main__':
                 for SID in SIDS:        # if some more SIDs were found...
                     # # # # # # #      CAID(s)      :    SID    |      PROVIDER NAME      |    CHANNEL NAME 
                     result.append(packages[pckg] + ':' + SID + '|' + pckg_name.upper() + '|' + CHN)
+            
+            print('...done.\n')
         else:
             print('Web page download FAILED !!! - package: %s' % pckg)
     
@@ -136,7 +139,7 @@ if __name__ == '__main__':
         # delete (rewrite) a file / save the 'result' variable into a file
         with open(output_file, 'w') as f:
             f.write(data)
-            print('File "%s" was saved.' % output_file)
+            print('File "%s" was saved.\n' % output_file)
     
     print('Good bye.')
 
