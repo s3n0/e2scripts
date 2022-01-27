@@ -93,7 +93,7 @@ if __name__ == '__main__':
             while i < len(webpage) - 1000:
                 
                 # retrieve the channel name
-                i = webpage.find('30px', i)                                         # match_str   =   '30px'  /  'height:30px'   /   'height: 30px'   /   'flysat.com/en/channel/'
+                i = webpage.find('30px', i)                                         # '30px'  /  'height:30px'   /   'height: 30px'   /   'flysat.com/en/channel/'
                 if i == -1:
                     break # to break the while loop
                 i = webpage.find('<b>', i) + 3
