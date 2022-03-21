@@ -72,7 +72,7 @@
 #      For add (install) the startup sym-links to run-level No.3 (Enigma2 default run-level):
 #         ln -sf /etc/init.d/softcam /etc/rc3.d/S90softcam
 #      For remove (uninstall) the symbolic link you can simply delete this link:
-#         rm -f /etc/rc3.d/S90softcam
+#         rm -f /etc/rc3.d/S90softcam               # or the same way with "unlink" command:   unlink /etc/rc3.d/S90softcam
 #
 # 3)   Copy your configuration files (using the FTP connection) into the particular folder:
 #      For the OSCam:  "/etc/tuxbox/config/oscam" 
