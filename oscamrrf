@@ -1,0 +1,135 @@
+#!/bin/bash
+
+
+
+USER_NAME="a"
+USER_PASS="b"
+PORT="8888"
+OSCAM_READER_0="reader_sci0"
+OSCAM_READER_1="reader_sci1"
+
+OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"       # if no password is used:  OSCAM_WEBIF=http://127.0.0.1:${PORT}
+
+
+
+###################################
+####
+####  OSCAM-Reader-Restarts-as-Force
+####
+####  A simple endless shell-script that restarts the Oscam readers - both internal card-readers ! as force ! every 2 mins (60 + 60 secs) !
+####
+####  Shell script designed by s3n0 (2022-03-21):
+####        https://github.com/s3n0
+####        https://www.linuxsat-support.com/cms/user/347246-s3n0/
+####
+####  Example of use:
+####        /etc/init.d/oscamrrf <start|stop|restart>
+####
+####  Original shell script:    
+####        https://www.linuxsat-support.com/thread/115614-script-to-restart-1-of-2-readers-on-no-entitelments/
+####
+###################################
+####
+####  How to install:
+####        cp /tmp/oscamrrf /etc/init.d/oscamrrf                   # copy the script into the "/etc/inid.d" folder (if you have not already done so - for example with the help of an FTP client)
+####        chmod a+x /etc/init.d/oscamrrf                          # and set the file execution rights
+####        ln -sf /etc/init.d/oscamrrf /etc/rc3.d/S90oscamrrf      # link the script file under the Run-Level-3 (for auto-start during system boot)
+####        /etc/init.d/oscamrrf start                              # start it manually (only as first time)
+####
+####  How to uninstall:
+####        /etc/init.d/oscamrrf stop
+####        rm -f /etc/rc3.d/S90oscamrrf /etc/init.d/oscamrrf
+####
+###################################
+
+
+
+TMP_SCRIPT_NAME="oscam_readers_force_restart"
+
+
+
+###################################
+
+fStart() {
+    
+    cat << NEWSCRIPT > /tmp/$TMP_SCRIPT_NAME
+#!/bin/bash
+
+trap 'exit' INT TERM ERR 
+trap 'kill 0' EXIT
+
+while true; do
+    wget -qO- "${OSCAM_WEBIF}/status.html?action=restart&label=${OSCAM_READER_0}" > /dev/null 2>&1
+    sleep 60
+    wget -qO- "${OSCAM_WEBIF}/status.html?action=restart&label=${OSCAM_READER_1}" > /dev/null 2>&1
+    sleep 60
+done
+
+exit
+NEWSCRIPT
+    
+    #sed '/sleep[[:space:]]120/d' /tmp/$TMP_SCRIPT_NAME
+    #sed -i '7 a sleep 120' /tmp/$TMP_SCRIPT_NAME              # sed for in-place editing (-i) of the file: 'LINE_NUMBER a-ppend TEXT_TO_ADD'
+    
+    chmod a+x /tmp/$TMP_SCRIPT_NAME
+    nohup /tmp/$TMP_SCRIPT_NAME &>/dev/null &
+}
+
+###################################
+
+fStop() {
+    if [ -e "/tmp/$TMP_SCRIPT_NAME" ]; then
+        if killall --help > /dev/null 2>&1; then # use the `killall` command
+            killall -9 $TMP_SCRIPT_NAME
+        else                                     # use the `kill` command
+            if ps --version 2>&1 | grep -q -i "busybox"; then  # ...then... use the feature-poor `ps` command from BusyBox (for example in OpenPLi image)
+                PID=$(ps | grep $TMP_SCRIPT_NAME | grep -v 'grep' | awk '{ printf $1 }')
+            else                                               # ...else... use the full-featured `ps` command from Linux OS (for example in OpenATV image)
+                PID=$(ps -ef | grep $TMP_SCRIPT_NAME | grep -v 'grep' | awk '{ printf $2 }')
+                #PID=$(ps -aux | grep $TMP_SCRIPT_NAME | grep -v 'grep' | cut -d ' ' -f 6)
+            fi
+            kill -n 9 $PID
+        fi
+        sleep 1
+        rm -f /tmp/$TMP_SCRIPT_NAME
+    fi
+}
+
+###################################
+
+case "$1" in
+    start)
+        fStart
+        ;;
+    stop)
+        fStop
+        ;;
+    restart)
+        fStop
+        fStart
+        ;;
+    status)
+        [ -e "/tmp/$TMP_SCRIPT_NAME" ] && { echo "service is running"; exit 0; } || { echo "service is stopped"; exit 3; }
+        ;;
+    *)
+        echo "ERROR ! Wrong argument ! The correct usage syntax is:"
+        echo "    $0 <start|stop|restart|status>"
+        exit 2 # invalid or excess argument(s)
+        ;;
+esac
+
+###################################
+
+exit 0
+
+
+
+
+
+
+
+#### ---- to restart the specific card reader :
+#### [ $(wget -qO- "${OSCAM_WEBIF}/entitlements.html?label=${OSCAM_READER}" | grep -c "tier") -gt 0 ] && wget -qO- "${OSCAM_WEBIF}/status.html?action=restart&label=${OSCAM_READER}" > /dev/null 2>&1
+#### ---- to re-read entitlements :
+#### #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    /readers.html?action=reread&label=${OSCAM_READER}" > /dev/null 2>&1
+
