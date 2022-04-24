@@ -1,0 +1,18 @@
+[Unit]
+Description=Softcam
+After=dev-dvb-adapter0-ca0.device
+After=dev-dvb-adapter0-demux0.device
+After=dev-sci0.device
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/oscam -b -r 2
+# for CCcam, use the following startup command:  ExecStart=/usr/bin/CCcam &
+Restart=on-failure
+NotifyAccess=main
+NonBlocking=true
+
+[Install]
+WantedBy=multi-user.target
+
+# A NOTE:   This file belongs to the directory '/lib/systemd/system'
