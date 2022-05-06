@@ -1,23 +1,26 @@
 #!/bin/bash
 
+
 ####################################################
 # Backup & Restore
-# by s3n0, 2019-10-03
+# by s3n0, 2019-10-03 .. 2022-05-06
 ####################################################
-# simple shell script for backing up and restoring
-# user-defined files and folders in the Enigma2
+# shell script for backing up and restoring user-defined files and folders in the Enigma2
 ####################################################
 
 
-#### user defined folder with your stored / archived backup files
-#BACKUP_DIR=""                                  # leave blank, i.e. empty folder -> means the current directory (in the Shell)
+#BACKUP_DIR=""                              # leave blank, i.e. empty folder -> means the current directory (specified by Linux-Shell / terminal)
 #BACKUP_DIR="/media/hdd/backrest_folder/"
 #BACKUP_DIR="/home/root/backrest_folder/"
 #BACKUP_DIR="/media/mmc/backrest_folder/"
-BACKUP_DIR="/hdd/backrest_folder/"
+#BACKUP_DIR="/hdd/backrest_folder/"
+BACKUP_DIR="/tmp/backrest_folder/"
+##### * WARNING !!! if you use the "/tmp" folder to backup, keep in mind that this is a TEMPORARY folder, created in the RAM-disk,
+##### * so after restarting Linux, its contents will be deleted... therefore after backup, please temporarily copy the archive-file to your PC,
+##### * and before restoring the data, copy the archive-file back to the backup subfolder in "/tmp"
 
 
-FILE_PREFIX="e2-backup"                         # Note: The timestamp is automatically added at the end of the file name and the file extension will to be ".tar.gz"
+FILE_PREFIX="e2-backup"                     # Note: The timestamp is automatically added at the end of the file name (as a file sufix) + the file extension will be set to ".tar.gz"
 
 
 LIST="
@@ -37,6 +40,8 @@ LIST="
 
 /usr/script/
 
+/usr/bin/enigma2_pre_start.sh
+
 /usr/bin/*cam*
 /etc/init.d/softcam*
 /etc/rc?.d/*softcam*
@@ -47,11 +52,25 @@ LIST="
 /usr/bin/udpxy
 /etc/init.d/udpxy
 /etc/rc?.d/*udpxy
-
-/usr/lib/enigma2/python/Plugins/Extensions/ChocholousekPicons/
 "
 
+
+PLUGINS_TO_RESTORE="
+enigma2-plugin-extensions-chocholousek-picons
+enigma2-plugin-extensions-youtube
+enigma2-plugin-skins-metrix-atv-fhd-icons
+enigma2-plugin-systemplugins-fastscan
+zerotier
+curlftpfs
+"
+
+
+
+
 LIST=$(echo $LIST | tr "\n" " ")
+
+PLUGINS_TO_RESTORE=$(echo $PLUGINS_TO_RESTORE | tr "\n" " ")
+
 
 
 
@@ -97,7 +116,8 @@ do_backup() {
         init_4_with_feedback
         echo "-----------------------"
     fi
-    BACKUP_TMP="/tmp/${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
+    mkdir -p /tmp/backrest_temp
+    BACKUP_TMP="/tmp/backrest_temp/${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
     BACKUP_FINAL="${BACKUP_DIR}${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
     echo "Output archive file name: "
     echo "    TMP:   ${BACKUP_TMP}  "
@@ -133,10 +153,21 @@ do_restore() {
         echo "The latest archive file found in the directory:"
         echo "    ${LATEST_FILE}"
         echo "-----------------------"
+        echo "Installing required plugins..."
+        opkg update > /dev/null 2>&1
+        opkg install $PLUGINS_TO_RESTORE
+        echo "...done."
+        echo "-----------------------"
         echo "Starting decompression..."
         tar -C / --overwrite -xzphf $LATEST_FILE
         echo "...done."
         echo "-----------------------"
+        if [ -d "/usr/script" ]; then
+            echo "Setting the execution rights (attributes) on all files from the '/usr/script' folder."
+            chmod a+x /usr/script/*
+            echo "...done."
+            echo "-----------------------"
+        fi
         echo "Restarting the set-top box..."
         echo "(sending the 'init 6' command)"
         init 6
