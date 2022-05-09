@@ -23,12 +23,17 @@ BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
 
 LOG_FILE_PATH = '/tmp/epg_refresh.log'
 
-DELAY_TIME = 10             # waiting time after zapping each channel (transponder)
+DELAY_TIME = 15             # waiting time after zapping each channel (transponder)
+
+###############################################
 
 from datetime import datetime
 from time import sleep
 from urllib2 import urlopen
 from os.path import getsize as os_path_getsize
+
+with open('/etc/enigma2/lamedb', 'r') as f:
+     LAME_DB = f.read().split('services')[2].splitlines()
 
 ###############################################
 
@@ -42,8 +47,8 @@ def writeLOG(msg):
         with open(LOG_FILE_PATH, 'w') as f:
             f.writelines( cache[ len(cache)/2 : ] )
 
-def zapChannel(channel = '0:0:0:0:0:0:0:0:0:0:'):       # zap channel (using the Enigma2 Open-Webif)
-    response = urlopen('http://127.0.0.1/web/zap?sRef=' + channel)
+def zapChannel(src='0:0:0:0:0:0:0:0:0:0:'):     # zap channel (using the Enigma2 Open-Webif)
+    response = urlopen('http://127.0.0.1/web/zap?sRef=' + src)
     web_content = response.read()
 
 def enigmaInStandby():                      # checking standby mode (using the Enigma2 Open-Webif)
@@ -59,6 +64,19 @@ def saveEPG():                              # save EPG cache to disk - as the fi
     response = urlopen('http://127.0.0.1/web/saveepg')
     web_content = response.read()
 
+def findChannelName(src='0:0:0:0:0:0:0:0:0:0:'):
+    # index...................       0       1         2          3     4     5        6       7 8 9
+    # userbouquet SRC  =======  ServSource : 0 : ServType[hex] : SID : TID : NID : NameSpace : 0:0:0:    ==>   example for Markiza channel (2022-May) = 1:0:19:3731:C8E:3:EB0000:0:0:0:
+    result = "UNKNOWN!"
+    src    = src.split(":")
+    # lameDB stream data  ====      SID          :     NameSpace       :         TID         :        NID          :   ServType[dec]
+    match  = ":".join((      src[3].rjust(4,"0") , src[6].rjust(8,"0") , src[4].rjust(4,"0") , src[5].rjust(4,"0") , str(int(src[2],16))    )).upper()
+    for i, line in enumerate(LAME_DB, 0):
+        if line.upper().startswith(match):
+            result = LAME_DB[ i + 1 ]
+            break
+    return result
+
 ###############################################
 ###############################################
 
@@ -73,12 +91,12 @@ if __name__ == "__main__" and enigmaInStandby():
             bouquet_data = f.read().upper().split('\n')
         # remove all lines startswith '#NAME', '#SERVICE 1:64', '#DESCRIPTION'
         # and take the values from index 9 to right side, i.e. lines without the prefix '#SERVICE ' and also without the URL link (http: ..... string) if does it exist
-        refs = [ ':'.join(s[9:].split(':')[0:10]) + ':' for s in bouquet_data if not (s.startswith('#NAME') or s.startswith('#SERVICE 1:64') or s.startswith('#DESCR'))  ]
+        refs = [':'.join(s[9:].split(':')[0:10]) + ':' for s in bouquet_data if not (s.startswith('#NAME') or s.startswith('#SERVICE 1:64') or s.startswith('#DESCR'))]
         bouquet_SRC += refs[:-1]       # the last entry ':' in the list variable must to be removed (created in the for-loop before)
     
     with open('/etc/enigma2/blacklist', 'r') as f:
         blacklist_data = f.read().upper().split('\n')
-        blacklist_SRC = [ ':'.join(k.split(':')[0:10]) + ':' for k in blacklist_data ][:-1]     # remove all http:// and other unwanted text from the end of lines
+        blacklist_SRC = [':'.join(k.split(':')[0:10]) + ':' for k in blacklist_data][:-1]     # remove all http:// and other unwanted text from the end of lines
     
     needs_SRC = []
     for SRC in bouquet_SRC:
@@ -90,12 +108,12 @@ if __name__ == "__main__" and enigmaInStandby():
             if SRC not in blacklist_SRC:
                 needs_SRC.append(SRC)
     
-    writeLOG('Number of channels/transponders to tune: %s' % len(needs_SRC))
-    writeLOG('Zapping the neccessary channels/transponders...')
+    writeLOG('Number of transponders/channels to tune: %s' % len(needs_SRC))
+    writeLOG('Zapping the neccessary transponders/channels...')
     
     for i, SRC in enumerate(needs_SRC, 1):
         zapChannel(SRC)
-        writeLOG('{:03d} / {:03d} - {}'.format(i, len(needs_SRC), SRC))
+        writeLOG('{:03d} / {:03d} | {} | {}'.format(i, len(needs_SRC), SRC, findChannelName(SRC)))
         sleep(DELAY_TIME)   # waiting a few of seconds - for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
     
     writeLOG('...done.')
