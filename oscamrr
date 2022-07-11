@@ -8,7 +8,7 @@ PORT="8888"
 OSCAM_READER="reader_sci0"
 
 
-OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"       # if no password is used:  OSCAM_WEBIF=http://127.0.0.1:${PORT}
+OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"    # if the oscam password is not used:   OSCAM_WEBIF="http://127.0.0.1:${PORT}"
 
 
 
@@ -17,6 +17,8 @@ OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"       # if no p
 ####  OSCAM-Reader-Restarts
 ####
 ####  A simple endless shell-script that restarts the Oscam reader - in case if there are no "Tiers" / "Entitlements"
+####
+###################################
 ####
 ####  Shell script designed by s3n0 (2022-03-20):
 ####        https://github.com/s3n0
@@ -31,7 +33,7 @@ OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"       # if no p
 ###################################
 ####
 ####  How to install:
-####        cp /tmp/oscamrr /etc/init.d/oscamrr                     # copy the script into the "/etc/inid.d" folder (if you have not already done so - for example with the help of an FTP client)
+####        wget -O /etc/init.d/oscamrr --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscamrr"      # download and place the script into the "/etc/inid.d" folder
 ####        chmod a+x /etc/init.d/oscamrr                           # and set the file execution rights
 ####        ln -sf /etc/init.d/oscamrr /etc/rc3.d/S90oscamrr        # link the script file under the Run-Level-3 (for auto-start during system boot)
 ####        /etc/init.d/oscamrr start                               # start it manually (only as first time)
@@ -126,4 +128,3 @@ exit 0
 #### [ $(wget -qO- "${OSCAM_WEBIF}/entitlements.html?label=${OSCAM_READER}" | grep -c "tier") -gt 0 ] && wget -qO- "${OSCAM_WEBIF}/status.html?action=restart&label=${OSCAM_READER}" > /dev/null 2>&1
 #### ---- to re-read entitlements :
 #### #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    /readers.html?action=reread&label=${OSCAM_READER}" > /dev/null 2>&1
-
