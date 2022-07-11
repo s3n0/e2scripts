@@ -8,7 +8,7 @@ PORT="8888"
 OSCAM_READER_0="reader_sci0"
 OSCAM_READER_1="reader_sci1"
 
-OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"       # if no password is used:  OSCAM_WEBIF=http://127.0.0.1:${PORT}
+OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"    # if the oscam password is not used:   OSCAM_WEBIF="http://127.0.0.1:${PORT}"
 
 
 
@@ -16,7 +16,9 @@ OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"       # if no p
 ####
 ####  OSCAM-Reader-Restarts-as-Force
 ####
-####  A simple endless shell-script that restarts the Oscam readers - both internal card-readers ! as force ! every 2 mins (60 + 60 secs) !
+####  A simple endless shell-script that restarts the Oscam readers - both internal card readers ! as FORCE ! every 2 mins (60 sec. + 60 sec.) !
+####  The script will restart the first reader in 60 seconds and then restart the second reader - in another 60 seconds.
+###################################
 ####
 ####  Shell script designed by s3n0 (2022-03-21):
 ####        https://github.com/s3n0
@@ -31,7 +33,7 @@ OSCAM_WEBIF="http://${USER_NAME}:${USER_PASS}@127.0.0.1:${PORT}"       # if no p
 ###################################
 ####
 ####  How to install:
-####        cp /tmp/oscamrrf /etc/init.d/oscamrrf                   # copy the script into the "/etc/inid.d" folder (if you have not already done so - for example with the help of an FTP client)
+####        wget -O /etc/init.d/oscamrrf --no-check-certificate "https://github.com/s3n0/e2scripts/raw/master/oscamrrf"      # download and place the script into the "/etc/inid.d" folder
 ####        chmod a+x /etc/init.d/oscamrrf                          # and set the file execution rights
 ####        ln -sf /etc/init.d/oscamrrf /etc/rc3.d/S90oscamrrf      # link the script file under the Run-Level-3 (for auto-start during system boot)
 ####        /etc/init.d/oscamrrf start                              # start it manually (only as first time)
@@ -132,4 +134,3 @@ exit 0
 #### [ $(wget -qO- "${OSCAM_WEBIF}/entitlements.html?label=${OSCAM_READER}" | grep -c "tier") -gt 0 ] && wget -qO- "${OSCAM_WEBIF}/status.html?action=restart&label=${OSCAM_READER}" > /dev/null 2>&1
 #### ---- to re-read entitlements :
 #### #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    #    /readers.html?action=reread&label=${OSCAM_READER}" > /dev/null 2>&1
-
