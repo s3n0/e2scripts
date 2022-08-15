@@ -4,7 +4,7 @@ print("""
 #####################################
 ###    Oscam Picons Converter     ###
 ###         .PNG to .TPL          ###
-###      by s3n0 , 2019-2021      ###
+###      by s3n0 , 2019-2022      ###
 ###    https://github.com/s3n0    ###
 #####################################
 """)
@@ -214,48 +214,61 @@ python {0} <COMMANDS>
 
 === COMMANDS:
 
+    ---------------------------------------------------------
     Method of creating table SID:CAIDs (choose it carefully):
     ---------------------------------------------------------
 
--a  make a table of SIDs obtained from all '*.PNG' files (from SKIN-picon directory),
-    in this case there are no CAIDs,
-    so the user-determined CAIDs will be added
-        '-c CAIDs' argument is necessary ! to specify the user's own CAIDs !
-        '-1' and '-2' arguments will be ignored here
-
--1  make a table from all available SID:CAIDs in the 'oscam.srvid' file
+-1  
+    make a table from all available SID:CAIDs in the 'oscam.srvid' file
         '-c CAIDs' argument is not necessary, but it may be used (as a filter)
         may be used in combination with '-2'
 
--2  make a table from all available SID:CAIDs in the 'oscam.srvid2' file
+-2
+    make a table from all available SID:CAIDs in the 'oscam.srvid2' file
         '-c CAIDs' argument is not necessary, but it may be used (as a filter)
         may be used in combination with '-1'
         
         A NOTE:  the 'oscam.srvid2' file especially may also contain FTA channels with CAID = FFFE,
                  which could also be included as TPL-picons, automatically in the generated table of CAIDs
 
--l <"PROVIDER NAME 1[, PROVIDER NAME 2, ...]">
+    --------------------------------------
+    USE THE -a OR USE THE -l ARGUMENT ONLY
+    --------------------------------------
+
+-a  
+    make a table of SIDs obtained from all '*.PNG' files (from SKIN-picon directory),
+    in this case there are no CAIDs,
+    so the user-determined CAIDs will be added
+        '-c CAIDs' argument is necessary ! to specify the user's own CAIDs !
+        '-1' and '-2' arguments will be ignored here
+
+-l "PROVIDER NAME 1[, PROVIDER NAME 2, ...]"
+    
     make a table of SIDs obtained from all '*.PNG' files (from SKIN-picon directory),
     but according to the DVB-provider name, found in the `lamedb` file
-        "PROVIDER-NAME" = the name(s) of your DVB-provider in quotation marks (example: 'SKY DE'; 'M7 Group'; 'Polsat'; etc.)
+        "PROVIDER-NAME" = the name(s) of your DVB-provider in quotation marks, separated by commas,
+                          for example:  -l "SKY DE,M7 Group,Polsat"
         '-c CAIDs' argument is necessary ! to specify the user's own CAIDs ! 
                    because the `lamedb` file, unfortunately, does not always contain CAIDs
         '-1' and '-2' arguments will be ignored here
 
-    Filtering or determining of CAIDs (it's important in case of the argument '-a' and '-l'):
+    -----------------------------------------------------------------------------------------
+    Filtering or determining of CAIDs (important, in the case of the argument '-a' and '-l'):
     -----------------------------------------------------------------------------------------
 
--c <CAID[,CAID,...]>
-        user-determined CAIDs separated by a comma (specifying user-defined CAIDs)
-    --OR--
-        filtered CAIDs - selecting the only required CAIDs what will retrieved from '.srvid' and/or '.srvid2' file
-        
-    --WARNING--
-        if you do not specify the argument '-c' in the case of '-1' and '-2' arguments,
-        then all found CAIDs will be used ! beware of the large number of CAIDs (TPL files) !
+-c CAID[,CAID,...]
 
-    Optional arguments:
-    -------------------
+     user-determined CAIDs separated by a comma (specifying user-defined CAIDs)
+   --OR--
+     filtered CAIDs - selecting the only required CAIDs what will retrieved from '.srvid' and/or '.srvid2' file
+        
+   --WARNING--
+     if you do not specify the argument '-c' in the case of '-1' and '-2' arguments,
+     then all found CAIDs will be used ! beware of the large number of CAIDs (TPL files) !
+
+-------------------
+Optional arguments:
+-------------------
 
 -o <PATH>   path to the Oscam cfg-directory, if the script did not find the Oscam cfg-directory automatically
 -p <PATH>   path to the SKIN-picon directory, if the default '/usr/share/enigma2/picon' directory was not found
@@ -357,7 +370,7 @@ def prepare_arguments():
             return False
     
     if '-l' in sys.argv:
-        print('User-selected PROVIDER NAME for "lamedb" file that will be considered: %s' % sys.argv[sys.argv.index('-l')+1] )
+        print('User-selected PROVIDER NAME for "lamedb" file that will be considered: %s' % sys.argv[sys.argv.index('-l') + 1] )
     
     if '-c' in sys.argv:
         clist = sys.argv[ sys.argv.index('-c') + 1 ].upper().split(',')
