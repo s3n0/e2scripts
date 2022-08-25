@@ -123,7 +123,7 @@ HRLINE="------------------------------------------------------------------------
 MANPAGE="PROPER USE OF THE SCRIPT:
     ${0} <ARGUMENT>
 POSSIBLE ARGUMENTS:
-$(cat ${0} | grep -wE '[[:space:]]+[a-z\|\-]+)' | tr -d ')')"
+$(cat ${0} | grep -wE '^[[:space:]]+[a-z\|\-]+\)$' | tr -d ')')"
 #
 # ###############  END OF THE USER SETUP  ##################
 
@@ -201,9 +201,9 @@ fRestart()
 fGetVer()
 {
     case `echo "$BINFILENAME" | tr '[:upper:]' '[:lower:]'` in              #  `echo "$BINFILENAME" | awk '{print tolower($0)}'`
-        "oscam"*) VER=$($BINDIR/$BINFILENAME -V | grep 'Version\|IPv6' | sed 's/Version:[ ]*//' | sed 's/IPv6.*yes/with IPv6/g' | sed 's/IPv6.*no/IPv4-only/g' | sed ':a;N;$!ba;s/\n/ /g') ;;
-        "cccam"*) VER=$(strings $BINDIR/$BINFILENAME | grep -E 'CCcam[[:space:]][0-9/./-]+') ;;             # it is not completely regular to get the CCcam version, but it works :)
-               *) VER="ERROR! version/info detection for '${BINFILENAME}' has not yet been implemented in the script algorithm" ;;
+    "oscam"*|"ncam"*) VER=$($BINDIR/$BINFILENAME -V | grep 'Version\|IPv6' | sed 's/Version:[ ]*//' | sed 's/IPv6.*yes/with IPv6/g' | sed 's/IPv6.*no/IPv4-only/g' | sed ':a;N;$!ba;s/\n/ /g') ;;
+            "cccam"*) VER=$(strings $BINDIR/$BINFILENAME | grep -E 'CCcam[[:space:]][0-9/./-]+') ;;             # it is not completely regular to get the CCcam version, but it works :)
+                   *) VER="ERROR! version/info detection for '${BINFILENAME}' has not yet been implemented in the script algorithm" ;;
     esac
     [ -z "$VER" ] && VER="ERROR! failed to get version/info of softcam '${BINFILENAME}'"
     echo "$VER"
@@ -234,13 +234,13 @@ fBackgroundScript()
                         fi
                         sleep 600       # 600 sec. = 10 min.
                     done
-                    rm -f /tmp/softcam_AU_on_background.run
                     exit 0
                     "
                 echo "${CMD}" > /tmp/softcam_AU_on_background.sh
                 chmod a+x /tmp/softcam_AU_on_background.sh
             fi
             /bin/bash "/tmp/softcam_AU_on_background.sh" &>/dev/null & disown
+            fLog "...the '/tmp/softcam_AU_on_background.sh' script was started"
             ;;
         stop)
             PID_SCRIPT=$(ps aux | grep 'softcam_AU_on_background.sh' | grep -v 'grep' | awk '{print $2}')
@@ -248,6 +248,7 @@ fBackgroundScript()
             #kill $PID_SCRIPT $PID_CHILDS
             pkill -P $PID_SCRIPT
             rm -f "/tmp/softcam_AU_on_background.sh"
+            fLog "...the '/tmp/softcam_AU_on_background.sh' script was stopped"
             ;;
     esac
 }
