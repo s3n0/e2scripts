@@ -1,8 +1,8 @@
 #!/bin/sh
 
-################################################################################
-#### a simple command-line to remove unnecessary language packs from Enigma ####
-################################################################################
+#################################################################################
+#### a simple command-line to remove unnecessary language packs from OpenATV ####
+#################################################################################
 
 #### HOW TO CHECK INSTALLED LANG. PACKAGES:
 #opkg update && opkg list-installed | grep enigma2-locale
