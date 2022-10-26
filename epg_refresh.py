@@ -15,15 +15,14 @@
 #       00 03 */2 * *      /usr/bin/python /usr/script/epg_refresh.py > /dev/null 2>&1
 ###############################################
 
-#### change the path to your own userbouquet file(s) containing the satellite channels for which you want to refresh EPG data :
-BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
-
-#### if you need more than one userbouquet, use the following syntax :
+#### change the path to your own userbouquet file(s), containing the satellite channels, for which you want to refresh EPG data :
+#BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
+BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv', 'userbouquet.sat-skylink-vhannibal.tv']
 #BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
 
-LOG_FILE_PATH = '/tmp/epg_refresh.log'
+LOG_FILE_PATH = '/tmp/epg_refresh.log'      # epg_refresh log (path to directory + file name)
 
-DELAY_TIME = 15             # waiting time after zapping each channel (transponder)
+DELAY_TIME = 15                             # waiting time after zapping each channel (transponder)
 
 ###############################################
 
@@ -67,15 +66,15 @@ def saveEPG():                              # save EPG cache to disk - as the fi
 def findChannelName(src='0:0:0:0:0:0:0:0:0:0:'):
     # index...................       0       1         2          3     4     5        6       7 8 9
     # userbouquet SRC  =======  ServSource : 0 : ServType[hex] : SID : TID : NID : NameSpace : 0:0:0:    ==>   example for Markiza channel (2022-May) = 1:0:19:3731:C8E:3:EB0000:0:0:0:
-    result = "UNKNOWN!"
-    src    = src.split(":")
-    # lameDB stream data  ====      SID          :     NameSpace       :         TID         :        NID          :   ServType[dec]
-    match  = ":".join((      src[3].rjust(4,"0") , src[6].rjust(8,"0") , src[4].rjust(4,"0") , src[5].rjust(4,"0") , str(int(src[2],16))    )).upper()
+    ch_name = "UNKNOWN!"
+    src = src.split(":")
+    # lameDB stream data   ===     SID          :     NameSpace       :         TID         :        NID          :   ServType[dec]
+    match = ":".join((      src[3].rjust(4,"0") , src[6].rjust(8,"0") , src[4].rjust(4,"0") , src[5].rjust(4,"0") , str(int(src[2],16))    )).upper()
     for i, line in enumerate(LAME_DB, 0):
         if line.upper().startswith(match):
-            result = LAME_DB[ i + 1 ]
+            ch_name = LAME_DB[ i + 1 ]
             break
-    return result
+    return ch_name
 
 ###############################################
 ###############################################
@@ -108,8 +107,8 @@ if __name__ == "__main__" and enigmaInStandby():
             if SRC not in blacklist_SRC:
                 needs_SRC.append(SRC)
     
-    writeLOG('Number of transponders/channels to tune: %s' % len(needs_SRC))
-    writeLOG('Zapping the neccessary transponders/channels...')
+    writeLOG('Number of transponders to tune: %s' % len(needs_SRC))
+    writeLOG('Zapping the neccessary transponders...')
     
     for i, SRC in enumerate(needs_SRC, 1):
         zapChannel(SRC)
