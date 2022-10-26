@@ -31,9 +31,6 @@ from time import sleep
 from urllib2 import urlopen
 from os.path import getsize as os_path_getsize
 
-with open('/etc/enigma2/lamedb', 'r') as f:
-     LAME_DB = f.read().split('services')[2].splitlines()
-
 ###############################################
 
 def writeLOG(msg):
@@ -83,6 +80,9 @@ writeLOG(' ')
 writeLOG('==== BEGINNING OF THE SCRIPT ' + '=' * 44)
 
 if __name__ == "__main__" and enigmaInStandby():
+    
+    with open('/etc/enigma2/lamedb', 'r') as f:
+        LAME_DB = f.read().split('services')[2].splitlines()
     
     bouquet_SRC = []
     for fname in BOUQUET_FILES:
