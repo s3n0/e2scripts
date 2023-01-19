@@ -4,7 +4,7 @@
    > - switching On and Off the LG TV via RS-232 interface
 
 + **softcam**
-   > - OSCam startup bash script '/etc/init.d/softcam' for Enigma2 based set-top-box
+   > - OSCam startup shell-scripts (Bash) '/etc/init.d/softcam' for Enigma2 based set-top-box
    > - it also records its activity to a temporary LOG-file
    > - more info can be found in the script
    > - if you need to use this script for CCCam, please use the following 'sed' command:
@@ -29,7 +29,7 @@
    ```
 
 + **backrest**
-   > - simple bash script for backing up and restoring user-defined settings, files or folders in Enigma2
+   > - simple bash script for backing up and restoring user-defined settings + files + folders in Enigma2
    > - disadvantage is the need to manually edit this script after each new feature is added to your Enigma (plugins, binary files, scripts, etc.) for full backup or restore
 
 + **picons-downloader.sh**
