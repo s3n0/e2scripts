@@ -113,7 +113,7 @@ LOGSIZE=45000                                   # limit maximum file size [Bytes
 # CHANNEL (SERVICE REFERENCE CODE) FOR AUTO-UPDATE OF PREPAID TV-PACKAGES (ENTITLEMENTS) + WAITING TO AUTO-UPDATE (DELAY IN SECONDS):
 # A NOTE:  Auto-Updating via EMM packets is required after a Softcam start/restart, for some encryption cards, for example when the card is operating in IRDETO mode.
 ZAPCHANNEL="1:0:19:3731:C8E:3:EB0000:0:0:0:"    # Service-Reference-Code of the satellite channel - for invoke the ZAP function, via Enigma2 / Open-Webif
-ZAPDELAY=40
+ZAPDELAY=50
 ZAPONSTART="yes"                                # "no" / "yes" - run the AutoUpdate script-function after every daemon/softcam start
 #
 # AUXILIARY SCRIPT VARIABLES:
