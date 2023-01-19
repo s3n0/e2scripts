@@ -32,9 +32,6 @@
    > - simple bash script for backing up and restoring user-defined settings + files + folders in Enigma2
    > - disadvantage is the need to manually edit this script after each new feature is added to your Enigma (plugins, binary files, scripts, etc.) for full backup or restore
 
-+ **picons-downloader.sh**
-   > - simple bash script for download & extract picons from Google-Drive server, which are compressed with 7zip (i.e. 7zip archivator is required)
-
 + **oscam-new-version-updater.sh**
    > - script checks if there is a newer version on the internet and if so, updates the binary file extracted from the downloaded IPK package
    > - 7zip archiver is required since 'ar' tool is a problematic ('ar' is part of the limited [BusyBox](https://busybox.net/) in most cases) when splitting files from IPK packages
@@ -42,3 +39,5 @@
 + **bouquetx.sh**
    > - shell script to download userbouquet file from internet and overwrite local userbouquet file, but only if there is a change in the file (tested for file content differences)
    > - script is based on regular reloading of services using OpenWebif interface (i.e. mode 0 and also mode 4)
+
+... etc.
