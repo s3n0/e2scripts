@@ -3,8 +3,8 @@
 + **LGTV-RS232 directory**
    > - switching On and Off the LG TV via RS-232 interface
 
-+ **softcam**
-   > - OSCam startup shell-scripts (Bash) '/etc/init.d/softcam' for Enigma2 based set-top-box
++ **softcam**[.SoftCAM_NAME]
+   > - OSCam or CCcam startup shell-scripts (Bash) '/etc/init.d/softcam' for Enigma2 based set-top-box
    > - it also records its activity to a temporary LOG-file
    > - more info can be found in the script
    > - if you need to use this script for CCcam, please use the following 'sed' command:
