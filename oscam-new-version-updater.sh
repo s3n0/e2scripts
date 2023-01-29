@@ -54,8 +54,9 @@ REQUESTED_BUILD="oscam-trunk"
 
 # - some examples of Oscam builds included on the feed server, there is possible to change one of them:
 #
-#       oscam-trunk
-#       oscam-trunk-ipv4only
+#       oscam-trunk             !!!! does not work ????
+#       oscam-trunk-ipv4only    !!!! does not work ????
+#
 #       oscam-stable
 #       oscam-stable-ipv4only
 #
@@ -244,12 +245,14 @@ if [ -f /usr/bin/7z ]; then
 else
     echo "ERROR ! The '7z' archiver was not found !"
     if [ -f /usr/bin/7za ]; then
-        echo "--- Although the standalone '7za' archiver has been found, it does not support the 'ar' method of splitting files."
+        echo "--- Although the standalone '7za' archiver has been found, it does not support the 'ar' method of splitting .ipk / .deb files!"
         echo "--- Unfortunately, the outer layer of the '.ipk' file must be split with the 'ar' method."
     fi
     echo "Please install the '7z' archiver from the Enigma feed, for example, using the following commands:"
     echo "    opkg update"
     echo "    opkg install p7zip-full"
+    echo "Note:"
+    echo "Do not use '7za' archiver ! It does not support the 'ar' method of splitting .ipk / .deb files!"
     exit 1
 fi
 
@@ -334,32 +337,34 @@ then
     else
         OSCAM_CMD=$(ps -f --no-headers -C $OSCAM_BIN_FNAME | head -n 1 | grep -o '/.*$')                        # full-featured `ps` command from Linux OS (for example in OpenATV image)
     fi
+    
     [ -z "$OSCAM_CMD" ] || { killall -9 $OSCAM_BIN_FNAME ; echo "Recognized Oscam command-line: $OSCAM_CMD" ; }
     mv -f $TMP_DIR/$REQUESTED_BUILD $OSCAM_LOCAL_PATH
     chmod a+x $OSCAM_LOCAL_PATH
-    [ -z "$OSCAM_CMD" ] || $OSCAM_CMD
     
+    [ -z "$OSCAM_CMD" ] ||
+    { 
+    $OSCAM_CMD
     sleep 1
-    
     if pidof $OSCAM_BIN_FNAME > /dev/null 2>&1; then
         echo "The new Oscam is ready to use !"
+        #### helping for IRDETO cards to receive any EMMs --- it is to neccessary, to receive some entitlements after each Oscam restart
+        if is_standby && [ "$IRDETO_ENTITLEMENTS" = "yes" ]; then
+            echo "$HR_LINE"
+            echo "Turning on the tuner..."
+            echo "...zapping the user specified channel - $IRDETO_CHANNEL"
+            wget -qO- "http://127.0.0.1/api/zap?sRef=${IRDETO_CHANNEL}" > /dev/null 2>&1
+            echo "...waiting for a while, to receive any entitlements on your IRDETO satellite card"
+            sleep 40        # waiting 20 secs for card initialization + 20 secs to receive any EMM
+            echo "...turning off the tuner (Enigma still in standby)"
+            wget -qO- "http://127.0.0.1/api/zap?sRef=0" > /dev/null 2>&1
+            echo "...done !"
+        fi
     else
         echo "The new Oscam failed to start ! Exiting the update script !"
         exit 1
     fi
-    
-    #### helping for IRDETO cards to receive any EMMs --- it is to neccessary, to receive some entitlements after each Oscam restart
-    if is_standby && [ "$IRDETO_ENTITLEMENTS" = "yes" ]; then
-        echo "$HR_LINE"
-        echo "Turning on the tuner..."
-        echo "...zapping the user specified channel - $IRDETO_CHANNEL"
-        wget -qO- "http://127.0.0.1/api/zap?sRef=${IRDETO_CHANNEL}" > /dev/null 2>&1
-        echo "...waiting for a while, to receive any entitlements on your IRDETO satellite card"
-        sleep 30        # waiting 15 sec. for card initialisation + 15 sec. to receive any EMM
-        echo "...turning off the tuner (Enigma still in standby)"
-        wget -qO- "http://127.0.0.1/api/zap?sRef=0" > /dev/null 2>&1
-        echo "...done !"
-    fi
+    }
 
 else
 
