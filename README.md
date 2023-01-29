@@ -34,7 +34,7 @@
 
 + **oscam-new-version-updater.sh**
    > - script checks if there is a newer version on the internet and if so, updates the binary file extracted from the downloaded IPK package
-   > - 7zip archiver is required since 'ar' tool is a problematic ('ar' is part of the limited [BusyBox](https://busybox.net/) in most cases) when splitting files from IPK packages
+   > - 7zip-full archiver is required since 'ar' tool is a problematic... the "ar" tool is in most cases a light version as part of [BusyBox](https://busybox.net/)... and this light version is insufficient when splitting files from IPK / DEB packages
 
 + **bouquetx.sh**
    > - shell script to download userbouquet file from internet and overwrite local userbouquet file, but only if there is a change in the file (tested for file content differences)
