@@ -3,7 +3,7 @@
 
 ####################################################
 # Backup & Restore
-# by s3n0, 2019-10-03 .. 2022-05-06
+# by s3n0, 2019-2023
 ####################################################
 # shell script for backing up and restoring user-defined files and folders in the Enigma2
 ####################################################
@@ -117,11 +117,11 @@ do_backup() {
         echo "-----------------------"
     fi
     mkdir -p /tmp/backrest_temp
-    BACKUP_TMP="/tmp/backrest_temp/${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
-    BACKUP_FINAL="${BACKUP_DIR}${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
+    BCKP_FILE_TMP="/tmp/backrest_temp/${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
+    BCKP_FILE_TARGET="${BACKUP_DIR}${FILE_PREFIX}_`date '+%Y-%m-%d_%H-%M-%S'`.tar.gz"
     echo "Output archive file name: "
-    echo "    TMP:   ${BACKUP_TMP}  "
-    echo "    FINAL: ${BACKUP_FINAL}"
+    echo "    TMP:   ${BCKP_FILE_TMP}  "
+    echo "    FINAL: ${BCKP_FILE_TARGET}"
     echo "-----------------------"
     echo "Files and folders to compress:"
     echo "    LIST:  ${LIST}"
@@ -129,8 +129,8 @@ do_backup() {
     echo "Starting compression..."
     [ -z "$BACKUP_DIR" ] || mkdir -p $BACKUP_DIR
     #tar --ignore-failed-read --exclude='/etc/enigma2/epg.dat' -czpf $BACKUP_FILENAME $LIST         # --ignore-failed-read ...... is unfortunately a unknown argument in `tar` under OpenPLi 7.1
-    tar --exclude='/etc/enigma2/epg.dat' --exclude='/hdd/epg.dat' --exclude='/media/hdd/epg.dat' -czpf $BACKUP_TMP $LIST
-    mv -f $BACKUP_TMP $BACKUP_FINAL
+    tar --exclude='/etc/enigma2/epg.dat' --exclude='/hdd/epg.dat' --exclude='/media/hdd/epg.dat' -czpf $BCKP_FILE_TMP $LIST
+    mv -f $BCKP_FILE_TMP $BCKP_FILE_TARGET
     echo "...compression done."                                                                     # [ $? -eq 0 ] && echo "...done." || echo "...failed ! (exit code = $?)"
     echo "-----------------------"
     echo "List of files in the backup directory:"
@@ -142,6 +142,7 @@ do_backup() {
         wget -q -O - http://127.0.0.1/api/powerstate?newstate=$previous_power_state > /dev/null 2>&1
         echo "-----------------------"
     fi
+    rm -rf /tmp/backrest_temp
 }
 
 do_restore() {
@@ -206,7 +207,7 @@ case "$1" in
         echo -e "\t bq|backup-quickly|-bq|--backup-quickly"
         echo -e "\t\t ...backup user-defined files & folders (Enigma will not be stopped during the backup process)"
         echo -e "\t r|restore|-r|--restore"
-        echo -e "\t\t ...restore user-defined files & folders - latest archive found in directory (set-top-box will restarted!)"
+        echo -e "\t\t ...restore user-defined files & folders - latest archive found in directory (set-top-box will restarted !!!)"
         echo -e "BACKUP DIR:"
         [ -z "$BACKUP_DIR" ] && echo -e "\t $(pwd) (as the current directory)" || echo -e "\t ${BACKUP_DIR}"
         ;;
