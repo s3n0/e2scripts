@@ -3,7 +3,7 @@
 
 ###############################################
 # EPG Refresh - python script for Enigma2
-# written by s3n0, 2019-08-24
+# written by s3n0, 2019-2023
 ###############################################
 # - simple python-script for Enigma2 based set-top-box, for refresh EPG data
 # - the script will find the necessary transponders depending on the available channels in the userbouquet files
@@ -28,8 +28,13 @@ DELAY_TIME = 15                             # waiting time after zapping each ch
 
 from datetime import datetime
 from time import sleep
-from urllib2 import urlopen
 from os.path import getsize as os_path_getsize
+
+from sys import version_info as py_version
+if py_version.major == 3:           # data of this object type:   sys.version_info(major=3, minor=8, micro=5, releaselevel='final', serial=0)
+    import urllib.request as urllib2
+else:
+    import urllib2
 
 ###############################################
 
@@ -44,12 +49,16 @@ def writeLOG(msg):
             f.writelines( cache[ len(cache)/2 : ] )
 
 def zapChannel(src='0:0:0:0:0:0:0:0:0:0:'):     # zap channel (using the Enigma2 Open-Webif)
-    response = urlopen('http://127.0.0.1/web/zap?sRef=' + src)
+    response = urllib2.urlopen('http://127.0.0.1/web/zap?sRef=' + src)
     web_content = response.read()
+    if isinstance(web_content, bytes):
+        web_content = web_content.decode()
 
 def enigmaInStandby():                      # checking standby mode (using the Enigma2 Open-Webif)
-    response = urlopen('http://127.0.0.1/web/powerstate')
+    response = urllib2.urlopen('http://127.0.0.1/web/powerstate')
     web_content = response.read()
+    if isinstance(web_content, bytes):
+        web_content = web_content.decode()
     if 'true' in web_content.lower():
         return True
     else:
@@ -57,8 +66,10 @@ def enigmaInStandby():                      # checking standby mode (using the E
         return False
 
 def saveEPG():                              # save EPG cache to disk - as the file "epg.dat" (using the Enigma2 Open-Webif)
-    response = urlopen('http://127.0.0.1/web/saveepg')
+    response = urllib2.urlopen('http://127.0.0.1/web/saveepg')
     web_content = response.read()
+    if isinstance(web_content, bytes):
+        web_content = web_content.decode()
     if 'true' in web_content.lower():
         writeLOG("...saving the EPG file to disk was successful")
     else:
