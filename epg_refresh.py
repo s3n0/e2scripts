@@ -5,7 +5,7 @@
 # EPG Refresh - python script for Enigma2
 # written by s3n0, 2019-2023
 ###############################################
-# - simple python-script for Enigma2 based set-top-box, for refresh EPG data
+# - simple python-script (Python 2.x.x / 3.x.x.) for Enigma2 based set-top-box, for refresh EPG data
 # - the script will find the necessary transponders depending on the available channels in the userbouquet files
 # - then the script gradually zaps these transponders (only some channels), to read EPG data from DVB stream
 ###############################################
@@ -48,12 +48,6 @@ def writeLOG(msg):
         with open(LOG_FILE_PATH, 'w') as f:
             f.writelines( cache[ len(cache)/2 : ] )
 
-def zapChannel(src='0:0:0:0:0:0:0:0:0:0:'):     # zap channel (using the Enigma2 Open-Webif)
-    response = urllib2.urlopen('http://127.0.0.1/web/zap?sRef=' + src)
-    web_content = response.read()
-    if isinstance(web_content, bytes):
-        web_content = web_content.decode()
-
 def enigmaInStandby():                      # checking standby mode (using the Enigma2 Open-Webif)
     response = urllib2.urlopen('http://127.0.0.1/web/powerstate')
     web_content = response.read()
@@ -74,6 +68,10 @@ def saveEPG():                              # save EPG cache to disk - as the fi
         writeLOG("...saving the EPG file to disk was successful")
     else:
         writeLOG("...ERROR ! saving the EPG file to disk failed !")
+
+def zapChannel(src='0:0:0:0:0:0:0:0:0:0:'):     # zap channel (using the Enigma2 Open-Webif)
+    response = urllib2.urlopen('http://127.0.0.1/web/zap?sRef=' + src)
+    web_content = response.read()
 
 def findChannelName(src='0:0:0:0:0:0:0:0:0:0:'):
     # index...................       0       1         2          3     4     5        6       7 8 9
