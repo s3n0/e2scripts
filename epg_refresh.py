@@ -72,6 +72,12 @@ def saveEPG():                              # save EPG cache to disk - as the fi
 def zapChannel(src='0:0:0:0:0:0:0:0:0:0:'):     # zap channel (using the Enigma2 Open-Webif)
     response = urllib2.urlopen('http://127.0.0.1/web/zap?sRef=' + src)
     web_content = response.read()
+    if isinstance(web_content, bytes):
+        web_content = web_content.decode()
+    if 'true' in web_content.lower():
+        return True
+    else:
+        return False
 
 def findChannelName(src='0:0:0:0:0:0:0:0:0:0:'):
     # index...................       0       1         2          3     4     5        6       7 8 9
@@ -126,14 +132,17 @@ if __name__ == "__main__" and enigmaInStandby():
     i = 0
     imax = len(needs_SRC)
     
-    while enigmaInStandby() and i < imax:
-        zapChannel(needs_SRC[i])    # if enigma2 is still in standby, the tuner switches to the next DVB channel
-        writeLOG('{:03d} / {:03d} | {} | {}'.format(i + 1, imax, needs_SRC[i], findChannelName(needs_SRC[i])))
+    while enigmaInStandby() and i < imax:       # if enigma2 is lasting at the standby mode, the tuner zapping will continue... (otherwise the while-loop will be aborted)
+        if zapChannel(needs_SRC[i]):
+            done_string = "channel zapping successfully !"
+        else:
+            done_string = "channel zapping failed !"
+        writeLOG('{:03d} / {:03d} | {} | {} --- {}'.format(i + 1, imax, needs_SRC[i], findChannelName(needs_SRC[i]), done_string))
         sleep(DELAY_TIME)   # waiting a few of seconds - for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
         i += 1
     
     if i == imax:           # if enigma2 was not interrupted from standby, the script will be completed and the DVB tuner will be turned off
-        zapChannel()        # shut down the tuner / stop watching DVB channel
+        x = zapChannel()    # shut down the tuner / stop watching a DVB channel
         saveEPG()           # save EPG cache to disk, if we need to upload the file "epg.dat" to another set-top box or to some server on the internet
     
     writeLOG('...done.')
