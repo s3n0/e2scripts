@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # sh script for Enigma2 - the IPK package creation tool
-# 2018-2021, by s3n0
+# 2018-2023, by s3n0
 #
 # Simple creation of an IPK package without the use of OPKG-TOOLS.
 # It's just a simple archiving of files or folders and then merging the created files into one.
@@ -20,7 +20,7 @@
 
 PLUGIN_NAME="Project XYZ"
 
-PLUGIN_DIR="/usr/lib/enigma2/python/Plugins/Extensions/"`echo "${PLUGIN_NAME}" | tr -d " -"`    # PLUGIN_NAME: delete all spaces and "-" characters
+PLUGIN_DIR="/usr/lib/enigma2/python/Plugins/Extensions/"`echo "${PLUGIN_NAME}" | tr -d " -"`    # PLUGIN_NAME: delete all " " and "-" characters
 PLUGIN_LANG_DIR="${PLUGIN_DIR}/locale"
 
 PROJECT_DIR="/tmp/${RANDOM}"
@@ -32,6 +32,12 @@ ARCH="all"                                  # chipset / CPU architecture depende
 IPK_PCKGNAME="enigma2-plugin-extensions-"`echo "${PLUGIN_NAME,,}" | tr " " "-"`                 # PLUGIN_NAME: lower case, replace all spaces with "-"
 IPK_FILENAME="${IPK_PCKGNAME}_${VER}_${ARCH}.ipk"
 IPK_FINISHED="/tmp/${IPK_FILENAME}"
+
+# the description of the plugin will be extracted from the file "plugin.py":
+#PLUGIN_DESCRIPTION=$(awk '/def Plugins/,/\]\s\n/' $PLUGIN_DIR/plugin.py | grep -E 'description.*=' | sed -e 's/.*description\s\=\s["'\'']//' -e 's/["'\''].*//')
+# Warning : most Enigma2 distributions usually compile the found "*.pyo" files into "*.py" format after a restart and thus the possibility of getting the description from the "plugin.py" file is also lost!
+# if you don't want or don't use the plugin definition in the "plugin.py" file, you can use your own definition here, for example:
+PLUGIN_DESCRIPTION="Plugin for the needs of the Project XYZ tests"
 
 
 
@@ -65,7 +71,7 @@ mkdir -p ${PROJECT_DIR} ${PROJECT_DIR}/CONTROL
 cat > ${PROJECT_DIR}/CONTROL/control << EOF
 Package: ${IPK_PCKGNAME}
 Version: ${VER}
-Description: Plugin for testing purpose (Enigma2 plugin)
+Description: ${PLUGIN_DESCRIPTION}
 Architecture: ${ARCH}
 Section: extra
 Priority: optional
@@ -115,6 +121,15 @@ msgfmt --help > /dev/null 2>&1 \
 
 
 
+#### remove all comments from the source code
+if [ -f /usr/script/remove_comments.sh ]; then
+    /usr/script/remove_comments.sh $PLUGIN_DIR/plugin.py
+    init 4; sleep 5; init 3; sleep 20       # restart Enigma - for recompile the source code again - after removing all comments from the source code file
+fi
+
+
+
+
 #### prepare a copy of $PLUGIN_DIR to $PROJECT_DIR
 mkdir -p ${PROJECT_DIR}/${PLUGIN_DIR}
 cp -rp ${PLUGIN_DIR}/* ${PROJECT_DIR}/${PLUGIN_DIR}
@@ -125,8 +140,9 @@ cp -rp ${PLUGIN_DIR}/* ${PROJECT_DIR}/${PLUGIN_DIR}
 # cp -rp ${ANOTHER_DIR}/* ${PROJECT_DIR}/${ANOTHER_DIR}
 
 #### remove all unnecessary files and folders
-rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.py            # remove all source-code python files
-#rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.pyo           # remove all compiled python files
+rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.py                       # remove all source-code python files
+#rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.pyo                      # remove all compiled python files (bytecode files - optimized)
+#rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.pyc                      # remove all compiled python files (bytceode files)
 #rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/__pycache__
 
 #### create archive files "control.tar.gz" and "data.tar.gz" + create the text file "debian-binary" in $BUILD_DIR
