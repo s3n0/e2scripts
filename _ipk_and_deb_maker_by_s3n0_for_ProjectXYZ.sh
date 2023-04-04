@@ -75,9 +75,9 @@ Description: ${PLUGIN_DESCRIPTION}
 Architecture: ${ARCH}
 Section: extra
 Priority: optional
-Maintainer: s3n0
-License: GPL
-Homepage: https://github.com/s3n0/
+Maintainer: MY_NICKNAME_AS_EXAMPLE
+License: GPLv2
+Homepage: https://MY_WEBPAGE.EXAMPLE.COM
 EOF
 # For more info about other fields, see here: https://www.debian.org/doc/debian-policy/ch-controlfields.html ; https://www.systutorials.com/docs/linux/man/5-deb-control/ ; https://linux.die.net/man/5/deb-control
 
@@ -85,7 +85,7 @@ cat > ${PROJECT_DIR}/CONTROL/postinst << EOF
 #!/bin/sh
 echo "*********************************************************"
 echo "                  ${PLUGIN_NAME} ${VER}                  "
-echo "                Enigma2 plugin/extensions                "
+echo "                Enigma2 plugin/extension                 "
 echo "*********************************************************"
 echo " Successfully INSTALLED. You should restart Enigma2 now. "
 echo "*********************************************************"
@@ -98,7 +98,7 @@ cat > ${PROJECT_DIR}/CONTROL/postrm << EOF
 rm -rf ${PLUGIN_DIR}
 echo "*********************************************************"
 echo "                  ${PLUGIN_NAME} ${VER}                  "
-echo "                Enigma2 plugin/extensions                "
+echo "                Enigma2 plugin/extension                 "
 echo "*********************************************************"
 echo "  Successfully REMOVED. You should restart Enigma2 now.  "
 echo "*********************************************************"
