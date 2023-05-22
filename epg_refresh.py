@@ -13,11 +13,12 @@
 # - the best way to use EPG refresh is to add a new task to the CRON scheduler
 # - for example, to run the python script every 2nd day, at 03:00, as the background process, use the following crontab line:
 #       00 03 */2 * *      /usr/bin/python /usr/script/epg_refresh.py > /dev/null 2>&1
+# - to verify the correct timing of the command in the CRON configuration, you can use the following website: https://crontab.guru/
 ###############################################
 
 #### change the path to your own userbouquet file(s), containing the satellite channels, for which you want to refresh EPG data :
-#BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
-BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv', 'userbouquet.sat-skylink-vhannibal.tv']
+BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv']
+#BOUQUET_FILES = ['userbouquet.sat-skylink-sk-komplet-vcetne-cz.tv', 'userbouquet.sat-skylink-vhannibal.tv']
 #BOUQUET_FILES = ['userbouquet.skylink.tv', 'userbouquet.freesat.tv', 'userbouquet.orange.tv']
 
 LOG_FILE_PATH = '/tmp/epg_refresh.log'      # epg_refresh log (path to directory + file name)
@@ -48,7 +49,7 @@ def writeLOG(msg):
         with open(LOG_FILE_PATH, 'w') as f:
             f.writelines( cache[ len(cache)/2 : ] )
 
-def enigmaInStandby():                      # checking standby mode (using the Enigma2 Open-Webif)
+def enigmaInStandby():                          # checking standby mode (using the Enigma2 Open-Webif)
     response = urllib2.urlopen('http://127.0.0.1/web/powerstate')
     web_content = response.read()
     if isinstance(web_content, bytes):
@@ -59,7 +60,7 @@ def enigmaInStandby():                      # checking standby mode (using the E
         writeLOG("Enigma2 is not switched to standby mode. The script 'epg_refresh.py' will be canceled.")
         return False
 
-def saveEPG():                              # save EPG cache to disk - as the file "epg.dat" (using the Enigma2 Open-Webif)
+def saveEPG():                                  # save EPG cache to disk - as the file "epg.dat" (using the Enigma2 Open-Webif)
     response = urllib2.urlopen('http://127.0.0.1/web/saveepg')
     web_content = response.read()
     if isinstance(web_content, bytes):
@@ -126,16 +127,17 @@ if __name__ == "__main__" and enigmaInStandby():
     
     i = 0
     imax = len(needs_SRC)
-    
     while enigmaInStandby() and i < imax:       # if enigma2 is lasting at the standby mode, the tuner zapping will continue... (otherwise the while-loop will be aborted)
         zapChannel(needs_SRC[i])
         writeLOG('{:03d} / {:03d} | {} | {}'.format(i + 1, imax, needs_SRC[i], findChannelName(needs_SRC[i])))
-        sleep(DELAY_TIME)   # waiting a few of seconds - for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
+        sleep(DELAY_TIME)       # waiting a few of seconds - for receiving and retrieving all EPG data from the stream (from the currently tuned transponder)
         i += 1
     
-    if i == imax:           # if enigma2 was not interrupted from standby, the script will be completed and the DVB tuner will be turned off
-        zapChannel()        # shut down the tuner / stop watching a DVB channel
-        saveEPG()           # save EPG cache to disk, if we need to upload the file "epg.dat" to another set-top box or to some server on the internet
+    if i == imax:               # if enigma2 was not interrupted from standby, the script will be completed and the DVB tuner will be turned off
+        zapChannel()            # shut down the tuner (stopping the received DVB signal)
+        saveEPG()               # save EPG cache to disk, if we need to upload the file "epg.dat" to another set-top box or to some server on the internet
+    else:
+        writeLOG('...Enigma2 is no longer in standby... script execution was interrupted')
     
     writeLOG('...done.')
 
