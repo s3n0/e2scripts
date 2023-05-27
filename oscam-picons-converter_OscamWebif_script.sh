@@ -16,9 +16,11 @@ LOG_FILE="/tmp/${SCR_NAME%.*}.log"
 
 [ -f "${SCR_PATH}/${SCR_NAME}" ] || { echo "Error ! The script-file '${SCR_PATH}/${SCR_NAME}' was not found !"; exit 1; }
 
-[ -e /usr/bin/python3 ] && PY="/usr/bin/python3" || PY="/usr/bin/python"
+[ -e /usr/bin/python3 ] && PY="python3" || PY="python"
 
-$PY $SCR_PATH/$SCR_NAME $SCR_PARAMS > $LOG_FILE 2>&1 &
+opkg list-installed | grep -q "${PY}-pillow" || { opkg update; opkg install $PY-pillow; }      # it is neccessary package, to use the python-module named as PIL
+
+/usr/bin/$PY $SCR_PATH/$SCR_NAME $SCR_PARAMS > $LOG_FILE 2>&1 &
 
 echo "The python script '${SCR_NAME}' has been started - it will run in the background."
 echo "To verify that the script is working properly, you can check the '${LOG_FILE}' file,"
