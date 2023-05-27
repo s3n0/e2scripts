@@ -4,7 +4,7 @@ print("""
 #####################################
 ###    Oscam Picons Converter     ###
 ###         .PNG to .TPL          ###
-###      by s3n0 , 2019-2022      ###
+###      by s3n0 , 2019-2023      ###
 ###    https://github.com/s3n0    ###
 #####################################
 """)
@@ -31,7 +31,7 @@ from io import BytesIO
 def import_PIL():           # Python Imaging Library (PIL) - is required to convert picons - therefore, it is necessary to verify whether this module is available in the Enigma2/Python distribution
     global Image            # the imported 'Image' must be usable in the entire source code ... therefore, it must be declared as global
     try:
-        from PIL import Image
+        from PIL import Image       # LINUX SHELL:  opkg update; opkg install python3-pillow || opkg install python-pillow        # it is neccessary package, to use the python-module named as PIL
     except:
         return False
     return True
@@ -266,9 +266,9 @@ python {0} <COMMANDS>
      if you do not specify the argument '-c' in the case of '-1' and '-2' arguments,
      then all found CAIDs will be used ! beware of the large number of CAIDs (TPL files) !
 
--------------------
++++++++++++++++++++
 Optional arguments:
--------------------
++++++++++++++++++++
 
 -o <PATH>   path to the Oscam cfg-directory, if the script did not find the Oscam cfg-directory automatically
 -p <PATH>   path to the SKIN-picon directory, if the default '/usr/share/enigma2/picon' directory was not found
