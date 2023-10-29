@@ -105,6 +105,7 @@ init_3_with_feedback() {
         sleep 1
         echo "...$x seconds waiting"
     done
+    echo "...+5 seconds of additional waiting (other Enigma2 modules such as OpenWebif take a long time to start)"
     sleep 5; x=$(( $x + 5 ))
     echo "...successfully started after $x seconds."
 }
