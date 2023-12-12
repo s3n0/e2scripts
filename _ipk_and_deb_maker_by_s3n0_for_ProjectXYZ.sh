@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # sh script for Enigma2 - the IPK package creation tool
 # 2018-2023, by s3n0
@@ -111,21 +111,22 @@ chmod a+x ${PROJECT_DIR}/CONTROL/*
 
 
 
+
+#### remove all comments from the source code
+#if [ -f /usr/script/remove_comments.sh ]; then
+#    /usr/script/remove_comments.sh $PLUGIN_DIR/plugin.py
+#    init 4; sleep 5; init 3; sleep 20       # restart Enigma - for recompile the source code again - after removing all comments from the source code file
+#fi
+
+
+
+
 #### translate language files from .PO to .MO format (Machine Object)
 #### if necessary, install the language translation tools:  opkg install gettext
 msgfmt --help > /dev/null 2>&1 || opkg install gettext          # if the translation tool fails to start, an attempt is made to install it
 msgfmt --help > /dev/null 2>&1 \
  && { for f in `find $PLUGIN_LANG_DIR -name *.po`; do msgfmt -o ${f%.po}.mo $f; rm -f $f; done; } \
  || echo -e "--- Warning ! \n--- The 'msgfmt' tool or the 'gettext' package does not exist. \n--- Unable to translate language '.po' files to '.mo' format."
-
-
-
-
-#### remove all comments from the source code
-if [ -f /usr/script/remove_comments.sh ]; then
-    /usr/script/remove_comments.sh $PLUGIN_DIR/plugin.py
-    init 4; sleep 5; init 3; sleep 20       # restart Enigma - for recompile the source code again - after removing all comments from the source code file
-fi
 
 
 
@@ -139,7 +140,7 @@ cp -rp ${PLUGIN_DIR}/* ${PROJECT_DIR}/${PLUGIN_DIR}
 # mkdir -p ${PROJECT_DIR}/${ANOTHER_DIR}
 # cp -rp ${ANOTHER_DIR}/* ${PROJECT_DIR}/${ANOTHER_DIR}
 
-#### remove all unnecessary files and folders
+#### remove unnecessary files and folders
 rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.py                       # remove all source-code python files
 #rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.pyo                      # remove all compiled python files (bytecode files - optimized)
 #rm -rf ${PROJECT_DIR}/${PLUGIN_DIR}/*.pyc                      # remove all compiled python files (bytceode files)
@@ -166,7 +167,6 @@ cp -f ${IPK_FINISHED} ${IPK_FINISHED%.ipk}.deb
 sed -i 's/debian-binary\//debian-binary /g' ${IPK_FINISHED%.ipk}.deb
 sed -i 's/control.tar.gz\//control.tar.gz /g' ${IPK_FINISHED%.ipk}.deb
 sed -i 's/data.tar.gz\//data.tar.gz /g' ${IPK_FINISHED%.ipk}.deb
-
 #replaceByte() {
 #    printf "$(printf '\\x%02X' $3)" | dd of="$1" bs=1 seek=$2 count=1 conv=notrunc &> /dev/null
 #} #### USAGE:  replaceByte "filename" offset byte
@@ -176,10 +176,8 @@ sed -i 's/data.tar.gz\//data.tar.gz /g' ${IPK_FINISHED%.ipk}.deb
 
 
 
-
 #### remove all temporary directories
 rm -rf ${PROJECT_DIR} ${BUILD_DIR}
-
 
 
 
