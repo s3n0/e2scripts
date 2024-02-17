@@ -3,7 +3,7 @@
 
 ####################################################
 # Backup & Restore
-# by s3n0, 2019-2023
+# by s3n0, 2019-2024
 ####################################################
 # shell script for backing up and restoring user-defined files and folders in the Enigma2
 ####################################################
@@ -61,6 +61,7 @@ enigma2-plugin-extensions-youtube
 enigma2-plugin-skins-metrix-atv-fhd-icons
 enigma2-plugin-systemplugins-fastscan
 enigma2-plugin-systemplugins-serviceapp
+exteplayer3
 zerotier
 curlftpfs
 "
