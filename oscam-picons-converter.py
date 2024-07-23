@@ -4,7 +4,7 @@ print("""
 #####################################
 ###    Oscam Picons Converter     ###
 ###         .PNG to .TPL          ###
-###      by s3n0 , 2019-2023      ###
+###      by s3n0 , 2019-2024      ###
 ###    https://github.com/s3n0    ###
 #####################################
 """)
@@ -154,7 +154,7 @@ def convert_png2tpl(sid_table):
                 if '-q' in sys.argv:
                     if 'P' in img.getbands():           # it is not possible to use a conversion "filter" when resizing the image, in the case of "P" color mode (when a specific color palette is defined)
                         img = img.convert(mode='RGB')   # so... we need to convert the color mode of the image to an RGB palette (which also means a larger image file on disk)
-                    img = img.resize((100,60), Image.ANTIALIAS)
+                    img = img.resize((100,60), Image.LANCZOS)
                 else:
                     img.thumbnail((100,60))
                 buffer = BytesIO()
@@ -272,7 +272,7 @@ Optional arguments:
 
 -o <PATH>   path to the Oscam cfg-directory, if the script did not find the Oscam cfg-directory automatically
 -p <PATH>   path to the SKIN-picon directory, if the default '/usr/share/enigma2/picon' directory was not found
--q          higher quality TPL-image processing with antialiasing filter (higher quality means a larger .tpl file size!)
+-q          higher quality TPL-image processing with LANCZOS filter (better imahe quality means a larger *.tpl file size !)
 -d          delete the whole TPL-directory before processing
 
 === RECOMMENDED USAGE:
