@@ -52,6 +52,9 @@ LIST="
 /usr/bin/udpxy
 /etc/init.d/udpxy
 /etc/rc?.d/*udpxy
+
+/etc/init.d/iptv_*
+/etc/rc?.d/*iptv_*
 "
 
 
@@ -63,7 +66,9 @@ enigma2-plugin-systemplugins-fastscan
 enigma2-plugin-systemplugins-serviceapp
 exteplayer3
 zerotier
+curl
 curlftpfs
+htop
 "
 
 
