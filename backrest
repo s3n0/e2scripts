@@ -15,6 +15,7 @@
 #BACKUP_DIR="/media/mmc/backrest_folder/"
 #BACKUP_DIR="/hdd/backrest_folder/"
 BACKUP_DIR="/tmp/backrest_folder/"
+
 ##### * WARNING !!! if you use the "/tmp" folder to backup, keep in mind that this is a TEMPORARY folder, created in the RAM-disk,
 ##### * so after restarting Linux, its contents will be deleted... therefore after backup, please temporarily copy the archive-file to your PC,
 ##### * and before restoring the data, copy the archive-file back to the backup subfolder in "/tmp"
