@@ -53,8 +53,9 @@ create_srvid_file()
         exit 1
     fi
     
-    sed -i 's/<tr>/\n/g' /tmp/satelitnatv.html                                                                                      # change all "<tr>" TAGs to new-line characters
-    LIST=$(sed -n 's/.*<strong><a href=\/.*\/?id=[0-9]\{4\}\([0-9]*\)>\(.*\)<\/a><\/strong>.*/\1 \2/p' /tmp/satelitnatv.html)       # one line example, from the $LIST variable:    14129 Markiza HD
+    sed -i 's/<tr>/\n/g' /tmp/satelitnatv.html                                                                                      # change all "<tr>" TAGs to "new-line" character
+    sed -i 's/<td>/\n/g' /tmp/satelitnatv.html                                                                                      # change all "<td>" TAGs to "new-line" character
+    LIST=$(sed -n 's/.*<strong><a href=.*\/?id=[0-9]\{4\}\([0-9]*\).>\(.*\)<\/a><\/strong>.*/\1 \2/p' /tmp/satelitnatv.html)        # one line example, from the $LIST variable:     14129 Markiza HD
     
     FILE_NAME=`echo "${1##*.sk}" | tr -d "/"`                           # FILE_NAME=`echo "${1}" | cut -d "/" -f 4`
     FILE_OUTPUT="/tmp/oscam__${FILE_NAME}.srvid"
