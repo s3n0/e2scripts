@@ -26,8 +26,8 @@ FILE_PREFIX="e2-backup"                     # Note: The timestamp is automatical
 
 LIST="
 /etc/enigma2/
-
 /usr/share/enigma2/picon/
+/picon/
 /media/hdd/picon/
 /media/usb/picon/
 /media/mmc/picon/
