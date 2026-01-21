@@ -53,9 +53,10 @@ create_srvid_file()
         exit 1
     fi
     
-    sed -i 's/<tr>/\n/g' /tmp/satelitnatv.html                                                                                      # change all "<tr>" TAGs to "new-line" character
-    sed -i 's/<td>/\n/g' /tmp/satelitnatv.html                                                                                      # change all "<td>" TAGs to "new-line" character
-    LIST=$(sed -n 's/.*<strong><a href=.*\/?id=[0-9]\{4\}\([0-9]*\).>\(.*\)<\/a><\/strong>.*/\1 \2/p' /tmp/satelitnatv.html)        # one line example, from the $LIST variable:     14129 Markiza HD
+    sed -i 's/<tr>/\n/g' /tmp/satelitnatv.html                # change all "<tr>" TAGs to "new-line" character
+    sed -i 's/<td>/\n/g' /tmp/satelitnatv.html                # change all "<td>" TAGs to "new-line" character
+    sed -i '/ \(Rádio\)/d' /tmp/satelitnatv.html              # delete all rows contains the string:   " (Rádio)"
+    LIST=$(sed -n 's/.*<strong><a href=.*\/program\/.*-[0-9]\{4\}\([0-9]*\)\/">\(.*\)<\/a><\/strong>.*/\1 \2/p' /tmp/satelitnatv.html)        # one line example, from the $LIST variable:     14129 Markiza HD
     
     FILE_NAME=`echo "${1##*.sk}" | tr -d "/"`                           # FILE_NAME=`echo "${1}" | cut -d "/" -f 4`
     FILE_OUTPUT="/tmp/oscam__${FILE_NAME}.srvid"
@@ -85,19 +86,19 @@ echo "$HEADER"
 OSCAM_CFGDIR=$(find_oscam_cfg_dir)
 [ -z "$OSCAM_CFGDIR" ] && { echo "WARNING ! The output directory for the 'oscam.srvid' file was changed to '/tmp' !"; OSCAM_CFGDIR="/tmp"; }
 
-#OSCAM_SRVID="/tmp/oscam_-_merged-kingofsat.srvid"
 OSCAM_SRVID="${OSCAM_CFGDIR}/oscam.srvid"
 
 ### create temporary ".srvid" files
 
-create_srvid_file "https://www.satelitnatv.sk/frekvencie/skylink-cz-19e/" "Skylink" "0D96,0624,FFFE"
-create_srvid_file "https://www.satelitnatv.sk/frekvencie/skylink-sk-19e/" "Skylink" "0D96,0624,FFFE"
+create_srvid_file "https://www.satelitnatv.sk/frekvencie/skylink-cz/" "Skylink" "0D96,0624,FFFE"
+create_srvid_file "https://www.satelitnatv.sk/frekvencie/skylink-sk/" "Skylink" "0D96,0624,FFFE"
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/freesat-sk/" "FreeSAT" "0D97,0653,0B02"
 create_srvid_file "https://www.satelitnatv.sk/frekvencie/antik-sat-sk/" "AntikSAT" "0B00"
 
 #create_srvid_file "https://www.satelitnatv.sk/skylink-programy-frekvencie-parametre/" "Skylink" "0D96,0624"
 #create_srvid_file "https://www.satelitnatv.sk/antik-sat/" "Antiksat" "0B00"
 #create_srvid_file "https://www.satelitnatv.sk/freesat-by-upc-direct/" "FreeSAT" "0D97,0653,0B02"
+
 
 
 
@@ -119,3 +120,60 @@ exit 0
 
 #################################################################################
 #################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################################################
+#################################################################################
+###############################  THE FOLLOWING CODE IS FOR TESTING PURPOSE ONLY :
+#################################################################################
+#################################################################################
+
+
+#wget -q -O "/tmp/skylink-programy-frekvencie-parametre.html" --no-check-certificate "https://www.satelitnatv.sk/skylink-programy-frekvencie-parametre/"
+wget -q -O "/tmp/antik-sat.html" --no-check-certificate "https://www.satelitnatv.sk/antik-sat/"
+
+### Example of the HTML code, from antik-sat subpage:
+###
+###     <td><img src="/obrazky/obr/kode.png" alt="PAY TV"> <strong><a href=/antik-sat-sk-program/?id=321414129>Markiza HD</a></strong> (TV)</td>  
+###
+### BTW, all the numbers are in decimal format, so we need convert it later to hex format:    14129 dec   ===>   3731 hex
+
+
+sed -n '/antik-sat-sk-program/,/>/p' /tmp/satelitnatv.html                                                          #   <td><img src="/obrazky/obr/kode.png" alt="PAY TV"> <strong><a href=/antik-sat-sk-program/?id=321414129>Markiza HD</a></strong> (TV)</td>
+sed -n 's/.*antik-sat-sk-program\(.*\)>.*/\1/p' /tmp/satelitnatv.html                                               # /?id=321414129>Markiza HD</a></strong> (TV)</td      # pokrok, funguje ciastocne
+sed -n 's/.*antik-sat-sk-program\/?id=\(.*\)>\(.*\)<.*/\1 \2/p' /tmp/satelitnatv.html                               # 321414129>Markiza HD</a></strong  (TV)               # pokrok, funguje ciastocne - cistejsi vystup
+sed -n 's/.*antik-sat-sk-program\/?id=\(.*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/satelitnatv.html                           # 321414129 Markiza HD
+sed -n 's/.*antik-sat-sk-program\/?id=\([0-9]*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/satelitnatv.html                       # 321414129 Markiza HD
+sed -n 's/.*antik-sat-sk-program\/?id=[0-9]*\([0-9]\{5\}\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/satelitnatv.html             # 14129 Markiza HD
+sed -n 's/.*<strong><a href=\/.*\/?id=[0-9]\{4\}\([0-9]*\)>\(.*\)<\/a>.*/\1 \2/p' /tmp/satelitnatv.html             # 14129 Markiza HD      # this is more clean sed regex match
+### !!!!!!!!!!!!!!!!!!!!!!!!!
+### 8.jan.2022 - kedze prikaz 'sed' spracuvava data po riadkoch a novy HTML kod z webu Satelitnatv.SK uz viac nepouziva odriadkovanie, musim ho tam pridat !
+### !!!!!!!!!!!!!!!!!!!!!!!!!
+### takze ako prve, musim v stiahnutom subore HTML vytvorit nove riadky - najlepsie nahradou, za kazdy jeden TAG "<tr>", ktorym sa zacinaju vzdy nove udaje o kazdej jednej satelitnej stanici:
+sed -i 's/<tr>/\n/g' /tmp/satelitnatv.html        # a potom pokracujem zase rozsirenym komplexnym prikazom 'sed':
+sed -n 's/.*<strong><a href=\/.*\/?id=[0-9]\{4\}\([0-9]*\)>\(.*\)<\/a><\/strong>.*/\1 \2/p' /tmp/satelitnatv.html   # 14129 Markiza HD
+
+
+
+CAIDS="0B00"
+PROVID="Antiksat"
+sed -n "s/.*antik-sat-sk-program\/?id=[0-9]*\([0-9]\{5\}\)>\(.*\)<\/a>.*/$CAIDS:\1|$PROVID|\2/p" /tmp/satelitnatv.html     # 0B00:14129|Antiksat|Markiza HD
+
+
