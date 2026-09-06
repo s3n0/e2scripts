@@ -15,8 +15,9 @@
 # 2020/11/10 - improved installation instructions (OSCam / CCcam)
 # 2021/03/24 - simplified (abbreviated) script source code
 # 2021/04/07 - updated return error codes for "argument status" as well as for "exit status"
-# 2021/09/26 - some improvements of the script function for Auto-Updating (AU) of "Entitlements" on a decoding card (IRDETO mode), which are updated via EMMs
 # 2022/03/12 - improved installation instructions (clarity)
+# 2026/09/06 - improved installation instructions (clarity)
+
 
 
 
@@ -24,21 +25,23 @@
 # #######################  HOW-TO  #########################
 #
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#      Enigma2 distributions with built-in SoftCAM support :          (OpenATV 6.x and OpenPLi 7.x)
+#      Enigma2 distributions with built-in SoftCAM support :          (OpenATV 7.x and OpenPLi 8.x)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #
 # 1)   Download the "softcam" script file directly from my github + ADD the ".oscam" file extension + SET the execution rights/attributes:
 #         wget -O /etc/init.d/softcam.oscam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.oscam
 #
-#      If you plan to modify and use this script for CCcam, then the correct file extension is ".cccam" or ".CCcam":
+#      If you plan to modify and use this script for CCcam, and not oscam, then the correct file extension is ".cccam" or ".CCcam"
+#      According to the cccam binary file name (in the "/usr/bin" folder), upper/lower case should be respected i.e. ".cccam" VS "CCcam"
 #         wget -O /etc/init.d/softcam.CCcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.CCcam
 #
-# 2)   If your Enigma2 distribution has built-in softcam support, then there is no need to create any symbolic link at this point.
-#      I mean the "/etc/init.d/softcam.*" script auto-start feature, which is implemented in many new Enigma2 distributions (based on OE2.0 core), directly in the Enigma2 source code.
+# 2)   If your Enigma2 distribution has built-in softcam support (for example - Softcam Panel), then there is no need to create any symbolic link at this point.
+#      I mean the "/etc/init.d/softcam.*" script auto-start feature, which is implemented in many new Enigma2 distributions, directly in the Enigma2 source code.
+#      Otherwise, you need to create symbolic links to run the shell-script when Linux boots (see steps in the next guide: "All other or unknown Enigma2 distributions").
 #
 # 3)   Copy your configuration files (using the FTP connection) into the particular folder:
-#      For the OSCam:  "/etc/tuxbox/config/oscam" 
-#      For the CCcam:  "/etc"  -  where the main configuration file is "/etc/CCcam.cfg" !!!
+#      For the OSCam:   "/etc/tuxbox/config/oscam" 
+#      For the CCcam:   "/etc"   -   where the main configuration file is "/etc/CCcam.cfg" !!!
 #
 # 4)   Download a specific softcam binary file and upload it to the set-top box - usually to the "/usr/bin" folder.
 #      Set its executable attributes:
@@ -59,6 +62,10 @@
 # 1)   Download the "softcam" script file directly from my github + SET the execution rights/attributes:
 #         wget -O /etc/init.d/softcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam
 #
+#      If you plan to modify and use this script for CCcam, and not oscam, then the correct file extension is ".cccam" or ".CCcam"
+#      According to the cccam binary file name (in the "/usr/bin" folder), upper/lower case should be respected i.e. ".cccam" VS "CCcam"
+#         wget -O /etc/init.d/softcam.CCcam --no-check-certificate https://github.com/s3n0/e2scripts/raw/master/softcam && chmod a+x /etc/init.d/softcam.CCcam
+#
 # 2)   Probably, the "/etc/init.d/softcam" script auto-start feature is not implemented in your Enigma2 distribution (in Python algorithm),
 #      so you must additionally create a symbolic link, and thus you have two options to choose from:
 #
@@ -75,8 +82,8 @@
 #         rm -f /etc/rc3.d/S90softcam               # or the same way with "unlink" command:   unlink /etc/rc3.d/S90softcam
 #
 # 3)   Copy your configuration files (using the FTP connection) into the particular folder:
-#      For the OSCam:  "/etc/tuxbox/config/oscam" 
-#      For the CCcam:  "/etc"  -  where the main configuration file is "/etc/CCcam.cfg" !!!
+#      For the OSCam:   "/etc/tuxbox/config/oscam" 
+#      For the CCcam:   "/etc"    -    where the main configuration file is "/etc/CCcam.cfg" !!!
 #
 # 4)   Download a specific softcam binary file and upload it to the set-top box - usually to the "/usr/bin" folder.
 #      Set its executable attributes: 
