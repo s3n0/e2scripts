@@ -3,7 +3,7 @@
 
 ####################################################
 # Backup & Restore
-# by s3n0, 2019-2024
+# by s3n0, 2019-2026
 ####################################################
 # shell script for backing up and restoring user-defined files and folders in the Enigma2
 ####################################################
@@ -26,8 +26,11 @@ FILE_PREFIX="e2-backup"                     # Note: The timestamp is automatical
 
 LIST="
 /etc/enigma2/
+
 /usr/share/enigma2/picon/
-/picon/
+/usr/share/enigma2/picon_tpl/
+/picon
+/picon_tpl
 /media/hdd/picon/
 /media/usb/picon/
 /media/mmc/picon/
@@ -60,7 +63,6 @@ LIST="
 
 
 PLUGINS_TO_RESTORE="
-enigma2-plugin-extensions-chocholousek-picons
 enigma2-plugin-extensions-youtube
 enigma2-plugin-skins-metrix-atv-fhd-icons
 enigma2-plugin-systemplugins-fastscan
@@ -68,9 +70,16 @@ enigma2-plugin-systemplugins-serviceapp
 exteplayer3
 zerotier
 curl
-curlftpfs
 htop
+enigma2-plugin-extensions-chocholousek-picons
 "
+# curlftpfs
+
+
+COMMANDS_AFTER_RESTORE="
+/usr/script/remove_unused_languages.sh
+"
+
 
 
 
@@ -165,7 +174,10 @@ do_restore() {
         echo "-----------------------"
         echo "Installing required plugins..."
         opkg update > /dev/null 2>&1
-        opkg install $PLUGINS_TO_RESTORE
+        for s in $PLUGINS_TO_RESTORE; do
+            echo "...installing package: $s"
+            opkg install $s
+        done
         echo "...done."
         echo "-----------------------"
         echo "Starting decompression..."
@@ -178,6 +190,9 @@ do_restore() {
             echo "...done."
             echo "-----------------------"
         fi
+        echo "Running additional system commands (after restore)..."
+        /bin/sh -c "${COMMANDS_AFTER_RESTORE}"
+        echo "...done."
         echo "Restarting the set-top box..."
         echo "(sending the 'init 6' command)"
         init 6
